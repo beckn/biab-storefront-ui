@@ -2,7 +2,7 @@ import { CustomQuery } from '@vue-storefront/core';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default async function getCategory(context, params, customQuery?: CustomQuery) {
-  
+
   return Promise.resolve([
     {
       id: 1,
@@ -16,7 +16,7 @@ export default async function getCategory(context, params, customQuery?: CustomQ
           items: [
             {
               id: 9,
-              name: 'Winter jackets',
+              name: 'Winter jackets Woolen',
               slug: 'winter-jackets',
               items: []
             },
