@@ -15,6 +15,6 @@ RUN apk add --no-cache nodejs=14.16.1-r1 npm=14.16.1-r1
 RUN npm install -g yarn
 COPY --from=build /app /usr/share/nginx/html
 WORKDIR /usr/share/nginx/html
-EXPOSE 80 443
+EXPOSE 8080
 RUN chmod +x entrypoint.sh
 CMD ["./entrypoint.sh"]
