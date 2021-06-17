@@ -10,7 +10,7 @@ export default async function getProduct(context, params: SearchItemsWhere, cust
   const qParams = buildSearchRequest(params);
   const config = (context.config as Config);
   const client = (context.client as sa.SuperAgent<sa.SuperAgentRequest>);
-  return client.get(config.api.url + '/search')
+  return client.get(config.api.url + config.api.endpoints.search)
     .query(qParams)
     .then(res => {
       return (res.body as AckResponse);

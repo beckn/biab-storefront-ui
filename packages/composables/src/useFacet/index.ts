@@ -5,7 +5,6 @@ import { FacetResultsData } from '../types';
 
 const factoryParams = {
   search: async (context: Context, params: FacetSearchResult<FacetResultsData>): Promise<FacetResultsData> => {
-    console.log('Mocked: searchFacet');
     const searchParams = buildSearchItemsWhere(params.input);
     const ackResponse: AckResponse = await context.$beckn.api.getProduct(searchParams);
     return {
