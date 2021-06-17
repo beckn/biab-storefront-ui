@@ -35,6 +35,9 @@ export default {
         onload: 'this.media=\'all\'',
         once: true
       }
+    ],
+    css: [
+      '@/assets/styles.scss'
     ]
   },
   loading: { color: '#fff' },

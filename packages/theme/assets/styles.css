@@ -1,1 +1,12 @@
-/* No CSS *//*# sourceMappingURL=styles.css.map */
+body {
+  background: red !important;
+}
+
+.left-pos {
+  left: 0;
+}
+
+.left-pos span {
+  margin-left: 20px;
+}
+/*# sourceMappingURL=styles.css.map */

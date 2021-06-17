@@ -1,3 +1,7 @@
+<style lang="scss">
+@import '../assets/styles.scss';
+</style>
+
 <template>
   <div>
     <SfHeader
@@ -58,7 +62,7 @@
           ref="searchBarRef"
           :placeholder="$t('Search for items')"
           aria-label="Search"
-          class="sf-header__search"
+          class="sf-header__search be-search-location"
           :value="term"
           @input="handleSearch"
           @keydown.enter="handleSearch($event)"
@@ -86,14 +90,63 @@
               </span>
             </SfButton>
             <SfButton
-              class="sf-search-bar__button sf-button--pure"            
+              class="sf-search-bar__button sf-button--pure left-pos"
+               @click="isLangModalOpen = !isLangModalOpen"
             >
               <span class="sf-search-bar__icon">
                 <SfIcon color="var(--c-text)" size="20px" icon="marker_fill" />
               </span>
             </SfButton>
+
+            <template>
+              <div class="location-modal">
+              <SfBottomModal :is-open="isLangModalOpen"
+             title="Choose Location"
+              @click:close="isLangModalOpen = !isLangModalOpen">
+
+              <SfSearchBar
+          ref="searchBarRef"
+          :placeholder="$t('Search for Location')"
+          aria-label="Search"
+          class="sf-header__search be-search-location"
+          :value="term"
+          @input="handleSearch"
+          @keydown.enter="handleSearch($event)"
+          @focus="isSearchOpen = false"
+          @keydown.esc="closeSearch"
+          v-click-outside="closeSearch"
+        >
+          <template #icon>
+
+            <SfButton
+              class="sf-search-bar__button sf-button--pure left-pos"
+            >
+              <span class="sf-search-bar__icon">
+                <SfIcon color="var(--c-green-primary)" size="20px" icon="marker" />
+              </span>
+            </SfButton>
+
           </template>
         </SfSearchBar>
+        <slot name="regular">
+          <div class="sf-search-bar sf-header__search be-search-location">
+           <SfButton
+              class=" sf-button--pure"
+            >
+
+              <span class="sf-search-bar__icon">
+                <SfIcon color="green-primary" size="20px" icon="marker" />
+              </span>
+              <p>Use current location</p>
+            </SfButton>
+          </div>
+            </slot>
+    </SfBottomModal>
+    </div>
+            </template>
+          </template>
+        </SfSearchBar>
+
       </template>
     </SfHeader>
     <SearchResults :visible="isSearchOpen" :result="result" @close="closeSearch" @removeSearchResults="removeSearchResults" />
@@ -102,9 +155,25 @@
 </template>
 
 <script>
-import { SfHeader, SfImage, SfIcon, SfButton, SfBadge, SfSearchBar, SfOverlay, SfMenuItem, SfLink } from '@storefront-ui/vue';
+import {
+  SfHeader,
+  SfImage,
+  SfIcon,
+  SfButton,
+  SfBadge,
+  SfSearchBar,
+  SfOverlay,
+  SfMenuItem,
+  SfLink,
+  SfBottomModal
+} from '@storefront-ui/vue';
 import { useUiState } from '~/composables';
-import { useCart, useWishlist, useUser, cartGetters } from '@vue-storefront/beckn';
+import {
+  useCart,
+  useWishlist,
+  useUser,
+  cartGetters
+} from '@vue-storefront/beckn';
 import { computed, ref, onBeforeUnmount, watch } from '@vue/composition-api';
 import { onSSR } from '@vue-storefront/core';
 import { useUiHelpers } from '~/composables';
@@ -130,11 +199,16 @@ export default {
     SearchResults,
     SfOverlay,
     SfMenuItem,
-    SfLink
+    SfLink,
+    SfBottomModal
   },
   directives: { clickOutside },
   setup(props, { root }) {
-    const { toggleCartSidebar, toggleWishlistSidebar, toggleLoginModal } = useUiState();
+    const {
+      toggleCartSidebar,
+      toggleWishlistSidebar,
+      toggleLoginModal
+    } = useUiState();
     const { setTermForUrl, getFacetsFromURL } = useUiHelpers();
     const { isAuthenticated, load: loadUser } = useUser();
     const { cart, load: loadCart } = useCart();
@@ -143,13 +217,16 @@ export default {
     const isSearchOpen = ref(false);
     const searchBarRef = ref(null);
     const result = ref(null);
+    const isLangModalOpen = ref(false);
 
     const cartTotalItems = computed(() => {
       const count = cartGetters.getTotalItems(cart.value);
       return count ? count.toString() : null;
     });
 
-    const accountIcon = computed(() => isAuthenticated.value ? 'profile_fill' : 'profile');
+    const accountIcon = computed(
+      () => (isAuthenticated.value ? 'profile_fill' : 'profile')
+    );
 
     // TODO: https://github.com/DivanteLtd/vue-storefront/issues/4927
     const handleAccountClick = async () => {
@@ -180,7 +257,6 @@ export default {
         term.value = paramValue.target.value;
       }
       result.value = mockedSearchProducts;
-
     }, 1000);
 
     const isMobile = computed(() => mapMobileObserver().isMobile.get());
@@ -194,12 +270,19 @@ export default {
       }
     };
 
-    watch(() => term.value, (newVal, oldVal) => {
-      const shouldSearchBeOpened = (!isMobile.value && term.value.length > 0) && ((!oldVal && newVal) || (newVal.length !== oldVal.length && isSearchOpen.value === false));
-      if (shouldSearchBeOpened) {
-        isSearchOpen.value = true;
+    watch(
+      () => term.value,
+      (newVal, oldVal) => {
+        const shouldSearchBeOpened =
+          !isMobile.value &&
+          term.value.length > 0 &&
+          ((!oldVal && newVal) ||
+            (newVal.length !== oldVal.length && isSearchOpen.value === false));
+        if (shouldSearchBeOpened) {
+          isSearchOpen.value = true;
+        }
       }
-    });
+    );
 
     const removeSearchResults = () => {
       result.value = null;
@@ -224,7 +307,8 @@ export default {
       closeOrFocusSearchBar,
       searchBarRef,
       isMobile,
-      removeSearchResults
+      removeSearchResults,
+      isLangModalOpen
     };
   }
 };
@@ -232,12 +316,12 @@ export default {
 
 <style lang="scss" scoped>
 .sf-header {
-  --header-padding:  var(--spacer-sm);
+  --header-padding: var(--spacer-sm);
   @include for-desktop {
     --header-padding: 0;
   }
   &__logo-image {
-      height: 100%;
+    height: 100%;
   }
 }
 .header-on-top {
@@ -254,5 +338,19 @@ export default {
   position: absolute;
   bottom: 40%;
   left: 40%;
+}
+.location-modal {
+  margin: 0 -5px;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  position: relative;
+  .sf-bottom-modal {
+    z-index: 2;
+    left: 0;
+    @include for-desktop {
+      --bottom-modal-height: 100vh;
+    }
+  }
 }
 </style>
