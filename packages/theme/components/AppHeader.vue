@@ -176,7 +176,7 @@ export default {
       await search({ term: term.value });
       console.log(facetResults.value.data.ackResponse);
       // eslint-disable-next-line no-alert
-      alert('Response is: ' + facetResults.value.data.ackResponse.message.ack.status);
+      alert('Response for message id: ' + facetResults.value.data.ackResponse.context.message_id + ' ::: ' + facetResults.value.data.ackResponse.message.ack.status);
       result.value = mockedSearchProducts;
 
     }, 1000);

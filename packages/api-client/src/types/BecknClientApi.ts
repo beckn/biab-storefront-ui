@@ -1,10 +1,16 @@
+/* eslint-disable camelcase */
 export interface BecknContext{
     domain: string,
     country: string,
     city: string,
     action: string,
-    // eslint-disable-next-line camelcase
-    core_version: string
+    core_version: string,
+    bap_id: string,
+    bap_uri: string,
+    bpp_id: string,
+    bpp_uri: string,
+    transaction_id: string,
+    message_id: string
 }
 
 export enum AckStatusType {
@@ -25,6 +31,7 @@ export interface Error {
     message: string
 }
 export interface AckResponse {
+    context: BecknContext
     message: AckMessage
     error: Error
 }
