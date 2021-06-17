@@ -1193,16 +1193,6 @@
     unique-filename "^1.1.1"
     which "^1.3.1"
 
-"@firstandthird/complete@^2.1.0":
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/@firstandthird/complete/-/complete-2.3.0.tgz#4309b73bd08488145459761c89fe850add781240"
-  integrity sha512-zikO0ZoM/bve9ee15GqdaiidKKGgcGU+tQIPK4yvctfTVT4xvkN3eVwC2QEC8pjfilStQyREEkz3dt4DPBYJjg==
-  dependencies:
-    bequest "^2.1.0"
-    domassist "^2.2.0"
-    domodule "^7.0.0"
-    tinybounce "^1.2.0"
-
 "@fullhuman/postcss-purgecss@^2.0.5":
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/@fullhuman/postcss-purgecss/-/postcss-purgecss-2.3.0.tgz#50a954757ec78696615d3e118e3fee2d9291882e"
@@ -3929,16 +3919,6 @@ atob@^2.1.2:
   resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.2.tgz#6d9517eb9e030d2436666651e86bd9f6f13533c9"
   integrity sha512-Wm6ukoaOGJi/73p/cl2GvLjTI5JM1k/O14isD73YML8StrH/7/lRFgmg8nICZgD3bZZvjwCGxtMOD3wWNAu8cg==
 
-attrobj@^3.1.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/attrobj/-/attrobj-3.1.0.tgz#6ab50a1701326182381718d370244f3c3cae0e48"
-  integrity sha512-YFN+wZSEgER2w5IdIkmNkPiGqi6lRrNKL+VPl+7WnAPenZvnPC6bEmQuxka06Ilwx265x/K6QRh9W5Klav738Q==
-
-aug@^3.1.1:
-  version "3.1.1"
-  resolved "https://registry.yarnpkg.com/aug/-/aug-3.1.1.tgz#893f51d9bc4885f37d1fc42f45674ca3680c3e3a"
-  integrity sha512-dudXS7eQOTTn/P6TBiPDt5oO4LnH66sYpCmHLiZktUMNJv3hKtKPKqOaEqa3d75HKkVBLK+nE92Jvbzr2lSo1Q==
-
 autoprefixer@^9.6.1:
   version "9.8.6"
   resolved "https://registry.yarnpkg.com/autoprefixer/-/autoprefixer-9.8.6.tgz#3b73594ca1bf9266320c5acf1588d74dea74210f"
@@ -4094,11 +4074,6 @@ before-after-hook@^2.0.0:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/before-after-hook/-/before-after-hook-2.2.1.tgz#73540563558687586b52ed217dad6a802ab1549c"
   integrity sha512-/6FKxSTWoJdbsLDF8tdIjaRiFXiE6UHsEHE3OPI/cwPURCVi1ukP0gmLn7XWEiFk5TcwQjjY5PWsU+j+tgXgmw==
-
-bequest@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/bequest/-/bequest-2.1.0.tgz#90c634c3837f7181a6342b7c0c09a3753fa108f5"
-  integrity sha512-jV3IPVeR3FrwZo97VuW7OICuzYYdvm7i3Y1j2v2lNjBjkt0zageluV7rj0Mu81Sp51eZNCyuCdz/U3sP492E0A==
 
 bezier-easing@2.1.0:
   version "2.1.0"
@@ -6246,11 +6221,6 @@ domain-browser@^1.1.1, domain-browser@^1.2.0:
   resolved "https://registry.yarnpkg.com/domain-browser/-/domain-browser-1.2.0.tgz#3d31f50191a6749dd1375a7f522e823d42e54eda"
   integrity sha512-jnjyiM6eRyZl2H+W8Q/zLMA481hzi0eszAaBUzIVnmYVDBbnLxVNnfu1HgEBvCbL+71FrxMl3E6lpKH7Ge3OXA==
 
-domassist@^2.2.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/domassist/-/domassist-2.2.0.tgz#0b363cc2a534d2fd39994fd033a897b5a0836c16"
-  integrity sha512-fz/B/YgI88m+/fw49tFi1syaGuBuBGA8DkS3J53jkzH+9wD0B8zUwdiExZjQnnJAwI1aXTgNj4nlTlx797zFqQ==
-
 domelementtype@1, domelementtype@^1.3.1:
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/domelementtype/-/domelementtype-1.3.1.tgz#d048c44b37b0d10a7f2a3d5fee3f4333d790481f"
@@ -6281,15 +6251,6 @@ domhandler@^4.0.0, domhandler@^4.2.0:
   integrity sha512-zk7sgt970kzPks2Bf+dwT/PLzghLnsivb9CcxkvR8Mzr66Olr0Ofd8neSbglHJHaHa2MadfoSdNlKYAaafmWfA==
   dependencies:
     domelementtype "^2.2.0"
-
-domodule@^7.0.0:
-  version "7.0.0"
-  resolved "https://registry.yarnpkg.com/domodule/-/domodule-7.0.0.tgz#89a4df78f4c779f310de9b28bc3c586548156660"
-  integrity sha512-85SnrnbBDRqshizhud1BDdvxjGGQPIHJm3VuFuNQ9gpx4OOWT1vGIDN46wEy2rpfz/T9WufO47a2EKMnLx73Ug==
-  dependencies:
-    attrobj "^3.1.0"
-    aug "^3.1.1"
-    domassist "^2.2.0"
 
 domutils@^1.5.1, domutils@^1.7.0:
   version "1.7.0"
@@ -9701,14 +9662,6 @@ locate-path@^6.0.0:
   integrity sha512-iPZK6eYjbxRu3uB4/WZ3EsEIMJFMqAoopl3R+zuq0UjcAm/MO6KCweDgPfP3elTztoKP3KtnVHxTn2NHBSDVUw==
   dependencies:
     p-locate "^5.0.0"
-
-location-search@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/location-search/-/location-search-2.1.0.tgz#01b998b2b749572a26286af2bb0cbafdd7285257"
-  integrity sha512-K8BY9NWC5NwGT2uuqJzAW53Pc+fGHCqE2bJF2do/wCP+X/5QvViCfbrfHXAdBJAvC9HISRMeXiR+bDqhNQkJpw==
-  dependencies:
-    "@firstandthird/complete" "^2.1.0"
-    domassist "^2.2.0"
 
 lodash-es@^4.17.15:
   version "4.17.21"
@@ -14433,11 +14386,6 @@ timsort@^0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/timsort/-/timsort-0.3.0.tgz#405411a8e7e6339fe64db9a234de11dc31e02bd4"
   integrity sha1-QFQRqOfmM5/mTbmiNN4R3DHgK9Q=
-
-tinybounce@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/tinybounce/-/tinybounce-1.2.0.tgz#00c57b5b6a48c2a520c6fc892c0792c50494fc4f"
-  integrity sha512-PmBqt4B0DnZrHbs24WE0XthPO1bZYKSeMj6KOG00GIk7R6tlsAkq/wCaxMU9eYPPAmp6+HMzOtiQOj2qKIf8kg==
 
 tmp@^0.0.33:
   version "0.0.33"
