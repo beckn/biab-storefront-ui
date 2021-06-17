@@ -3,13 +3,14 @@ import getProduct from './api/getProduct';
 import getCategory from './api/getCategory';
 
 const defaultSettings = {};
+import * as request from 'superagent';
 
 const onCreate = (settings) => ({
   config: {
     ...defaultSettings,
     ...settings
   },
-  client: {}
+  client: request
 });
 
 const { createApiClient } = apiClientFactory<any, any>({

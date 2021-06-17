@@ -14,12 +14,16 @@
     "prepublish": "yarn build"
   },
   "dependencies": {
-    "@vue-storefront/core": "^2.3.0"
+    "@vue-storefront/core": "^2.3.0",
+    "superagent": "^6.1.0"
   },
   "files": [
     "lib/**/*"
   ],
   "publishConfig": {
     "access": "public"
+  },
+  "devDependencies": {
+    "@types/superagent": "^4.1.11"
   }
 }
