@@ -1,10 +1,16 @@
+import { AckResponse } from '@vue-storefront/beckn-api';
 import { Context, useFacetFactory, FacetSearchResult } from '@vue-storefront/core';
+import { buildSearchItemsWhere } from '../helpers/internals/search';
+import { FacetResultsData } from '../types';
 
 const factoryParams = {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  search: async (context: Context, params: FacetSearchResult<any>) => {
+  search: async (context: Context, params: FacetSearchResult<FacetResultsData>): Promise<FacetResultsData> => {
     console.log('Mocked: searchFacet');
-    return {};
+    const searchParams = buildSearchItemsWhere(params.input);
+    const ackResponse: AckResponse = await context.$beckn.api.getProduct(searchParams);
+    return {
+      ackResponse
+    };
   }
 };
 

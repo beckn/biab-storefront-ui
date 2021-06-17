@@ -4,7 +4,7 @@ import {
   SearchItemsWhere
 } from './../../types/Search';
 
-export const buildSearchItemsWhere = (search?: SearchItemsWhere) => {
+export const buildSearchRequest = (search?: SearchItemsWhere): SearchRequest => {
   if (search) {
     return new SearchRequest(
       search.itemContains,
