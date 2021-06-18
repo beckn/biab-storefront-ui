@@ -58,6 +58,47 @@
         </div>
       </template>
       <template #search>
+        <div class="location-blk d-flex w-100">
+        <SfCircleIcon
+            class="sf-circle-icon--large left-pos green-primary"
+            aria-label="marker"
+            icon="marker"
+            icon-size="28px"
+
+          />
+       <div class="location-content">
+          <slot>
+            <div>
+              <p>Your Location</p>
+            </div>
+          </slot>
+          <SfSearchBar
+            ref="searchBarRef"
+            :placeholder="$t('Search for Location')"
+            aria-label="Search"
+            class="be-search-location"
+            :value="term"
+            @input="handleSearch"
+            @keydown.enter="handleSearch($event)"
+            @focus="isSearchOpen = false"
+            @keydown.esc="closeSearch"
+            v-click-outside="closeSearch"
+          >
+          <template #icon>
+            <SfButton
+              v-if="!!term"
+              class="sf-search-bar__button sf-button--pure"
+              @click="closeOrFocusSearchBar"
+            >
+              <span class="sf-search-bar__icon">
+                <SfIcon color="var(--c-text)" size="18px" icon="dropdown" />
+              </span>
+            </SfButton>
+          </template>
+          </SfSearchBar>
+        </div>
+        </div>
+        <slot name="productSearch">
         <SfSearchBar
           ref="searchBarRef"
           :placeholder="$t('Search for items')"
@@ -89,64 +130,9 @@
                 <SfIcon color="var(--c-text)" size="20px" icon="search" />
               </span>
             </SfButton>
-            <SfButton
-              class="sf-search-bar__button sf-button--pure left-pos"
-               @click="isLangModalOpen = !isLangModalOpen"
-            >
-              <span class="sf-search-bar__icon">
-                <SfIcon color="var(--c-text)" size="20px" icon="marker_fill" />
-              </span>
-            </SfButton>
-
-            <template>
-              <div class="location-modal">
-              <SfBottomModal :is-open="isLangModalOpen"
-             title="Choose Location"
-              @click:close="isLangModalOpen = !isLangModalOpen">
-
-              <SfSearchBar
-          ref="searchBarRef"
-          :placeholder="$t('Search for Location')"
-          aria-label="Search"
-          class="sf-header__search be-search-location"
-          :value="term"
-          @input="handleSearch"
-          @keydown.enter="handleSearch($event)"
-          @focus="isSearchOpen = false"
-          @keydown.esc="closeSearch"
-          v-click-outside="closeSearch"
-        >
-          <template #icon>
-
-            <SfButton
-              class="sf-search-bar__button sf-button--pure left-pos"
-            >
-              <span class="sf-search-bar__icon">
-                <SfIcon color="var(--c-green-primary)" size="20px" icon="marker" />
-              </span>
-            </SfButton>
-
           </template>
         </SfSearchBar>
-        <slot name="regular">
-          <div class="sf-search-bar sf-header__search be-search-location">
-           <SfButton
-              class=" sf-button--pure"
-            >
-
-              <span class="sf-search-bar__icon">
-                <SfIcon color="green-primary" size="20px" icon="marker" />
-              </span>
-              <p>Use current location</p>
-            </SfButton>
-          </div>
-            </slot>
-    </SfBottomModal>
-    </div>
-            </template>
-          </template>
-        </SfSearchBar>
-
+        </slot>
       </template>
     </SfHeader>
     <SearchResults :visible="isSearchOpen" :result="result" @close="closeSearch" @removeSearchResults="removeSearchResults" />
@@ -165,7 +151,8 @@ import {
   SfOverlay,
   SfMenuItem,
   SfLink,
-  SfBottomModal
+  SfBottomModal,
+  SfCircleIcon
 } from '@storefront-ui/vue';
 import { useUiState } from '~/composables';
 import {
@@ -200,7 +187,8 @@ export default {
     SfOverlay,
     SfMenuItem,
     SfLink,
-    SfBottomModal
+    SfBottomModal,
+    SfCircleIcon
   },
   directives: { clickOutside },
   setup(props, { root }) {
@@ -217,7 +205,6 @@ export default {
     const isSearchOpen = ref(false);
     const searchBarRef = ref(null);
     const result = ref(null);
-    const isLangModalOpen = ref(false);
 
     const cartTotalItems = computed(() => {
       const count = cartGetters.getTotalItems(cart.value);
@@ -307,8 +294,7 @@ export default {
       closeOrFocusSearchBar,
       searchBarRef,
       isMobile,
-      removeSearchResults,
-      isLangModalOpen
+      removeSearchResults
     };
   }
 };
@@ -352,5 +338,8 @@ export default {
       --bottom-modal-height: 100vh;
     }
   }
+}
+.sf-circle-icon {
+    --icon-color: var(--c-primary);
 }
 </style>
