@@ -91,7 +91,7 @@
             </SfButton>
             <SfButton
               class="sf-search-bar__button sf-button--pure left-pos"
-               @click="isLangModalOpen = !isLangModalOpen"
+               @click="isLocationModalOpen = !isLocationModalOpen"
             >
               <span class="sf-search-bar__icon">
                 <SfIcon color="var(--c-text)" size="20px" icon="marker_fill" />
@@ -100,21 +100,21 @@
 
             <template>
               <div class="location-modal">
-              <SfBottomModal :is-open="isLangModalOpen"
-             title="Choose Location"
-              @click:close="isLangModalOpen = !isLangModalOpen">
+              <SfBottomModal :is-open="isLocationModalOpen"
+              title="Choose Location"
+              @click:close="isLocationModalOpen = !isLocationModalOpen;">
 
               <SfSearchBar
-          ref="searchBarRef"
-          :placeholder="$t('Search for Location')"
-          aria-label="Search"
+          ref="locationSearchBarRef"
+          :placeholder="$t('Enter Location')"
+          aria-label="Select Location"
           class="sf-header__search be-search-location"
-          :value="term"
-          @input="handleSearch"
-          @keydown.enter="handleSearch($event)"
+          :value="locationTerm"
+          @input="handleLocationSearch"
+          @keydown.enter="handleLocationSearch($event)"
           @focus="isSearchOpen = false"
-          @keydown.esc="closeSearch"
-          v-click-outside="closeSearch"
+          @keydown.esc="closeLocationSearch"
+          v-click-outside="closeLocationSearch"
         >
           <template #icon>
 
@@ -214,10 +214,12 @@ export default {
     const { cart, load: loadCart } = useCart();
     const { load: loadWishlist } = useWishlist();
     const term = ref(getFacetsFromURL().phrase);
+    const locationTerm = ref(getFacetsFromURL().phrase);
     const isSearchOpen = ref(false);
     const searchBarRef = ref(null);
+    const locationSearchBarRef = ref(null);
     const result = ref(null);
-    const isLangModalOpen = ref(false);
+    const isLocationModalOpen = ref(false);
 
     const cartTotalItems = computed(() => {
       const count = cartGetters.getTotalItems(cart.value);
@@ -250,11 +252,27 @@ export default {
       isSearchOpen.value = false;
     };
 
+    const closeLocationSearch = () =>{
+      if (!isLocationModalOpen.value) return;
+
+      locationTerm.value = '';
+      isLocationModalOpen.value = false;
+    };
+
     const handleSearch = debounce(async (paramValue) => {
       if (!paramValue.target) {
         term.value = paramValue;
       } else {
         term.value = paramValue.target.value;
+      }
+      result.value = mockedSearchProducts;
+    }, 1000);
+
+    const handleLocationSearch = debounce(async (paramValue) => {
+      if (!paramValue.target) {
+        locationTerm.value = paramValue;
+      } else {
+        locationTerm.value = paramValue.target.value;
       }
       result.value = mockedSearchProducts;
     }, 1000);
@@ -270,6 +288,15 @@ export default {
       }
     };
 
+    const closeOrFocusLocationSearchBar = () => {
+      if (isMobile.value) {
+        return closeLocationSearch();
+      } else {
+        locationTerm.value = '';
+        return locationSearchBarRef.value.$el.children[0].focus();
+      }
+    };
+
     watch(
       () => term.value,
       (newVal, oldVal) => {
@@ -280,6 +307,20 @@ export default {
             (newVal.length !== oldVal.length && isSearchOpen.value === false));
         if (shouldSearchBeOpened) {
           isSearchOpen.value = true;
+        }
+      }
+    );
+
+    watch(
+      () => locationTerm.value,
+      (newVal, oldVal) => {
+        const shouldLocationSearchBeOpened =
+          !isMobile.value &&
+          locationTerm.value.length > 0 &&
+          ((!oldVal && newVal) ||
+            (newVal.length !== oldVal.length && isLocationModalOpen.value === false));
+        if (shouldLocationSearchBeOpened) {
+          isLocationModalOpen.value = true;
         }
       }
     );
@@ -300,15 +341,19 @@ export default {
       toggleWishlistSidebar,
       setTermForUrl,
       term,
+      locationTerm,
       isSearchOpen,
       closeSearch,
+      closeLocationSearch,
       handleSearch,
+      handleLocationSearch,
       result,
       closeOrFocusSearchBar,
+      closeOrFocusLocationSearchBar,
       searchBarRef,
       isMobile,
       removeSearchResults,
-      isLangModalOpen
+      isLocationModalOpen
     };
   }
 };
