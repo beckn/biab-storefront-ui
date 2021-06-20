@@ -11,7 +11,11 @@ describe('[beckn-api-client] getProduct', () => {
   const thenHandler = {
     then: () => {
       return Promise.resolve({
-        ack: 'ACK'
+        message: {
+          ack: {
+            status: 'ACK'
+          }
+        }
       });
     }
   };
@@ -26,20 +30,23 @@ describe('[beckn-api-client] getProduct', () => {
   const context = {
     config: {
       api: {
-        url: 'http://localhost:3000'
+        url: 'http://localhost:3000',
+        endpoints: {
+          search: '/v0/search'
+        }
       }
     },
     client: {
       get: (url: string) => {
-        expect(url).toEqual('http://localhost:3000/search');
+        expect(url).toEqual('http://localhost:3000/v0/search');
         return queryHandler;
       }
     }
   };
 
   it('should return acknowledgement when search is triggered', async () => {
-    const { ack } = await getProduct(context, searchItemsWhere);
-    expect(ack).toBe('ACK');
+    const ackResponse = await getProduct(context, searchItemsWhere);
+    expect(ackResponse.message.ack.status).toBe('ACK');
   });
 
 });

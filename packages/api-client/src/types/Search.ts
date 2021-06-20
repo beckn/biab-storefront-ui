@@ -11,7 +11,7 @@ export class SearchRequest {
   constructor(
         public searchString: string,
         public searchType: SearchType,
-        public location: string,
+        public location?: string,
         public limit?: number,
         public offset?: number) {}
 
@@ -31,7 +31,7 @@ export class SearchRequest {
 export interface BaseSearchWhere {
     limit?: number;
     offset?: number;
-    locationIs: string
+    locationIs?: string
 }
 
 export interface SearchItemsWhere extends BaseSearchWhere{

@@ -1,3 +1,6 @@
+import { AckResponse } from '@vue-storefront/beckn-api';
+import { FacetSearchResult } from '@vue-storefront/core';
+
 export { UseCategory, UseProduct } from '@vue-storefront/core';
 
 export type Address = Record<string, unknown>;
@@ -45,3 +48,9 @@ export type OrdersResponse = {
   data: any[];
   total: number;
 };
+
+export interface FacetResultsData {
+  ackResponse: AckResponse
+}
+
+export type SearchData = FacetSearchResult<FacetResultsData>
