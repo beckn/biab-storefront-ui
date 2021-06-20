@@ -64,6 +64,7 @@ jobs:
   deploy:
     name: package and deploy the service
     needs: test
+    if: github.ref == 'refs/heads/main'
     runs-on: [self-hosted, linux]
     steps:
       - name: Set up Docker Buildx
