@@ -126,7 +126,7 @@ import { computed, ref, onBeforeUnmount, watch } from '@vue/composition-api';
 import { onSSR } from '@vue-storefront/core';
 import { useUiHelpers } from '~/composables';
 import LocaleSelector from './LocaleSelector';
-import Location from './location';
+import Location from './Location';
 import SearchResults from '~/components/SearchResults';
 import { clickOutside } from '@storefront-ui/vue/src/utilities/directives/click-outside/click-outside-directive.js';
 import {
@@ -165,12 +165,9 @@ export default {
     const { cart, load: loadCart } = useCart();
     const { load: loadWishlist } = useWishlist();
     const term = ref(getFacetsFromURL().phrase);
-    const locationTerm = ref(getFacetsFromURL().phrase);
     const isSearchOpen = ref(false);
     const searchBarRef = ref(null);
-    const locationSearchBarRef = ref(null);
     const result = ref(null);
-    const isLocationModalOpen = ref(false);
 
     const cartTotalItems = computed(() => {
       const count = cartGetters.getTotalItems(cart.value);
@@ -203,27 +200,11 @@ export default {
       isSearchOpen.value = false;
     };
 
-    const closeLocationSearch = () =>{
-      if (!isLocationModalOpen.value) return;
-
-      locationTerm.value = '';
-      isLocationModalOpen.value = false;
-    };
-
     const handleSearch = debounce(async (paramValue) => {
       if (!paramValue.target) {
         term.value = paramValue;
       } else {
         term.value = paramValue.target.value;
-      }
-      result.value = mockedSearchProducts;
-    }, 1000);
-
-    const handleLocationSearch = debounce(async (paramValue) => {
-      if (!paramValue.target) {
-        locationTerm.value = paramValue;
-      } else {
-        locationTerm.value = paramValue.target.value;
       }
       result.value = mockedSearchProducts;
     }, 1000);
@@ -239,15 +220,6 @@ export default {
       }
     };
 
-    const closeOrFocusLocationSearchBar = () => {
-      if (isMobile.value) {
-        return closeLocationSearch();
-      } else {
-        locationTerm.value = '';
-        return locationSearchBarRef.value.$el.children[0].focus();
-      }
-    };
-
     watch(
       () => term.value,
       (newVal, oldVal) => {
@@ -258,20 +230,6 @@ export default {
             (newVal.length !== oldVal.length && isSearchOpen.value === false));
         if (shouldSearchBeOpened) {
           isSearchOpen.value = true;
-        }
-      }
-    );
-
-    watch(
-      () => locationTerm.value,
-      (newVal, oldVal) => {
-        const shouldLocationSearchBeOpened =
-          !isMobile.value &&
-          locationTerm.value.length > 0 &&
-          ((!oldVal && newVal) ||
-            (newVal.length !== oldVal.length && isLocationModalOpen.value === false));
-        if (shouldLocationSearchBeOpened) {
-          isLocationModalOpen.value = true;
         }
       }
     );
@@ -292,19 +250,14 @@ export default {
       toggleWishlistSidebar,
       setTermForUrl,
       term,
-      locationTerm,
       isSearchOpen,
       closeSearch,
-      closeLocationSearch,
       handleSearch,
-      handleLocationSearch,
       result,
       closeOrFocusSearchBar,
-      closeOrFocusLocationSearchBar,
       searchBarRef,
       isMobile,
-      removeSearchResults,
-      isLocationModalOpen
+      removeSearchResults
     };
   }
 };
@@ -334,22 +287,5 @@ export default {
   position: absolute;
   bottom: 40%;
   left: 40%;
-}
-.location-modal {
-  margin: 0 -5px;
-  display: flex;
-  flex-wrap: nowrap;
-  align-items: center;
-  position: relative;
-  .sf-bottom-modal {
-    z-index: 2;
-    left: 0;
-    @include for-desktop {
-      --bottom-modal-height: 100vh;
-    }
-  }
-}
-.sf-circle-icon {
-    --icon-color: var(--c-primary);
 }
 </style>
