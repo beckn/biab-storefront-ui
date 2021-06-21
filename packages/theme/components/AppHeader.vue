@@ -58,35 +58,7 @@
         </div>
       </template>
       <template #search>
-        <div class="location-blk d-flex w-100">
-        <SfCircleIcon
-            class="sf-circle-icon--large left-pos green-primary"
-            aria-label="marker"
-            icon="marker"
-            icon-size="28px"
-          />
-       <div class="location-content">
-          <slot>
-            <div>
-              <p>Your Location</p>
-            </div>
-          </slot>
-
-          <SfSearchBar
-          ref="locationSearchBarRef"
-          :placeholder="$t('Enter Location')"
-          aria-label="Select Location"
-          class="sf-header__search be-search-location"
-          :value="locationTerm"
-          @input="handleLocationSearch"
-          @keydown.enter="handleLocationSearch($event)"
-          @focus="isSearchOpen = false"
-          @keydown.esc="closeLocationSearch"
-          v-click-outside="closeLocationSearch"
-        >
-          </SfSearchBar>
-        </div>
-        </div>
+        <location class="location-section" />
         <slot name="productSearch">
         <SfSearchBar
           ref="searchBarRef"
@@ -154,6 +126,7 @@ import { computed, ref, onBeforeUnmount, watch } from '@vue/composition-api';
 import { onSSR } from '@vue-storefront/core';
 import { useUiHelpers } from '~/composables';
 import LocaleSelector from './LocaleSelector';
+import location from './location';
 import SearchResults from '~/components/SearchResults';
 import { clickOutside } from '@storefront-ui/vue/src/utilities/directives/click-outside/click-outside-directive.js';
 import {
@@ -177,7 +150,8 @@ export default {
     SfMenuItem,
     SfLink,
     SfBottomModal,
-    SfCircleIcon
+    SfCircleIcon,
+    location
   },
   directives: { clickOutside },
   setup(props, { root }) {
