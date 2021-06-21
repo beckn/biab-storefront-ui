@@ -58,7 +58,7 @@
         </div>
       </template>
       <template #search>
-        <location class="location-section" />
+        <Location class="location-section" />
         <slot name="productSearch">
         <SfSearchBar
           ref="searchBarRef"
@@ -126,7 +126,7 @@ import { computed, ref, onBeforeUnmount, watch } from '@vue/composition-api';
 import { onSSR } from '@vue-storefront/core';
 import { useUiHelpers } from '~/composables';
 import LocaleSelector from './LocaleSelector';
-import location from './location';
+import Location from './location';
 import SearchResults from '~/components/SearchResults';
 import { clickOutside } from '@storefront-ui/vue/src/utilities/directives/click-outside/click-outside-directive.js';
 import {
@@ -151,7 +151,7 @@ export default {
     SfLink,
     SfBottomModal,
     SfCircleIcon,
-    location
+    Location
   },
   directives: { clickOutside },
   setup(props, { root }) {
