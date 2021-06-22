@@ -25,7 +25,7 @@
       </template>
 
     <div class="popover-blk">
-    <!-- <button @click="isShow = !isShow">click Me</button> -->
+    <button @click="isShow = !isShow">click Me</button>
       <template>
         <SfButton
           class="sf-search-bar__button sf-button--pure m-r-25"

@@ -15062,6 +15062,11 @@ vue-jest@^4.0.0-0:
     extract-from-css "^0.4.4"
     source-map "0.5.6"
 
+vue-js-popover@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/vue-js-popover/-/vue-js-popover-1.2.1.tgz#ef48ea253483c9357bdb92bbe213e602cb28a279"
+  integrity sha512-kcnbv2qIJ26fCWtaDgzBq7A+K8/+w78fr0sQhmqLv66NewggwbsbFX4yqN9KeL4PwHrLfqr1QTBgaR+/TKZWyQ==
+
 vue-lazy-hydration@^2.0.0-beta.4:
   version "2.0.0-beta.4"
   resolved "https://registry.yarnpkg.com/vue-lazy-hydration/-/vue-lazy-hydration-2.0.0-beta.4.tgz#11e7021a9bac003ea6ed74f132dcd0d025fafc1f"
