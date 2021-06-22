@@ -12,6 +12,7 @@
           type="text"
           placeholder="Enter Location"
           aria-label="Select Location"
+          @click="isShow = !isShow"
           class="
             sf-header__search
             be-search-location
@@ -20,29 +21,53 @@
             be-search-location
           "
         />
-        <ul>
-          <li>
-            HSR layout
-            <span>2nd block</span>
-          </li>
-          <!-- <li v-for="(result, i) in searchResults" :key="i">
-            {{ result }}
-          </li> -->
-        </ul>
         <SfButton
           class="sf-search-bar__button sf-button--pure"
           @click="$emit('toggleLocationDrop')"
         >
           <SfIcon icon="chevron_down" color="var(--c-text)" size="18px" />
         </SfButton>
+        
+        <!-- <Popover class="location-popover" /> -->
       </div>
+      
+        <!-- <ul class="location-list">
+          <li>
+             <SfButton
+              class="sf-search-bar__button sf-button--pure pos-left"
+            >
+              <span class="sf-search-bar__icon">
+                <SfIcon color="var(--c-text)" size="30px" icon="marker" />
+              </span>
+            </SfButton>
+            Kormangla
+            <p>Cauvery Colony, Kormangla, Bengaluru</p>
+          </li>
+           <li>
+             <SfButton
+              class="sf-search-bar__button sf-button--pure pos-left"
+            >
+              <span class="sf-search-bar__icon">
+                <SfIcon color="var(--c-text)" size="30px" icon="marker" />
+              </span>
+            </SfButton>
+            Kormangla
+            <p>Cauvery Colony, Kormangla</p>
+          </li>
+          
+        </ul> -->
+        <!-- <li v-for="(result, i) in searchResults" :key="i">
+            {{ result }}
+          </li> -->
+         
     </slot>
   </div>
 </template>
 
 <script>
 import { SfButton, SfIcon } from '@storefront-ui/vue';
-export default {  
+// import Popover from 'vue-js-popover';
+export default {
   data: () => ({
     location: '',
     searchResults: [],
@@ -62,7 +87,7 @@ export default {
     MapsInit () {
       this.service = new window.google.maps.places.AutocompleteService()
       console.log(this.service)
-      debugger
+      // debugger
     },
     displaySuggestions (predictions, status) {
       if (status !== window.google.maps.places.PlacesServiceStatus.OK) {
@@ -85,7 +110,7 @@ export default {
   name: 'LocationSearchBar',  
   components: {
     SfButton,
-    SfIcon,
+    SfIcon
   },
 };
 </script>
