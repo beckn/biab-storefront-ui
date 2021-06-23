@@ -8,6 +8,11 @@ export default {
   },
   head: {
     title: 'Beckn storefront',
+    script:[{
+      src: `https://maps.googleapis.com/maps/api/js?key=<key>&libraries=places`,
+      async: true,
+      defer: true,
+    }],
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },

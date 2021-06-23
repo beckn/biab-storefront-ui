@@ -12,7 +12,6 @@
           type="text"
           placeholder="Enter Location"
           aria-label="Select Location"
-          @click="isShow = !isShow"
           class="
             sf-header__search
             be-search-location
@@ -27,8 +26,13 @@
         >
           <SfIcon icon="chevron_down" color="var(--c-text)" size="18px" />
         </SfButton>
+        <ul>
+          <li v-for="(result, i) in searchResults" :key="i">
+            {{ result }}
+          </li>
+        </ul>
         
-        <!-- <Popover class="location-popover" /> -->
+      <!-- <Popover class="location-popover" /> -->
       </div>
       
         <!-- <ul class="location-list">
@@ -73,28 +77,16 @@ export default {
     searchResults: [],
     service: null
   }),
-  metaInfo () {
-    return {
-      script:[{
-        src: `https://maps.googleapis.com/maps/api/js?key=<key>&libraries=places`,
-        async: true,
-        defer: true,
-        callback: () => this.MapsInit()
-      }]
-    }
+  created(){
+    this.service = new window.google.maps.places.AutocompleteService()
   },
-  methods: {
-    MapsInit () {
-      this.service = new window.google.maps.places.AutocompleteService()
-      console.log(this.service)
-      // debugger
-    },
+  methods: {    
     displaySuggestions (predictions, status) {
       if (status !== window.google.maps.places.PlacesServiceStatus.OK) {
         this.searchResults = []
         return
       }
-      this.searchResults = predictions.map(prediction => prediction.description) 
+      this.searchResults = predictions.map(prediction => prediction.description)
     }
   },
   watch: {

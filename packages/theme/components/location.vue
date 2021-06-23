@@ -7,18 +7,22 @@
       icon-size="28px"
     />
     <div class="location-content">
-      <LocationSearchBar @toggleLocationDrop="toggleLocationDrop" />
+      <client-only>
+        <LocationSearchBar @toggleLocationDrop="toggleLocationDrop" />
+      </client-only>
       <template>
         <div id="location">
           <SfSidebar
-            :visible="isLocationdropOpen"
+            :visible="!!isLocationdropOpen"
             :button="false"
             title="My Location"
             @close="toggleLocationDrop"
             class="sidebar sf-sidebar--right"
           >
             <transition name="fade" mode="out-in">
-              <LocationSearchBar @toggleLocationDrop="toggleLocationDrop" />
+              <client-only>
+                <LocationSearchBar @toggleLocationDrop="toggleLocationDrop" />
+              </client-only>
             </transition>
           </SfSidebar>
         </div>
@@ -29,7 +33,7 @@
       <template>
         <SfButton
           class="sf-search-bar__button sf-button--pure m-r-25"
-          @click="isShow = !isShow"
+          @click="toggleIsShow"
           >
           <span class="sf-search-bar__icon">
             <SfIcon color="var(--c-text)" size="18px" icon="info" />
@@ -37,7 +41,7 @@
         </SfButton>
       </template>
       <template>
-        <div v-if="isShow">      
+        <div v-if="!!isShow">      
           <div class="popover-content position-relative">
             <h3>Device location is not enabled</h3>
             <p>Please provide the permission to access better & hassle free delivery</p>
@@ -118,12 +122,6 @@ import { ref } from '@vue/composition-api';
 import LocationSearchBar from './LocationSearchBar.vue';
 export default {
   name: 'Location',
-  data: function() {
-    return {
-      isShow: false
-    };
-  },
-
   components: {
     SfCircleIcon,
     SfButton,
@@ -133,13 +131,19 @@ export default {
   },
   setup() {
     const isLocationdropOpen = ref(false);
+    const isShow = ref(false);
     const toggleLocationDrop = () => {
       isLocationdropOpen.value = !isLocationdropOpen.value;
     };
+    const toggleIsShow = () => {
+      isShow.value = !isShow.value
+    }
 
     return {
       isLocationdropOpen,
-      toggleLocationDrop
+      toggleLocationDrop,
+      isShow,
+      toggleIsShow
     };
   }
 };
