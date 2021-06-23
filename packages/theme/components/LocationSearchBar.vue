@@ -20,21 +20,46 @@
             be-search-location
           "
         />
-        <SfButton
+        <!-- <SfButton
           class="sf-search-bar__button sf-button--pure"
           @click="$emit('toggleLocationDrop')"
         >
           <SfIcon icon="chevron_down" color="var(--c-text)" size="18px" />
-        </SfButton>
-        <ul>
+        </SfButton> -->
+        <ul class="location-list">
+          <li>
+             <SfButton
+              class="sf-search-bar__button sf-button--pure pos-left"
+            >
+              <span class="sf-search-bar__icon">
+                <SfIcon color="var(--c-text)" size="30px" icon="marker" />
+              </span>
+            </SfButton>
+            Kormangla
+            <p>Cauvery Colony, Kormangla, Bengaluru</p>
+          </li>
+           <li>
+             <SfButton
+              class="sf-search-bar__button sf-button--pure pos-left"
+            >
+              <span class="sf-search-bar__icon">
+                <SfIcon color="var(--c-text)" size="30px" icon="marker" />
+              </span>
+            </SfButton>
+            Kormangla
+            <p>Cauvery Colony, Kormangla</p>
+          </li>
+
+        </ul>
+        <ul class="location-list">
           <li v-for="(result, i) in searchResults" :key="i">
             {{ result }}
           </li>
         </ul>
-        
+
       <!-- <Popover class="location-popover" /> -->
       </div>
-      
+
         <!-- <ul class="location-list">
           <li>
              <SfButton
@@ -58,12 +83,12 @@
             Kormangla
             <p>Cauvery Colony, Kormangla</p>
           </li>
-          
+
         </ul> -->
         <!-- <li v-for="(result, i) in searchResults" :key="i">
             {{ result }}
           </li> -->
-         
+
     </slot>
   </div>
 </template>
@@ -77,16 +102,16 @@ export default {
     searchResults: [],
     service: null
   }),
-  created(){
-    this.service = new window.google.maps.places.AutocompleteService()
+  created() {
+    this.service = new window.google.maps.places.AutocompleteService();
   },
-  methods: {    
+  methods: {
     displaySuggestions (predictions, status) {
       if (status !== window.google.maps.places.PlacesServiceStatus.OK) {
-        this.searchResults = []
-        return
+        this.searchResults = [];
+        return;
       }
-      this.searchResults = predictions.map(prediction => prediction.description)
+      this.searchResults = predictions.map(prediction => prediction.description);
     }
   },
   watch: {
@@ -95,14 +120,14 @@ export default {
         this.service.getPlacePredictions({
           input: this.location,
           types: ['(cities)']
-        }, this.displaySuggestions)
+        }, this.displaySuggestions);
       }
     }
   },
-  name: 'LocationSearchBar',  
+  name: 'LocationSearchBar',
   components: {
     SfButton,
     SfIcon
-  },
+  }
 };
 </script>

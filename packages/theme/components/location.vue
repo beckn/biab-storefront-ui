@@ -8,7 +8,47 @@
     />
     <div class="location-content">
       <client-only>
-        <LocationSearchBar @toggleLocationDrop="toggleLocationDrop" />
+        <!-- <LocationSearchBar @toggleLocationDrop="toggleLocationDrop" /> -->
+        <div>
+          <slot>
+            <div>
+              <p>Your Location</p>
+            </div>
+          </slot>
+          <slot name="locationInput">
+            <div class="position-relative" @click="toggleIsShow">
+              <input
+                v-model="location"
+                type="text"
+                placeholder="Enter Location"
+                aria-label="Select Location"
+                class="
+                  sf-header__search
+                  be-search-location
+                  sf-search-bar
+                  sf-header__search
+                  be-search-location
+                "
+                disabled="!isActive"
+              />
+              <template>
+                <SfButton
+                  class="sf-search-bar__button sf-button--pure"
+                  >
+                  <span class="sf-search-bar__icon">
+                    <SfIcon color="var(--c-text)" size="18px" icon="chevron_down" />
+                  </span>
+                </SfButton>
+              </template>
+            </div>
+          </slot>
+        </div>
+        <SfButton
+          class="sf-search-bar__button sf-button--pure m-r-25"
+          @click="toggleLocationDrop"
+        >
+          <SfIcon icon="info" color="var(--c-text)" size="18px" />
+        </SfButton>
       </client-only>
       <template>
         <div id="location">
@@ -27,89 +67,11 @@
           </SfSidebar>
         </div>
       </template>
-
-    <div class="popover-blk">
     <!-- <button @click="isShow = !isShow">click Me</button> -->
+    <div class="popover-blk">
       <template>
-        <SfButton
-          class="sf-search-bar__button sf-button--pure m-r-25"
-          @click="toggleIsShow"
-          >
-          <span class="sf-search-bar__icon">
-            <SfIcon color="var(--c-text)" size="18px" icon="info" />
-          </span>
-        </SfButton>
-      </template>
-      <template>
-        <div v-if="!!isShow">      
-          <div class="popover-content position-relative">
-            <h3>Device location is not enabled</h3>
-            <p>Please provide the permission to access better & hassle free delivery</p>
-            <div class="position-relative">
-              <input
-                type="text"
-                placeholder="Search for location"
-                aria-label="Select Location"
-                class="
-                  sf-header__search
-                  be-search-location
-                  sf-search-bar
-                  sf-header__search
-                  be-search-location
-                "
-              />
-              <template class="position-relative">
-                <SfButton
-                  class="sf-search-bar__button sf-button--pure"
-                >
-                  <span class="sf-search-bar__icon">
-                    <SfIcon color="var(--c-text)" size="18px" icon="search" />
-                  </span>
-                </SfButton>
-                <SfButton
-                  class="sf-search-bar__button sf-button--pure pos-left"
-                >
-                  <span class="sf-search-bar__icon">
-                    <SfIcon color="var(--c-text)" size="20px" icon="marker" />
-                  </span>
-                </SfButton>
-              </template>
-              
-            </div>
-            <ul class="location-list">
-          <li>
-             <SfButton
-              class="sf-search-bar__button sf-button--pure pos-left"
-            >
-              <span class="sf-search-bar__icon">
-                <SfIcon color="var(--c-text)" size="30px" icon="marker" />
-              </span>
-            </SfButton>
-            Kormangla
-            <p>Cauvery Colony, Kormangla, Bengaluru</p>
-          </li>
-           <li>
-             <SfButton
-              class="sf-search-bar__button sf-button--pure pos-left"
-            >
-              <span class="sf-search-bar__icon">
-                <SfIcon color="var(--c-text)" size="30px" icon="marker" />
-              </span>
-            </SfButton>
-            Kormangla
-            <p>Cauvery Colony, Kormangla</p>
-          </li>
-          
-        </ul>
-            <p class="text-center semi-bold">Or</p>
-            <SfButton
-                class="sf-button--pure enable-location-btn"
-              >
-              <span class="sf-search-bar__icon">
-                <SfIcon color="var(--c-white)" size="18px" icon="search" />
-              </span>ENABLE LOCATION
-            </SfButton>
-          </div>
+        <div v-if="!!isShow"  @click="toggleIsShow">
+            <ModalComponent class="modalclass" />
         </div>
       </template>
     </div>
@@ -120,6 +82,8 @@
 import { SfCircleIcon, SfButton, SfSidebar, SfIcon } from '@storefront-ui/vue';
 import { ref } from '@vue/composition-api';
 import LocationSearchBar from './LocationSearchBar.vue';
+import ModalComponent from './ModalComponent.vue';
+
 export default {
   name: 'Location',
   components: {
@@ -127,7 +91,14 @@ export default {
     SfButton,
     SfSidebar,
     SfIcon,
-    LocationSearchBar
+    LocationSearchBar,
+    ModalComponent
+  },
+
+  data() {
+    return {
+      isActive: true
+    };
   },
   setup() {
     const isLocationdropOpen = ref(false);
@@ -136,8 +107,8 @@ export default {
       isLocationdropOpen.value = !isLocationdropOpen.value;
     };
     const toggleIsShow = () => {
-      isShow.value = !isShow.value
-    }
+      isShow.value = !isShow.value;
+    };
 
     return {
       isLocationdropOpen,
@@ -151,7 +122,7 @@ export default {
 
 <style lang="scss" scoped>
 .sf-circle-icon {
-  --icon-color: var(--c-primary);
+  --icon-color: #F37A20;
 }
 .notShown {
   visibility: hidden !important;
