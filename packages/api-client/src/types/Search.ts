@@ -37,4 +37,24 @@ export interface BaseSearchWhere {
 export interface SearchItemsWhere extends BaseSearchWhere{
     itemContains: string
 }
+export interface PollRequest {
+  messageId: string
+  limit?: number,
+  skip?: number
+}
+export class OnSearchRequest {
+  constructor(
+        // eslint-disable-next-line camelcase
+        public messageId: string,
+        public limit?: number,
+        public skip?: number) {}
 
+  toParams() {
+    return Object.assign({},
+      // eslint-disable-next-line camelcase
+      this.messageId && {messageId: this.messageId},
+      this.limit && {limit: this.limit},
+      this.skip && {skip: this.skip}
+    );
+  }
+}

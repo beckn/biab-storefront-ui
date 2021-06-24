@@ -1,7 +1,9 @@
 import {
   SearchRequest,
   SearchType,
-  SearchItemsWhere
+  SearchItemsWhere,
+  OnSearchRequest,
+  PollRequest
 } from './../../types/Search';
 
 export const buildSearchRequest = (search?: SearchItemsWhere): SearchRequest => {
@@ -12,6 +14,16 @@ export const buildSearchRequest = (search?: SearchItemsWhere): SearchRequest => 
       search.locationIs,
       search.limit,
       search.offset
+    ).toParams();
+  }
+};
+
+export const buildPollRequest = (pollRequest?: PollRequest) => {
+  if (pollRequest) {
+    return new OnSearchRequest(
+      pollRequest.messageId,
+      pollRequest.limit,
+      pollRequest.skip
     ).toParams();
   }
 };

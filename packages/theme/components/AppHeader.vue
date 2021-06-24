@@ -115,13 +115,7 @@ import {
   SfCircleIcon
 } from '@storefront-ui/vue';
 import { useUiState } from '~/composables';
-import {
-  useCart,
-  useWishlist,
-  useUser,
-  cartGetters,
-  useFacet
-} from '@vue-storefront/beckn';
+import { useCart, useWishlist, useUser, cartGetters, useFacet, usePoller } from '@vue-storefront/beckn';
 import { computed, ref, onBeforeUnmount, watch } from '@vue/composition-api';
 import { onSSR } from '@vue-storefront/core';
 import { useUiHelpers } from '~/composables';
@@ -173,6 +167,7 @@ export default {
     const { isAuthenticated, load: loadUser } = useUser();
     const { cart, load: loadCart } = useCart();
     const { result: facetResults, search } = useFacet();
+    const { pollResults, poll } = usePoller();
     const { load: loadWishlist } = useWishlist();
     const term = ref(getFacetsFromURL().phrase);
     const isSearchOpen = ref(false);
@@ -220,6 +215,9 @@ export default {
       console.log(facetResults.value.data.ackResponse);
       // eslint-disable-next-line no-alert
       alert('Response for message id: ' + facetResults.value.data.ackResponse.context.message_id + ' ::: ' + facetResults.value.data.ackResponse.message.ack.status);
+      await poll(facetResults.value.data.ackResponse.context.message_id);
+      // eslint-disable-next-line no-alert
+      alert('Response for message id: ' + pollResults.value.ackResponse.context.message_id + ' ::: ' + pollResults.value.data.ackResponse.message.ack.status);
       result.value = mockedSearchProducts;
     }, 1000);
 
