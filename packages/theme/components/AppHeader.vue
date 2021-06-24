@@ -58,7 +58,7 @@
         </div>
       </template>
       <template #search>
-        <Location class="location-section" />
+        <Location @locationSelected="locationSelected" class="location-section" />
         <slot name="productSearch">
         <SfSearchBar
           ref="searchBarRef"
@@ -154,6 +154,16 @@ export default {
     Location
   },
   directives: { clickOutside },
+  data(){
+    return {
+      location: {}
+    };
+  },
+  methods:{
+    locationSelected(latitude, longitude, address){
+      this.location = {'latitude': latitude, 'longitude': longitude, 'address':address};
+    }
+  },
   setup(props, { root }) {
     const {
       toggleCartSidebar,

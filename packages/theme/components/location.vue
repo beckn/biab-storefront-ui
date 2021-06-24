@@ -8,7 +8,6 @@
     />
     <div class="location-content">
       <client-only>
-        <!-- <LocationSearchBar @toggleLocationDrop="toggleLocationDrop" /> -->
         <div>
           <slot>
             <div>
@@ -29,7 +28,7 @@
                   sf-header__search
                   be-search-location
                 "
-                disabled="!isActive"
+                disabled="isActive"
               />
               <template>
                 <SfButton
@@ -43,12 +42,6 @@
             </div>
           </slot>
         </div>
-        <SfButton
-          class="sf-search-bar__button sf-button--pure m-r-25"
-          @click="toggleLocationDrop"
-        >
-          <SfIcon icon="info" color="var(--c-text)" size="18px" />
-        </SfButton>
       </client-only>
       <template>
         <div id="location">
@@ -61,17 +54,16 @@
           >
             <transition name="fade" mode="out-in">
               <client-only>
-                <LocationSearchBar @toggleLocationDrop="toggleLocationDrop" />
+                <LocationSearchBar @locationSelected="locationSelected" @toggleLocationDrop="toggleLocationDrop" />
               </client-only>
             </transition>
           </SfSidebar>
         </div>
       </template>
-    <!-- <button @click="isShow = !isShow">click Me</button> -->
     <div class="popover-blk">
       <template>
         <div v-if="!!isShow"  @click="toggleIsShow">
-            <ModalComponent class="modalclass" />
+            <ModalComponent @toggleLocationDrop="toggleLocationDrop" class="modalclass" />
         </div>
       </template>
     </div>
@@ -97,8 +89,17 @@ export default {
 
   data() {
     return {
-      isActive: true
+      isActive: false,
+      location: ''
     };
+  },
+  methods:{
+    locationSelected(latitude, longitude, address){
+      this.location = address;
+      this.toggleLocationDrop();
+      this.$emit('locationSelected',latitude, longitude, address)
+    }
+
   },
   setup() {
     const isLocationdropOpen = ref(false);
@@ -109,7 +110,6 @@ export default {
     const toggleIsShow = () => {
       isShow.value = !isShow.value;
     };
-
     return {
       isLocationdropOpen,
       toggleLocationDrop,
