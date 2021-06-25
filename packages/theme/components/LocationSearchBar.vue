@@ -1,0 +1,87 @@
+<template>
+  <div>
+    <slot>
+      <div>
+        <p>Your Location</p>
+      </div>
+    </slot>
+    <slot name="locationInput">
+      <div class="position-relative">
+        <input
+          ref="locationAutocomplete"
+          v-model="location"
+          type="text"
+          placeholder="Enter Location"
+          aria-label="Select Location"
+          class="
+            sf-header__search
+            be-search-location
+            sf-search-bar
+            sf-header__search
+            be-search-location
+          "
+        />        
+        <ul class="location-list">
+          <li v-for="(result, i) in searchResults" :key="i" @click="getLocationDetails(result)">
+            <SfButton
+              class="sf-search-bar__button sf-button--pure pos-left"
+            >
+              <span class="sf-search-bar__icon">
+                <SfIcon color="var(--c-text)" size="30px" icon="marker" />
+              </span>
+            </SfButton>
+            {{ result.structured_formatting.main_text }}
+            <p>{{ result.structured_formatting.secondary_text }} </p>
+          </li>
+        </ul>
+      </div>
+
+    </slot>
+  </div>
+</template>
+
+<script>
+import { SfButton, SfIcon } from '@storefront-ui/vue';
+export default {
+  data: () => ({
+    location: '',
+    searchResults: [],
+    service: null,
+    geocodeService: null
+  }),
+  created() {
+    this.service = new window.google.maps.places.AutocompleteService();
+    this.geocodeService = new window.google.maps.Geocoder()
+  },
+  methods: {
+    displaySuggestions (predictions, status) {
+      if (status !== window.google.maps.places.PlacesServiceStatus.OK) {
+        this.searchResults = [];
+        return;
+      }
+      this.searchResults = predictions;
+    },
+    getLocationDetails (selectedLocation){
+      this.location=selectedLocation.description;
+      this.geocodeService.geocode({'placeId':selectedLocation.place_id}).then( response =>{
+        this.$emit('locationSelected',response.results[0].geometry.location.lat(), response.results[0].geometry.location.lng(), selectedLocation.description)
+      }).catch(err => alert(err));
+    }
+  },
+  watch: {
+    location (newValue) {
+      if (newValue) {
+        this.service.getPlacePredictions({
+          input: this.location,
+          types: ['geocode']
+        }, this.displaySuggestions);
+      }
+    }
+  },
+  name: 'LocationSearchBar',
+  components: {
+    SfButton,
+    SfIcon
+  }
+};
+</script>

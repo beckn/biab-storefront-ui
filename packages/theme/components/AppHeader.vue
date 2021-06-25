@@ -1,3 +1,7 @@
+<style lang="scss">
+@import '../assets/styles.scss';
+</style>
+
 <template>
   <div>
     <SfHeader
@@ -54,11 +58,13 @@
         </div>
       </template>
       <template #search>
+        <Location @locationSelected="locationSelected" class="location-section" />
+        <slot name="productSearch">
         <SfSearchBar
           ref="searchBarRef"
           :placeholder="$t('Search for items')"
           aria-label="Search"
-          class="sf-header__search"
+          class="sf-header__search be-search-location"
           :value="term"
           @input="handleSearch"
           @keydown.enter="handleSearch($event)"
@@ -87,6 +93,7 @@
             </SfButton>
           </template>
         </SfSearchBar>
+        </slot>
       </template>
     </SfHeader>
     <SearchResults :visible="isSearchOpen" :result="result" @close="closeSearch" @removeSearchResults="removeSearchResults" />
@@ -95,13 +102,31 @@
 </template>
 
 <script>
-import { SfHeader, SfImage, SfIcon, SfButton, SfBadge, SfSearchBar, SfOverlay, SfMenuItem, SfLink } from '@storefront-ui/vue';
+import {
+  SfHeader,
+  SfImage,
+  SfIcon,
+  SfButton,
+  SfBadge,
+  SfSearchBar,
+  SfOverlay,
+  SfMenuItem,
+  SfLink,
+  SfBottomModal,
+  SfCircleIcon
+} from '@storefront-ui/vue';
 import { useUiState } from '~/composables';
-import { useCart, useWishlist, useUser, cartGetters, useFacet } from '@vue-storefront/beckn';
+import {
+  useCart,
+  useWishlist,
+  useUser,
+  cartGetters
+} from '@vue-storefront/beckn';
 import { computed, ref, onBeforeUnmount, watch } from '@vue/composition-api';
 import { onSSR } from '@vue-storefront/core';
 import { useUiHelpers } from '~/composables';
 import LocaleSelector from './LocaleSelector';
+import Location from './Location';
 import SearchResults from '~/components/SearchResults';
 import { clickOutside } from '@storefront-ui/vue/src/utilities/directives/click-outside/click-outside-directive.js';
 import {
@@ -123,15 +148,31 @@ export default {
     SearchResults,
     SfOverlay,
     SfMenuItem,
-    SfLink
+    SfLink,
+    SfBottomModal,
+    SfCircleIcon,
+    Location
   },
   directives: { clickOutside },
+  data(){
+    return {
+      location: {}
+    };
+  },
+  methods:{
+    locationSelected(latitude, longitude, address){
+      this.location = {'latitude': latitude, 'longitude': longitude, 'address':address};
+    }
+  },
   setup(props, { root }) {
-    const { toggleCartSidebar, toggleWishlistSidebar, toggleLoginModal } = useUiState();
+    const {
+      toggleCartSidebar,
+      toggleWishlistSidebar,
+      toggleLoginModal
+    } = useUiState();
     const { setTermForUrl, getFacetsFromURL } = useUiHelpers();
     const { isAuthenticated, load: loadUser } = useUser();
     const { cart, load: loadCart } = useCart();
-    const { result: facetResults, search } = useFacet();
     const { load: loadWishlist } = useWishlist();
     const term = ref(getFacetsFromURL().phrase);
     const isSearchOpen = ref(false);
@@ -143,7 +184,9 @@ export default {
       return count ? count.toString() : null;
     });
 
-    const accountIcon = computed(() => isAuthenticated.value ? 'profile_fill' : 'profile');
+    const accountIcon = computed(
+      () => (isAuthenticated.value ? 'profile_fill' : 'profile')
+    );
 
     // TODO: https://github.com/DivanteLtd/vue-storefront/issues/4927
     const handleAccountClick = async () => {
@@ -173,12 +216,7 @@ export default {
       } else {
         term.value = paramValue.target.value;
       }
-      await search({ term: term.value });
-      console.log(facetResults.value.data.ackResponse);
-      // eslint-disable-next-line no-alert
-      alert('Response for message id: ' + facetResults.value.data.ackResponse.context.message_id + ' ::: ' + facetResults.value.data.ackResponse.message.ack.status);
       result.value = mockedSearchProducts;
-
     }, 1000);
 
     const isMobile = computed(() => mapMobileObserver().isMobile.get());
@@ -192,12 +230,19 @@ export default {
       }
     };
 
-    watch(() => term.value, (newVal, oldVal) => {
-      const shouldSearchBeOpened = (!isMobile.value && term.value.length > 0) && ((!oldVal && newVal) || (newVal.length !== oldVal.length && isSearchOpen.value === false));
-      if (shouldSearchBeOpened) {
-        isSearchOpen.value = true;
+    watch(
+      () => term.value,
+      (newVal, oldVal) => {
+        const shouldSearchBeOpened =
+          !isMobile.value &&
+          term.value.length > 0 &&
+          ((!oldVal && newVal) ||
+            (newVal.length !== oldVal.length && isSearchOpen.value === false));
+        if (shouldSearchBeOpened) {
+          isSearchOpen.value = true;
+        }
       }
-    });
+    );
 
     const removeSearchResults = () => {
       result.value = null;
@@ -230,12 +275,12 @@ export default {
 
 <style lang="scss" scoped>
 .sf-header {
-  --header-padding:  var(--spacer-sm);
+  --header-padding: var(--spacer-sm);
   @include for-desktop {
     --header-padding: 0;
   }
   &__logo-image {
-      height: 100%;
+    height: 100%;
   }
 }
 .header-on-top {
