@@ -9,7 +9,7 @@ export default {
   head: {
     title: 'Beckn storefront',
     script:[{
-      src: `https://maps.googleapis.com/maps/api/js?key=<key>&libraries=places`,
+      src: `https://maps.googleapis.com/maps/api/js?key=AIzaSyC7a8StVzn6y8rQzrLyFEUA1TnHhd5RRXg&libraries=places`,
       async: true,
       defer: true,
     }],
