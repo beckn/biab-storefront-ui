@@ -112,6 +112,7 @@ import {
   SfOverlay,
   SfMenuItem,
   SfLink,
+  SfBottomModal,
   SfCircleIcon
 } from '@storefront-ui/vue';
 import { useUiState } from '~/composables';
@@ -142,6 +143,7 @@ export default {
     SfOverlay,
     SfMenuItem,
     SfLink,
+    SfBottomModal,
     SfCircleIcon,
     Location
   },
