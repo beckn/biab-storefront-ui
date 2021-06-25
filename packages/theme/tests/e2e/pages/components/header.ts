@@ -16,6 +16,18 @@ class Header {
     };
   }
 
+  get location(): Cypress.Chainable {
+    return cy.get('[data-e2e="app-header-location"]')
+  }
+
+  get locationInputDiv(): Cypress.Chainable {
+    return cy.get('[data-e2e="app-header-location-input-div"]')
+  }
+
+  get locationInput(): Cypress.Chainable {
+    return cy.get('[data-e2e="app-header-location-input"]')
+  }
+
   openCart(): Cypress.Chainable {
     const click = $el => $el.click();
     return this.cart.pipe(click).should(() => {

@@ -20,9 +20,10 @@
             sf-header__search
             be-search-location
           "
-        />        
+          v-e2e="'app-location-sidebar-input'"
+        />
         <ul class="location-list">
-          <li v-for="(result, i) in searchResults" :key="i" @click="getLocationDetails(result)">
+          <li v-for="(result, i) in searchResults" :key="i" @click="getLocationDetails(result)" v-e2e="'app-location-sidebar-input-options-'+i" >
             <SfButton
               class="sf-search-bar__button sf-button--pure pos-left"
             >

@@ -15,7 +15,7 @@
             </div>
           </slot>
           <slot name="locationInput">
-            <div class="position-relative" @click="toggleIsShow">
+            <div class="position-relative" @click="toggleIsShow" v-e2e="'app-header-location-input-div'">
               <input
                 v-model="location"
                 type="text"
@@ -29,6 +29,7 @@
                   be-search-location
                 "
                 disabled="isActive"
+                v-e2e="'app-header-location-input'"
               />
               <template>
                 <SfButton
@@ -54,7 +55,7 @@
           >
             <transition name="fade" mode="out-in">
               <client-only>
-                <LocationSearchBar @locationSelected="locationSelected" @toggleLocationDrop="toggleLocationDrop" />
+                <LocationSearchBar @locationSelected="locationSelected" @toggleLocationDrop="toggleLocationDrop" v-e2e="'app-location-sidebar'" />
               </client-only>
             </transition>
           </SfSidebar>
@@ -63,7 +64,7 @@
     <div class="popover-blk">
       <template>
         <div v-if="!!isShow"  @click="toggleIsShow">
-            <ModalComponent @toggleLocationDrop="toggleLocationDrop" class="modalclass" />
+            <ModalComponent @toggleLocationDrop="toggleLocationDrop" class="modalclass" v-e2e="'app-header-location-modal'" />
         </div>
       </template>
     </div>

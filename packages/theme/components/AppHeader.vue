@@ -58,7 +58,7 @@
         </div>
       </template>
       <template #search>
-        <Location @locationSelected="locationSelected" class="location-section" />
+        <Location @locationSelected="locationSelected" class="location-section" v-e2e="'app-header-location'" />
         <slot name="productSearch">
         <SfSearchBar
           ref="searchBarRef"

@@ -11,7 +11,7 @@
             <h3>Device location is not enabled</h3>
             <p>Please provide the permission to access better & hassle free delivery</p>
             <div class="position-relative" >
-              <div @click="$emit('toggleLocationDrop')">
+              <div @click="$emit('toggleLocationDrop')" v-e2e="'app-header-location-modal-input-div'">
               <input
                 type="text"
                 placeholder="Search for location"
@@ -24,7 +24,7 @@
                   be-search-location
                 "
                 disabled="!isActive"
-
+                v-e2e="'app-header-location-modal-input'"
               />
               <template class="position-relative">
                 <SfButton
