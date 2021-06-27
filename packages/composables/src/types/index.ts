@@ -52,5 +52,10 @@ export type OrdersResponse = {
 export interface FacetResultsData {
   ackResponse: AckResponse
 }
+export interface OnSearchParam {
+  messageId: string,
+  limit?: number,
+  skip?: number
+}
 
 export type SearchData = FacetSearchResult<FacetResultsData>

@@ -115,7 +115,7 @@ import {
   SfCircleIcon
 } from '@storefront-ui/vue';
 import { useUiState } from '~/composables';
-import { useCart, useWishlist, useUser, cartGetters, useFacet, usePoller } from '@vue-storefront/beckn';
+import { useCart, useWishlist, useUser, cartGetters, useFacet, useOnSearch } from '@vue-storefront/beckn';
 import { computed, ref, onBeforeUnmount, watch } from '@vue/composition-api';
 import { onSSR } from '@vue-storefront/core';
 import { useUiHelpers } from '~/composables';
@@ -128,7 +128,6 @@ import {
   unMapMobileObserver
 } from '@storefront-ui/vue/src/utilities/mobile-observer.js';
 import debounce from 'lodash.debounce';
-import mockedSearchProducts from '../mockedSearchProducts.json';
 
 export default {
   components: {
@@ -167,7 +166,7 @@ export default {
     const { isAuthenticated, load: loadUser } = useUser();
     const { cart, load: loadCart } = useCart();
     const { result: facetResults, search } = useFacet();
-    const { pollResults, poll } = usePoller();
+    const { pollResults, poll } = useOnSearch();
     const { load: loadWishlist } = useWishlist();
     const term = ref(getFacetsFromURL().phrase);
     const isSearchOpen = ref(false);
@@ -217,8 +216,10 @@ export default {
       alert('Response for message id: ' + facetResults.value.data.ackResponse.context.message_id + ' ::: ' + facetResults.value.data.ackResponse.message.ack.status);
       await poll(facetResults.value.data.ackResponse.context.message_id);
       // eslint-disable-next-line no-alert
-      alert('Response for message id: ' + pollResults.value.ackResponse.context.message_id + ' ::: ' + pollResults.value.data.ackResponse.message.ack.status);
-      result.value = mockedSearchProducts;
+      console.log('POLL', pollResults);
+      // alert('Response for POLLER id: ' + pollResults.value.ackResponse.context.message_id + ' ::: ' + pollResults.value.data.ackResponse.message.ack.status);
+      // result.value = mockedSearchProducts;
+
     }, 1000);
 
     const isMobile = computed(() => mapMobileObserver().isMobile.get());
