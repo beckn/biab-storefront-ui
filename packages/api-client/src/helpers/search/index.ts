@@ -18,7 +18,7 @@ export const buildSearchRequest = (search?: SearchItemsWhere): SearchRequest => 
   }
 };
 
-export const buildPollRequest = (pollRequest?: PollRequest) => {
+export const buildOnSearchRequest = (pollRequest?: PollRequest) => {
   if (pollRequest) {
     return new OnSearchRequest(
       pollRequest.messageId,

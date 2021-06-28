@@ -26,13 +26,12 @@ const usePollerFactory = (factoryParams: UsePollerFactoryParams) => {
     const _factoryParams = configureFactoryParams(factoryParams);
     const error = sharedRef({
       poll: null
-    }, `useFacet-error-${id}`);
+    }, `usepoller-error-${id}`);
 
     const poll = async (params?) => {
       Logger.debug(`usePoller/${ssrKey}/search`, params);
 
       // clear old polls on subsequent calls
-      console.log('new search');
       pollResults.value = [];
       clearInterval(pollFunction.value.interval);
       clearTimeout(pollFunction.value.interval);
@@ -41,7 +40,6 @@ const usePollerFactory = (factoryParams: UsePollerFactoryParams) => {
 
       pollFunction.value.interval = setInterval(async () => {
         try {
-          console.log('poll interval called');
           pollResults.value.push(await _factoryParams.poll(params));
         } catch (err) {
           clearInterval(pollFunction.value.interval);
@@ -53,7 +51,6 @@ const usePollerFactory = (factoryParams: UsePollerFactoryParams) => {
       }, 2000);
 
       pollFunction.value.timeout = setTimeout(()=>{
-        console.log('timedOut');
         clearInterval(pollFunction.value.interval);
       }, 20000);
     };
