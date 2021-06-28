@@ -17,15 +17,25 @@ class Header {
   }
 
   get location(): Cypress.Chainable {
-    return cy.get('[data-e2e="app-header-location"]')
+    return cy.get('[data-e2e="app-header-location"]');
   }
 
   get locationInputDiv(): Cypress.Chainable {
-    return cy.get('[data-e2e="app-header-location-input-div"]')
+    return cy.get('[data-e2e="app-header-location-input-div"]');
   }
 
   get locationInput(): Cypress.Chainable {
-    return cy.get('[data-e2e="app-header-location-input"]')
+    return cy.get('[data-e2e="app-header-location-input"]');
+  }
+
+  // Search
+
+  get searchBox(): Cypress.Chainable {
+    return cy.get('[data-e2e="app-header-search-box"]');
+  }
+
+  get searchInputField(): Cypress.Chainable {
+    return cy.get('input[aria-label="Search"]');
   }
 
   openCart(): Cypress.Chainable {
