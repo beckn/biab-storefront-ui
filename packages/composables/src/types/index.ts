@@ -1,3 +1,5 @@
+/* eslint camelcase: 0 */
+
 import { AckResponse } from '@vue-storefront/beckn-api';
 import { FacetSearchResult } from '@vue-storefront/core';
 
@@ -25,8 +27,6 @@ export type Order = Record<string, unknown>;
 
 export type OrderItem = Record<string, unknown>;
 
-export type Product = Record<string, unknown>;
-
 export type Review = Record<string, unknown>;
 
 export type Shipping = Record<string, unknown>;
@@ -36,11 +36,6 @@ export type ShippingMethod = Record<string, unknown>;
 export type WishlistProduct = Record<string, unknown>;
 
 export type Wishlist = Record<string, unknown>;
-
-export type ProductsResponse = {
-  data: Product[];
-  total: number;
-};
 
 export type OrderSearchParams = Record<string, any>;
 
@@ -59,3 +54,98 @@ export interface OnSearchParam {
 }
 
 export type SearchData = FacetSearchResult<FacetResultsData>
+
+export type ProductPrice = {
+  currency: string,
+  value: number,
+  estimated_value?: number,
+  computed_value?: number,
+  listed_value?: number,
+  offered_value?: number,
+  minimum_value?: number,
+  maximum_value?: number,
+};
+
+export type ProductDescriptor = {
+  name: string,
+  code: string,
+  symbol: string,
+  short_des: string,
+  long_desc: string,
+  images: string,
+  audio: string,
+  renderd?: string
+}
+
+export type Product = {
+  id: string;
+  // eslint-disable-next-line
+  parent_item_id: string;
+  // eslint-disable-next-line
+  categry_id: string;
+  // eslint-disable-next-line
+  location_id: string;
+  time: string;
+  descriptor: ProductDescriptor;
+  price: ProductPrice;
+  matched: string;
+  related: string;
+  recommended: boolean;
+  tags?: string[];
+};
+
+export type ProviderDescriptor = {
+  name: string;
+  code: string;
+  symbol?: string;
+  short_desc?: string;
+  long_desc?: string;
+  images?: string[];
+};
+
+export type ProviderVariant = {
+  id: string;
+  descriptor: ProviderDescriptor;
+  categories: string;
+  items: Product[];
+  audio: string;
+  render3d?: string;
+};
+
+export type ProductsResponse = {
+  data: Product[];
+  total: number;
+};
+
+// {
+//   "id": "./retail.kirana/ind.blr/pooja-stores.brown-bread-400gm@lrdn.bpp.shopez.com.item",
+//   "parent_item_id": null,
+//   "descriptor": {
+//       "name": "Brown Bread 400 gm",
+//       "code": null,
+//       "symbol": null,
+//       "short_desc": null,
+//       "long_desc": null,
+//       "images": null,
+//       "audio": null,
+//       "3d_render": null
+//   },
+//   "price": {
+//       "currency": "INR",
+//       "value": "40",
+//       "estimated_value": null,
+//       "computed_value": null,
+//       "listed_value": null,
+//       "offered_value": null,
+//       "minimum_value": null,
+//       "maximum_value": null
+//   },
+//   "category_id": "./local-retail.kirana/ind.blr/pooja-stores.breads@lrdn.bpp.shopx.com.provider_category",
+//   "location_id": "./retail.kirana/ind.blr/pooja-stores.koramangala-4th-block@lrdn.bpp.shopez.com.provider_location",
+//   "time": null,
+//   "matched": true,
+//   "related": null,
+//   "recommended": true,
+//   "tags": null
+// },
+
