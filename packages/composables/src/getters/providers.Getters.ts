@@ -75,7 +75,7 @@ export const getProviderRender3D = (provider: ProviderVariant): any => provider?
 
 export const getProviderId = (provider: ProviderVariant): string => (provider as any)?.id || '';
 
-export const getItems = (provider: ProviderVariant): Product[] => (provider as any)?.items || [];
+export const getProducts = (provider: ProviderVariant): Product[] => (provider as any)?.items || [];
 
 const providerGetters = {
   getProviderName: getProviderName,
