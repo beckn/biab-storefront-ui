@@ -8,8 +8,12 @@ const factoryParams = {
     const ackResponse: AckResponse = await context.$beckn.api.onSearch(params);
     const catalogs:Array<any> = (ackResponse.message as any)?.catalogs ?? null;
     if (catalogs) {
-      const data = catalogs.map((data)=>{
-        return data.bpp_providers.map((obj)=>obj);
+      const data = [];
+      catalogs.map((bpp)=>{
+        return bpp.bpp_providers.map((obj)=>{
+          data.push(obj);
+          return obj;
+        });
       });
       return data;
     }

@@ -35,7 +35,8 @@ const usePollerFactory = (factoryParams: UsePollerFactoryParams) => {
       pollResults.value = [];
       clearInterval(pollFunction.value.interval);
       clearTimeout(pollFunction.value.interval);
-      pollResults.value.push(await _factoryParams.poll(params));
+      const data = await _factoryParams.poll(params);
+      pollResults.value = [...pollResults.value, ...data];
       polling.value = true;
 
       pollFunction.value.interval = setInterval(async () => {
