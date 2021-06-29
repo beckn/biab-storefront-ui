@@ -171,17 +171,13 @@ export default {
         // term.value = paramValue;
       } else {
         term.value = paramValue.target.value;
-        result.value = mockedSearchProducts;
+        await search({ term: term.value });
+        // alert('Response for message id: ' + facetResults.value.data.ackResponse.context.message_id + ' ::: ' + facetResults.value.data.ackResponse.message.ack.status);
+        await poll(facetResults.value.data.ackResponse.context.message_id);
+        console.log('POLL', pollResults);
+        result.value = pollResults;
+        console.log('result value', result.value);
       }
-      await search({ term: term.value });
-      console.log(facetResults.value.data.ackResponse);
-      // eslint-disable-next-line no-alert
-      alert('Response for message id: ' + facetResults.value.data.ackResponse.context.message_id + ' ::: ' + facetResults.value.data.ackResponse.message.ack.status);
-      await poll(facetResults.value.data.ackResponse.context.message_id);
-      // eslint-disable-next-line no-alert
-      console.log('POLL', pollResults);
-      // alert('Response for POLLER id: ' + pollResults.value.ackResponse.context.message_id + ' ::: ' + pollResults.value.data.ackResponse.message.ack.status);
-      // result.value = mockedSearchProducts;
 
     }, 1000);
 

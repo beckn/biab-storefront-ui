@@ -262,27 +262,57 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f0f1f4', end
         font-weight: 600;
     }
     .s-p-weight{
+        color: #8A8D8E;
+        font-size: 12px;
+        font-weight: 400;
+    }
+    .s-p-price{
         color: $s-p-weight-color;
         font-size: 16px;
         font-weight: 500;
     }
-    .s-p-addcart{
-        button{
-            color: $s-p-add-cart-color;
-            background: $s-p-add-cart-bg;
-            border-radius: 5px;
-            padding: 8px 10px;
-            font-size: 14px;
-            font-weight: 400;
-            text-transform: capitalize;
-            margin-top: 10px;
-            .sf-icon {
-                --icon-color: #fff !important;
-                margin-right: 10px;
-            }
+}
+// add to cart
+
+.s-p-addcart{
+    .add-btn{
+        color: $s-p-add-cart-color;
+        background: $s-p-add-cart-bg;
+        border-radius: 5px;
+        padding: 8px 10px;
+        font-size: 14px;
+        font-weight: 400;
+        text-transform: capitalize;
+        margin-top: 10px;
+        width: 136px;
+        height: 39px;
+        .sf-icon {
+            --icon-color: #fff !important;
+            margin-right: 10px;
+        }
+    }
+    .item-counter{
+        width: 136px;
+        height: 39px;
+        margin-top: 10px;
+        display: flex;
+        justify-content: space-evenly;
+        background-color: #fff;
+        border-radius: 5px;
+        font-size: 18px;
+
+        .quantity-value{
+            color: $s-p-weight-color;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            font-weight: 500;
         }
     }
 }
+
+
 .sf-mega-menu__menu{
     background: $white;
     .search__wrapper-results{

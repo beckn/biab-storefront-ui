@@ -5,7 +5,7 @@
       :title="$t('Search results')"
       class="search"
     >
-      <transition-group name="sf-fade" mode="out-in">
+      <transition-group name="sf-fade" class="check-w" mode="out-in">
         <div v-if="providers && providers.length > 0" class="search__wrapper-results" key="results">
           <div class="h-padding result-num">
             <span><span v-e2e="'total-result'">{{ providers.length }}</span> results found</span>
@@ -15,43 +15,41 @@
               <div class="flexy">
                 <SfImage
                   class="back"
-                  src="/icons/google.svg"
+                  src='/icons/placeholder.svg'
                   alt="Vila stripe maxi shirt dress"
                   :width="35"
                   :height="35"
                 />
                 <div class="text-padding">
                   <div class="flexy-center">
-                    <div class="p-name">{{provider.name}}</div>
-                    <div class="text-padding"> <span class="p-distance">by</span>  <span>{{provider.by}}</span></div>
+                    <div class="p-name">{{providerGetters.getProviderName(provider)}}</div>
+                    <div class="text-padding"> <span class="p-distance">by</span>  <span>{{providerGetters.getProviderBpp(provider)}}</span></div>
                   </div>
-                  <div class="p-distance">{{provider.distance}} km</div>
+                  <div class="p-distance">{{providerGetters.getProviderDistance(provider)}} km</div>
                 </div>
               </div>
               <div class="exp-provider">Explore All</div>
             </div>
             <div class="results--mobile">
               <ProductCard
-                v-for="(product, index) in provider.products"
+                v-for="(product, index) in provider.items"
                 :key="index"
                 :pName="productGetters.getName(product)"
-                :pPrice="$n(productGetters.getPrice(product).regular, 'currency')"
-                :pImage="productGetters.getCoverImage(product)"
-                :pWieght="'8.5 kg'"
+                :pPrice="productGetters.getPrice(product).regular"
+                :pImage="productGetters.getGallery(product)[0].small"
+                :pWieght="productGetters.getProductWeight(product)+' kg'"
               />
             </div>
-          </div>
-          <div class="action-buttons smartphone-only">
-            <SfButton class="action-buttons__button color-light" @click="$emit('close')">{{ $t('Cancel') }}</SfButton>
+            <div><hr class="sf-divider" /></div>
           </div>
         </div>
-        <div v-if="noSearchFound" class="before-results">
+        <!-- <div v-if="noSearchFound" class="before-results">
           <SfImage src="/icons/feather_search.svg" class="" alt="error" loading="lazy"/>
           <p ><b>{{ $t('Your search did not yield ') }}</b></p>
           <p ><b>{{ $t('any results ') }}</b></p>
           <p >{{ $t('Please try searching again using ') }}</p>
           <p >{{ $t('different keyword') }}</p>
-        </div>
+        </div> -->
         <div v-else key="no-results" class="before-results">
           <SfImage src="/error/error.svg" class="before-results__picture" alt="error" loading="lazy"/>
           <p class="before-results__paragraph">{{ $t('You haven’t searched for items yet') }}</p>
@@ -74,7 +72,8 @@ import {
   SfImage
 } from '@storefront-ui/vue';
 import { ref, watch, computed } from '@vue/composition-api';
-import { productGetters } from '@vue-storefront/beckn';
+import { productGetters, providerGetters } from '@vue-storefront/beckn';
+
 import ProductCard from './ProductCard';
 
 export default {
@@ -105,9 +104,7 @@ export default {
   },
   setup(props, { emit }) {
     const isSearchOpen = ref(props.visible);
-    const providers = computed(() => props.result?.providers);
-    const categories = computed(() => props.result?.categories);
-
+    const providers = computed(() => props.result?.value);
     watch(() => props.visible, (newVal) => {
       isSearchOpen.value = newVal;
       if (isSearchOpen.value) {
@@ -122,12 +119,15 @@ export default {
       isSearchOpen,
       productGetters,
       providers,
-      categories
+      providerGetters
     };
   }
 };
 </script>
 <style lang="scss" scoped>
+.check-w{
+  width: 100%;
+}
 .flexy{
   display: flex;
 }
@@ -143,6 +143,7 @@ export default {
 .provider-head{
   display: flex;
   justify-content: space-between;
+  padding-top: var(--spacer-base);
   .p-name{
     font-size: 19px;
     font-weight: 600;
@@ -178,6 +179,7 @@ export default {
   --mega-menu-column-header-margin: var(--spacer-sm) 0 var(--spacer-xl);
   --mega-menu-content-padding: 0;
   --mega-menu-height: auto;
+  padding-bottom: 70px;
   @include for-desktop {
     --mega-menu-content-padding: var(--spacer-xl) 0;
   }

@@ -79,6 +79,8 @@ export const getProviderRender3D = (provider: ProviderVariant): any => provider?
 export const getProviderId = (provider: ProviderVariant): string => (provider as any)?.id || '';
 
 export const getProducts = (provider: ProviderVariant): Product[] => (provider as any)?.items || [];
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const getProviderDistance = (provider: ProviderVariant): any =>'8.1';
 
 const providerGetters = {
   getProviderName: getProviderName,
@@ -93,7 +95,9 @@ const providerGetters = {
   getProviderRender3D: getProviderRender3D,
   // getProviderCategories:getProviderCategories,
   getProviderId: getProviderId,
-  getProducts: getProducts
+  getProducts: getProducts,
+  getProviderDistance: getProviderDistance,
+  getProviderBpp: getProviderBpp
 };
 
 export default providerGetters;

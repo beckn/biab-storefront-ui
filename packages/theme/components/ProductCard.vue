@@ -4,20 +4,20 @@
       <SfImage :src="pImage" alt="product img" :width="85" :height="90" />
     </div>
     <div class="s-p-name">{{ pName }}</div>
-    <div class="s-p-weighr">{{ pWieght }}</div>
-    <div class="s-p-price">{{ pPrice }}</div>
-    <QuantitySelector :value="itemCount" @updateItemCount="updateItemCount" />
+    <div class="s-p-weight">{{ pWieght }}</div>
+    <div class="s-p-price">₹ {{ pPrice }}</div>
+    <AddToCart :value="itemCount" @updateItemCount="updateItemCount" />
   </div>
 </template>
 <script>
 import { SfImage } from '@storefront-ui/vue';
-import QuantitySelector from './QuantitySelector';
+import AddToCart from './AddToCart.vue';
 
 export default {
   name: 'ProductCard',
   components: {
     SfImage,
-    QuantitySelector
+    AddToCart
   },
   props: {
     pName: { type: String, default: '' },

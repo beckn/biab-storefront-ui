@@ -4,10 +4,10 @@ module.exports = {
       location: '@vue-storefront/beckn-api/server',
       configuration: {
         api: {
-          url: 'https://run.mocky.io/v3/d95e2601-497d-4095-b306-0ce965bba171/',
+          url: 'http://beckn-in-a-box-qa-api-1484045857.ap-south-1.elb.amazonaws.com/bap/client',
           endpoints: {
-            search: '/v0/search',
-            onSearch: '/v0/on_search'
+            search: '/v1/search',
+            onSearch: '/v1/on_search'
           }
         }
       }
