@@ -92,6 +92,11 @@ body{
         margin-top: 3px;              
         // max-width: 200px;
         margin-bottom: 0;
+        padding-right: 25px;
+        word-wrap: break-word;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
         
         &:focus-visible {
             outline: -webkit-focus-ring-color auto 0px;
@@ -183,4 +188,7 @@ body{
     background: $white;
     margin: auto;
     border-radius: 10px;
+    @media(max-width:767px){
+        width: 75%;
+    }
 }
