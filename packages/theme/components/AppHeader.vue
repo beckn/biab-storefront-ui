@@ -112,7 +112,6 @@ import {
   SfOverlay,
   SfMenuItem,
   SfLink,
-  SfBottomModal,
   SfCircleIcon
 } from '@storefront-ui/vue';
 import { useUiState } from '~/composables';
@@ -120,7 +119,8 @@ import {
   useCart,
   useWishlist,
   useUser,
-  cartGetters
+  cartGetters,
+  useFacet
 } from '@vue-storefront/beckn';
 import { computed, ref, onBeforeUnmount, watch } from '@vue/composition-api';
 import { onSSR } from '@vue-storefront/core';
@@ -149,7 +149,6 @@ export default {
     SfOverlay,
     SfMenuItem,
     SfLink,
-    SfBottomModal,
     SfCircleIcon,
     Location
   },
@@ -173,6 +172,7 @@ export default {
     const { setTermForUrl, getFacetsFromURL } = useUiHelpers();
     const { isAuthenticated, load: loadUser } = useUser();
     const { cart, load: loadCart } = useCart();
+    const { result: facetResults, search } = useFacet();
     const { load: loadWishlist } = useWishlist();
     const term = ref(getFacetsFromURL().phrase);
     const isSearchOpen = ref(false);
@@ -216,6 +216,10 @@ export default {
       } else {
         term.value = paramValue.target.value;
       }
+      await search({ term: term.value });
+      console.log(facetResults.value.data.ackResponse);
+      // eslint-disable-next-line no-alert
+      alert('Response for message id: ' + facetResults.value.data.ackResponse.context.message_id + ' ::: ' + facetResults.value.data.ackResponse.message.ack.status);
       result.value = mockedSearchProducts;
     }, 1000);
 
