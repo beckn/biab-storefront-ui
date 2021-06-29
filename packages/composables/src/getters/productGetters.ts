@@ -88,6 +88,12 @@ export const getProductShortDescription = (product: Product): any => product?.de
 
 export const getProductLongDescription = (product: Product): any => product?.descriptor?.long_desc || '';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const getProductWeight = (product: Product): any =>'12';
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const getProductDistance = (product: Product): any =>'8.1';
+
 export const getProductCategoryIds = (product: Product): string[] => (product as any)?._categoriesRef || '';
 
 export const getProductId = (product: Product): string => (product as any)?.id || '';

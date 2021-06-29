@@ -16,6 +16,9 @@ export const getProviderCode = (provider: ProviderVariant): string => provider?.
 export const getProviderImages = (provider: ProviderVariant): string[] => provider?.descriptor?.images || [''];
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const getProviderBpp = (provider: ProviderVariant): string => 'Unknown';
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 //   export const getProviderFiltered = (providers: ProviderVariant[], filters: ProviderVariantFilters | any = {}): ProviderVariant[] => {
 //     return [
 //       {
