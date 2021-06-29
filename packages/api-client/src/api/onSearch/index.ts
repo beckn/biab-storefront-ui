@@ -1,12 +1,12 @@
 import { Config } from './../../types/Setup';
 import * as sa from 'superagent';
 import { PollRequest } from '../../types/Search';
-import { AckResponse } from '../../types/BecknClientApi';
 import { buildOnSearchRequest } from './../../helpers/search';
 import { Context } from '@vue-storefront/core';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export default async function onSearch(context: Context, params: PollRequest): Promise<AckResponse> {
+export default async function onSearch(context: Context, params: PollRequest): Promise<any> {
+  console.log('onsearch api', params);
   const qParams = buildOnSearchRequest(params);
   const config = (context.config as Config);
   const client = (context.client as sa.SuperAgent<sa.SuperAgentRequest>);
@@ -14,6 +14,6 @@ export default async function onSearch(context: Context, params: PollRequest): P
     .query(qParams)
     .then(res => {
       // eslint-disable-next-line camelcase
-      return (res.body as AckResponse);
+      return (res.body as any);
     });
 }

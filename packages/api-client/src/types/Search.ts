@@ -38,7 +38,8 @@ export interface SearchItemsWhere extends BaseSearchWhere{
     itemContains: string
 }
 export interface PollRequest {
-  messageId: string
+  // eslint-disable-next-line camelcase
+  message_id: string
   limit?: number,
   skip?: number
 }

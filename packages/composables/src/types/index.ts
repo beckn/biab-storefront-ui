@@ -48,7 +48,7 @@ export interface FacetResultsData {
   ackResponse: AckResponse
 }
 export interface OnSearchParam {
-  messageId: string,
+  message_id: string,
   limit?: number,
   skip?: number
 }

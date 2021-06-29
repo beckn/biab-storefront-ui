@@ -21,7 +21,7 @@ export const buildSearchRequest = (search?: SearchItemsWhere): SearchRequest => 
 export const buildOnSearchRequest = (pollRequest?: PollRequest) => {
   if (pollRequest) {
     return new OnSearchRequest(
-      pollRequest.messageId,
+      pollRequest.message_id,
       pollRequest.limit,
       pollRequest.skip
     ).toParams();

@@ -172,8 +172,8 @@ export default {
       } else {
         term.value = paramValue.target.value;
         await search({ term: term.value });
-        // alert('Response for message id: ' + facetResults.value.data.ackResponse.context.message_id + ' ::: ' + facetResults.value.data.ackResponse.message.ack.status);
-        await poll(facetResults.value.data.ackResponse.context.message_id);
+        // eslint-disable-next-line camelcase
+        await poll({message_id: facetResults.value.data.ackResponse.context.message_id});
         console.log('POLL', pollResults);
         result.value = pollResults;
         console.log('result value', result.value);
