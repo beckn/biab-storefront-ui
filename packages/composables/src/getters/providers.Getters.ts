@@ -93,7 +93,7 @@ const providerGetters = {
   getProviderRender3D: getProviderRender3D,
   // getProviderCategories:getProviderCategories,
   getProviderId: getProviderId,
-  getItems: getItems
+  getProducts: getProducts
 };
 
 export default providerGetters;
