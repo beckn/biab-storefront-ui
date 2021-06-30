@@ -18,7 +18,8 @@ const respData = {
   }
 };
 
-const params: OnSearchParam = { messageId: 'testmessageid' };
+// eslint-disable-next-line camelcase
+const params: OnSearchParam = { message_id: 'testmessageid' };
 
 const context = {
   $beckn: {
