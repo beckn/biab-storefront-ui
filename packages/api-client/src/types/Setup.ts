@@ -1,5 +1,6 @@
 export interface ApiEndpoints {
   search: string
+  onSearch: string
 }
 
 export interface ApiConfig {

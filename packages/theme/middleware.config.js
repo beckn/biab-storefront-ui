@@ -4,9 +4,10 @@ module.exports = {
       location: '@vue-storefront/beckn-api/server',
       configuration: {
         api: {
-          url: 'http://10.0.1.184:9001',
+          url: 'http://beckn-in-a-box-qa-api-1484045857.ap-south-1.elb.amazonaws.com/bap/client',
           endpoints: {
-            search: '/v0/search'
+            search: '/v1/search',
+            onSearch: '/v1/on_search'
           }
         }
       }

@@ -118,6 +118,7 @@ export default {
           lastCommit: process.env.LAST_COMMIT || ''
         })
       })
+
     ]
   },
   router: {
