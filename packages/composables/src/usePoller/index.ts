@@ -48,13 +48,12 @@ const usePollerFactory = (factoryParams: UsePollerFactoryParams) => {
           clearInterval(pollFunction.value.interval);
           error.value.poll = err;
           Logger.error(`usePoller/${ssrKey}/search`, err);
-        } finally {
-          polling.value = false;
         }
       }, 2000);
 
       pollFunction.value.timeout = setTimeout(()=>{
         clearInterval(pollFunction.value.interval);
+        polling.value = false;
       }, 60000);
     };
 
