@@ -14,7 +14,7 @@
       <div v-if="isSearchOpen" class="icon-padding center-pos" @click="closeSearch">
         <SfIcon color="var(--c-text)" size="20px" icon="chevron_left" />
       </div>
-      <Location @locationSelected="locationSelected" class="location-section" v-e2e="'app-header-location'" />
+      <Location @locationSelected="locationSelected" class="location-section v-center-pos" v-e2e="'app-header-location'" />
     </div>
     <div
       class="sf-header--has-mobile-search"
@@ -252,6 +252,11 @@ export default {
 
 .flexy{
   display: flex;
+}
+
+.v-center-pos{
+  display: flex;
+  align-items: center;
 }
 
 .header-container{

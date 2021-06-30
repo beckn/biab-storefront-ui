@@ -129,6 +129,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f0f1f4', end
         text-overflow: ellipsis;
         overflow: hidden;
         white-space: nowrap;
+        display: flex;
         
         &:focus-visible {
             outline: -webkit-focus-ring-color auto 0px;
