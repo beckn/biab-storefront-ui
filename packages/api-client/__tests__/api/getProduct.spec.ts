@@ -5,7 +5,7 @@ describe('[beckn-api-client] getProduct', () => {
 
   const searchItemsWhere: SearchItemsWhere = {
     itemContains: 'sofa',
-    locationIs: 'Pune'
+    locationIs: '40.741895,-73.989308'
   };
 
   const thenHandler = {

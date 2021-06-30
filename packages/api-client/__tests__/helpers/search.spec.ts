@@ -7,7 +7,7 @@ describe('[beckn-api-client] helpers/search', () => {
 
   const searchItemsWhere: SearchItemsWhere = {
     itemContains: 'sofa',
-    locationIs: 'Pune'
+    locationIs: '40.741895,-73.989308'
   };
 
   it('should return search for items by text and location', () => {

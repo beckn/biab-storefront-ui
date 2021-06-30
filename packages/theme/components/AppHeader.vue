@@ -108,16 +108,6 @@ export default {
     Location
   },
   directives: { clickOutside },
-  data() {
-    return {
-      location: {}
-    };
-  },
-  methods: {
-    locationSelected(latitude, longitude, address) {
-      this.location = {latitude: latitude, longitude: longitude, address: address};
-    }
-  },
   setup(props, { root }) {
     const {
       toggleCartSidebar,
@@ -134,6 +124,7 @@ export default {
     const isSearchOpen = ref(false);
     const searchBarRef = ref(null);
     const result = ref(null);
+    const location = ref(null);
 
     const cartTotalItems = computed(() => {
       const count = cartGetters.getTotalItems(cart.value);
@@ -166,12 +157,16 @@ export default {
       isSearchOpen.value = false;
     };
 
+    const locationSelected = (latitude, longitude, address) => {
+      location.value = latitude + "," + longitude
+    }
+
     const handleSearch = debounce(async (paramValue) => {
       if (!paramValue.target) {
         // term.value = paramValue;
       } else {
         term.value = paramValue.target.value;
-        await search({ term: term.value });
+        await search({ term: term.value, locationIs: location.value });
         // eslint-disable-next-line camelcase
         await poll({message_id: facetResults.value.data.ackResponse.context.message_id});
         console.log('POLL', pollResults);
@@ -227,7 +222,9 @@ export default {
       searchBarRef,
       isMobile,
       removeSearchResults,
-      clearSearch
+      clearSearch,
+      location,
+      locationSelected
     };
   }
 };
