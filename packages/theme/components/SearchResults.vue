@@ -15,7 +15,7 @@
               <div class="flexy">
                 <SfImage
                   class="back"
-                  src='/icons/placeholder.svg'
+                  :src='providerGetters.getProviderImages(provider)'
                   alt="Vila stripe maxi shirt dress"
                   :width="35"
                   :height="35"
