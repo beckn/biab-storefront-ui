@@ -55,7 +55,7 @@ const usePollerFactory = (factoryParams: UsePollerFactoryParams) => {
 
       pollFunction.value.timeout = setTimeout(()=>{
         clearInterval(pollFunction.value.interval);
-      }, 20000);
+      }, 60000);
     };
 
     return {
