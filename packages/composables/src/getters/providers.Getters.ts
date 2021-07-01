@@ -18,6 +18,17 @@ export const getProviderImages = (provider: ProviderVariant): string[] => provid
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getProviderBpp = (provider: ProviderVariant): string => 'Unknown';
 
+export const getProvidersFromSearch = (bpps: Array<any>): Array<ProviderVariant> => {
+  const data = [];
+  bpps.map((bpp) => {
+    return bpp.bpp_providers.map((obj) => {
+      data.push(obj);
+      return obj;
+    });
+  });
+  return data;
+};
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 //   export const getProviderFiltered = (providers: ProviderVariant[], filters: ProviderVariantFilters | any = {}): ProviderVariant[] => {
 //     return [
@@ -80,12 +91,13 @@ export const getProviderId = (provider: ProviderVariant): string => (provider as
 
 export const getProducts = (provider: ProviderVariant): Product[] => (provider as any)?.items || [];
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const getProviderDistance = (provider: ProviderVariant): any =>'8.1';
+export const getProviderDistance = (provider: ProviderVariant): any => '8.1';
 
 const providerGetters = {
   getProviderName: getProviderName,
   getProviderCode: getProviderCode,
   getProviderImages: getProviderImages,
+  getProvidersFromSearch: getProvidersFromSearch,
   // getProviderFiltered:getProviderFiltered,
   getProviderAttributes: getProviderAttributes,
   getProviderShortDescription: getProviderShortDescription,

@@ -13,7 +13,7 @@ import { computed, Ref } from '@vue/composition-api';
 // export default usePoller;
 
 interface UsePollerFactoryParams extends FactoryParams {
-  poll: (context: Context, params?: any) => Promise<any>;
+  poll: (context: Context, params?: any, oldResults?: Array<any>) => Promise<any>;
 }
 
 const usePollerFactory = (factoryParams: UsePollerFactoryParams) => {
@@ -35,15 +35,19 @@ const usePollerFactory = (factoryParams: UsePollerFactoryParams) => {
       pollResults.value = [];
       clearInterval(pollFunction.value.interval);
       clearTimeout(pollFunction.value.interval);
-      const data = await _factoryParams.poll(params);
-      pollResults.value = [...pollResults.value, ...data];
-      console.log('pollloll', data, pollResults);
+      const data = await _factoryParams.poll({params, pollResults});
+      pollResults.value = data;
+      // const data = await _factoryParams.poll(params,pollResults.value);
+      // pollResults.value = [...pollResults.value, ...data];
+      // console.log('pollloll', data, pollResults);
       polling.value = true;
 
       pollFunction.value.interval = setInterval(async () => {
         try {
-          const data = await _factoryParams.poll(params);
-          pollResults.value = [...pollResults.value, ...data];
+          const data = await _factoryParams.poll({params, pollResults});
+          pollResults.value = data;
+          // const data = await _factoryParams.poll(params);
+          // pollResults.value = [...pollResults.value, ...data];
         } catch (err) {
           clearInterval(pollFunction.value.interval);
           error.value.poll = err;
@@ -51,7 +55,7 @@ const usePollerFactory = (factoryParams: UsePollerFactoryParams) => {
         }
       }, 2000);
 
-      pollFunction.value.timeout = setTimeout(()=>{
+      pollFunction.value.timeout = setTimeout(() => {
         clearInterval(pollFunction.value.interval);
         polling.value = false;
       }, 60000);

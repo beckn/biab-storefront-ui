@@ -1,6 +1,6 @@
 import useOnSearch from '../../src/useOnSearch';
 // import usePollerFactory from '../../src/usePoller';
-import { OnSearchParam } from '../../src/types';
+// import { OnSearchParam } from '../../src/types';
 
 jest.mock('../../src/usePoller', () => {
   return (factoryParams) => () => {
@@ -18,8 +18,13 @@ const respData = {
   }
 };
 
-// eslint-disable-next-line camelcase
-const params: OnSearchParam = { message_id: 'testmessageid' };
+const params = {
+  // eslint-disable-next-line camelcase
+  params: { message_id: 'testmessageid' },
+  pollResults: {
+    value: []
+  }
+};
 
 const context = {
   $beckn: {
