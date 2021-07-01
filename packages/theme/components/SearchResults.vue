@@ -6,7 +6,10 @@
       class="search"
     >
       <transition-group name="sf-fade" class="check-w" mode="out-in">
-        <div v-if="providers && providers.length > 0" class="search__wrapper-results" key="results">
+        <div v-if="enableLoader" key="loadingCircle" class="loader-circle">
+          <LoadingCircle   :enable="enableLoader"/>
+        </div>
+        <div v-else-if="providers && providers.length > 0" class="search__wrapper-results" key="results">
           <div class="h-padding result-num">
             <span><span v-e2e="'total-result'">{{ providers.length }}</span> results found</span>
           </div>
@@ -15,7 +18,7 @@
               <div class="flexy">
                 <SfImage
                   class="back"
-                  :src='providerGetters.getProviderImages(provider)'
+                  :src='providerGetters.getProviderImages(provider)[0]'
                   alt="Vila stripe maxi shirt dress"
                   :width="35"
                   :height="35"
@@ -36,20 +39,20 @@
                 :key="index"
                 :pName="productGetters.getName(product)"
                 :pPrice="productGetters.getPrice(product).regular"
-                :pImage="productGetters.getGallery(product)[0].small"
+                :pImage="productGetters.getGallery(product)[0].small[0]"
                 :pWieght="productGetters.getProductWeight(product)+' kg'"
               />
             </div>
             <div><hr class="sf-divider" /></div>
           </div>
         </div>
-        <!-- <div v-if="noSearchFound" class="before-results">
+        <div v-else-if="noSearchFound" key="no-search" class="before-results">
           <SfImage src="/icons/feather_search.svg" class="" alt="error" loading="lazy"/>
           <p ><b>{{ $t('Your search did not yield ') }}</b></p>
           <p ><b>{{ $t('any results ') }}</b></p>
           <p >{{ $t('Please try searching again using ') }}</p>
           <p >{{ $t('different keyword') }}</p>
-        </div> -->
+        </div>
         <div v-else key="no-results" class="before-results">
           <SfImage src="/error/error.svg" class="before-results__picture" alt="error" loading="lazy"/>
           <p class="before-results__paragraph">{{ $t('You haven’t searched for items yet') }}</p>
@@ -75,6 +78,7 @@ import { ref, watch, computed } from '@vue/composition-api';
 import { productGetters, providerGetters } from '@vue-storefront/beckn';
 
 import ProductCard from './ProductCard';
+import LoadingCircle from './LoadingCircle';
 
 export default {
   name: 'SearchResults',
@@ -87,7 +91,8 @@ export default {
     SfMenuItem,
     SfButton,
     SfImage,
-    ProductCard
+    ProductCard,
+    LoadingCircle
   },
   props: {
     visible: {
@@ -96,6 +101,10 @@ export default {
     },
     result: {
       type: Object
+    },
+    enableLoader: {
+      type: Boolean,
+      default: false
     },
     noSearchFound: {
       type: Boolean,
@@ -119,7 +128,8 @@ export default {
       isSearchOpen,
       productGetters,
       providers,
-      providerGetters
+      providerGetters,
+      LoadingCircle
     };
   }
 };
@@ -209,6 +219,9 @@ export default {
     @include for-desktop {
       display: flex;
     }
+  }
+  .loader-circle{
+    height: calc(100vh - 250px);
   }
 }
 .results {
