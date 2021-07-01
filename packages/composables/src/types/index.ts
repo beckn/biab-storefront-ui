@@ -112,6 +112,15 @@ export type ProviderVariant = {
   render3d?: string;
 };
 
+export type bppDescriptor = {
+  name: string;
+  code: string;
+  symbol?: string;
+  short_desc?: string;
+  long_desc?: string;
+  images?: string[];
+};
+
 export type ProductsResponse = {
   data: Product[];
   total: number;

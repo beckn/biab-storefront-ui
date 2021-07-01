@@ -1,7 +1,7 @@
 import {
   AgnosticAttribute
 } from '@vue-storefront/core';
-import { Product, ProviderVariant } from '../types';
+import { Product, ProviderVariant, bppDescriptor } from '../types';
 
 // TODO: Add interfaces for some of the methods in core
 // Provider
@@ -16,7 +16,7 @@ export const getProviderCode = (provider: ProviderVariant): string => provider?.
 export const getProviderImages = (provider: ProviderVariant): string[] => provider?.descriptor?.images || [''];
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const getProviderBpp = (provider: ProviderVariant): string => 'Unknown';
+export const getProviderBpp = (bpp: bppDescriptor): string => bpp?.name;
 
 export const getProvidersFromSearch = (bpps: Array<any>): Array<ProviderVariant> => {
   const data = [];
