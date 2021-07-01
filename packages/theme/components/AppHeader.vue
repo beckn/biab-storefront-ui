@@ -10,7 +10,6 @@
       </nuxt-link>
       <SfIcon icon="more" color="green-primary" />
     </div>
-    <LoadingBar :enable='enableLoadindBar'/>
     <div class="location-btn h-padding flexy">
       <div v-if="isSearchOpen" class="icon-padding center-pos" @click="closeSearch">
         <SfIcon color="var(--c-text)" size="20px" icon="chevron_left" />
@@ -57,7 +56,7 @@
         </SfSearchBar>
       </div>
     </div>
-    <SearchResults :visible="isSearchOpen" :result="result" :noSearchFound="noSearchFound" :enableLoader="enableloadingCircle" @close="closeSearch" @removeSearchResults="removeSearchResults" />
+    <SearchResults :visible="isSearchOpen" :result="result" :noSearchFound="false" @close="closeSearch" @removeSearchResults="removeSearchResults" />
     <!-- <SfOverlay :visible="isSearchOpen" /> -->
   </div>
 </template>
@@ -90,7 +89,6 @@ import {
   unMapMobileObserver
 } from '@storefront-ui/vue/src/utilities/mobile-observer.js';
 import debounce from 'lodash.debounce';
-import LoadingBar from './LoadingBar';
 
 export default {
   components: {
@@ -107,8 +105,7 @@ export default {
     SfLink,
     SfBottomModal,
     SfCircleIcon,
-    Location,
-    LoadingBar
+    Location
   },
   directives: { clickOutside },
   setup(props, { root }) {
@@ -121,16 +118,13 @@ export default {
     const { isAuthenticated, load: loadUser } = useUser();
     const { cart, load: loadCart } = useCart();
     const { result: facetResults, search } = useFacet();
-    const { pollResults, poll, polling } = useOnSearch();
+    const { pollResults, poll } = useOnSearch();
     const { load: loadWishlist } = useWishlist();
     const term = ref(getFacetsFromURL().phrase);
     const isSearchOpen = ref(false);
     const searchBarRef = ref(null);
     const result = ref(null);
     const location = ref(null);
-    const enableLoadindBar = ref(false);
-    const enableloadingCircle = ref(false);
-    const noSearchFound = ref(false);
 
     const cartTotalItems = computed(() => {
       const count = cartGetters.getTotalItems(cart.value);
@@ -160,44 +154,23 @@ export default {
       if (!isSearchOpen.value) return;
 
       term.value = '';
-      if (enableloadingCircle.value) enableloadingCircle.value = false;
-      if (enableLoadindBar.value) enableLoadindBar.value = false;
       isSearchOpen.value = false;
     };
 
     const locationSelected = (latitude, longitude, address) => {
-      console.log(address);
-      location.value = latitude + ',' + longitude;
-    };
+      location.value = latitude + "," + longitude
+    }
 
     const handleSearch = debounce(async (paramValue) => {
       if (!paramValue.target) {
         // term.value = paramValue;
       } else {
-        enableloadingCircle.value = true;
         term.value = paramValue.target.value;
         await search({ term: term.value, locationIs: location.value });
         // eslint-disable-next-line camelcase
         await poll({message_id: facetResults.value.data.ackResponse.context.message_id});
-        console.log('POLL', pollResults.value.length);
-        watch(()=>pollResults.value.length, (newValue)=>{
-          if (newValue > 0 && enableloadingCircle.value && !enableLoadindBar.value) {
-            enableloadingCircle.value = false;
-            enableLoadindBar.value = true;
-          }
-        });
-
+        console.log('POLL', pollResults);
         result.value = pollResults;
-        watch(()=>polling.value, (newValue)=>{
-          if (!newValue) {
-            enableloadingCircle.value = false;
-            enableLoadindBar.value = false;
-            if (result.value.value.length === 0) {
-              noSearchFound.value = true;
-            }
-          }
-        });
-
         console.log('result value', result.value);
       }
 
@@ -216,8 +189,6 @@ export default {
 
     const clearSearch = () => {
       term.value = '';
-      if (enableloadingCircle.value) enableloadingCircle.value = false;
-      if (noSearchFound.value) noSearchFound.value = false;
     };
 
     watch(() => term.value, (newVal, oldVal) => {
@@ -253,11 +224,7 @@ export default {
       removeSearchResults,
       clearSearch,
       location,
-      locationSelected,
-      LoadingBar,
-      enableLoadindBar,
-      enableloadingCircle,
-      noSearchFound
+      locationSelected
     };
   }
 };
@@ -297,6 +264,16 @@ export default {
     align-items: center;
     background-color: #f5f5f5;
     padding: 10px 0;
+    position: relative;
+    &:after{
+      content: '';
+      position: absolute;
+      width: 100%;
+      bottom: 0;
+      left: 0;
+      height: 5px;
+      background:linear-gradient(270deg, #F37A20 17.41%, #616161 53.73%, #F37A20 100%);
+    }
   }
   .h-padding{
     padding-left: var(--spacer-sm);
