@@ -12,11 +12,7 @@ jest.mock('../../src/usePoller', () => {
 }
 );
 
-const respData = {
-  catalogs: {
-    results: [{ id: 1, name: 'prod1' }]
-  }
-};
+const respData = [];
 
 const params = {
   // eslint-disable-next-line camelcase
@@ -45,7 +41,7 @@ describe('[beckn-composables] usePoller', () => {
     const { poll } = useOnSearch() as any;
     const data = await poll(context, params);
     expect(context.$beckn.api.onSearch).toBeCalled();
-    expect(data).toBe(respData);
+    expect(data).toStrictEqual(respData);
   });
 });
 
