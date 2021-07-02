@@ -4,7 +4,7 @@
       <SfImage :src="pImage" alt="product img" :width="85" :height="90" />
     </div>
     <div class="s-p-name">{{ pName }}</div>
-    <div class="s-p-weight">{{ pWieght }}</div>
+    <!-- <div class="s-p-weight">{{ pWieght }}</div> -->
     <div class="s-p-price">₹ {{ pPrice }}</div>
     <AddToCart :value="itemCount" @updateItemCount="updateItemCount" />
   </div>
