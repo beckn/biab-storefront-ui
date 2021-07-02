@@ -32,7 +32,7 @@ body {
 
 .progress {
   width: 100%;
-  height: 4px;
+  height: 5px;
   background: #e1e4e8;
   overflow: hidden;
 }

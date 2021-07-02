@@ -9,41 +9,43 @@
         <div v-if="enableLoader" key="loadingCircle" class="loader-circle">
           <LoadingCircle   :enable="enableLoader"/>
         </div>
-        <div v-else-if="providers && providers.length > 0" class="search__wrapper-results" key="results">
+        <div v-else-if="catalogs && catalogs.length > 0" class="search__wrapper-results" key="results">
           <div class="h-padding result-num">
-            <span><span v-e2e="'total-result'">{{ providers.length }}</span> results found</span>
+            <span><span v-e2e="'total-result'">{{ totalSearch }}</span> results found</span>
           </div>
-          <div v-for="(provider, index) in providers" :key="index" >
-            <div class="provider-head flexy-center h-padding">
-              <div class="flexy">
-                <SfImage
-                  class="back"
-                  :src='providerGetters.getProviderImages(provider)[0]'
-                  alt="Vila stripe maxi shirt dress"
-                  :width="35"
-                  :height="35"
-                />
-                <div class="text-padding">
-                  <div class="flexy-center">
-                    <div class="p-name">{{providerGetters.getProviderName(provider)}}</div>
-                    <div class="text-padding"> <span class="p-distance">by</span>  <span>{{providerGetters.getProviderBpp(provider)}}</span></div>
+          <div  v-for="(bpp, index) in catalogs" :key="index" >
+            <div v-for="(provider, index) in bpp.bpp_providers" :key="index" >
+              <div class="provider-head flexy-center h-padding">
+                <div class="flexy">
+                  <SfImage
+                    class="back"
+                    :src='providerGetters.getProviderImages(provider)[0]'
+                    alt="Vila stripe maxi shirt dress"
+                    :width="35"
+                    :height="35"
+                  />
+                  <div class="text-padding">
+                    <div class="flexy-center">
+                      <div class="p-name">{{providerGetters.getProviderName(provider)}}</div>
+                      <div class="text-padding"> <span class="p-distance">by</span>  <span>{{providerGetters.getProviderBpp(bpp.bpp_descriptor)}}</span></div>
+                    </div>
+                    <div class="p-distance">{{providerGetters.getProviderDistance(provider)}} km</div>
                   </div>
-                  <div class="p-distance">{{providerGetters.getProviderDistance(provider)}} km</div>
                 </div>
+                <div class="exp-provider">Explore All</div>
               </div>
-              <div class="exp-provider">Explore All</div>
+              <div class="results--mobile">
+                <ProductCard
+                  v-for="(product, index) in provider.items"
+                  :key="index"
+                  :pName="productGetters.getName(product)"
+                  :pPrice="productGetters.getPrice(product).regular"
+                  :pImage="productGetters.getGallery(product)[0].small[0]"
+                  :pWieght="productGetters.getProductWeight(product)+' kg'"
+                />
+              </div>
+              <div><hr class="sf-divider" /></div>
             </div>
-            <div class="results--mobile">
-              <ProductCard
-                v-for="(product, index) in provider.items"
-                :key="index"
-                :pName="productGetters.getName(product)"
-                :pPrice="productGetters.getPrice(product).regular"
-                :pImage="productGetters.getGallery(product)[0].small[0]"
-                :pWieght="productGetters.getProductWeight(product)+' kg'"
-              />
-            </div>
-            <div><hr class="sf-divider" /></div>
           </div>
         </div>
         <div v-else-if="noSearchFound" key="no-search" class="before-results">
@@ -113,7 +115,8 @@ export default {
   },
   setup(props, { emit }) {
     const isSearchOpen = ref(props.visible);
-    const providers = computed(() => props.result?.value);
+    const catalogs = computed(() => props.result?.value);
+    const totalSearch = ref(0);
     watch(() => props.visible, (newVal) => {
       isSearchOpen.value = newVal;
       if (isSearchOpen.value) {
@@ -124,12 +127,19 @@ export default {
       }
     });
 
+    watch(()=> props.result?.value, (newValue) => {
+      for (const bpp of newValue) {
+        totalSearch.value = bpp.bpp_providers.length;
+      }
+    });
+
     return {
       isSearchOpen,
       productGetters,
-      providers,
+      catalogs,
       providerGetters,
-      LoadingCircle
+      LoadingCircle,
+      totalSearch
     };
   }
 };
