@@ -177,15 +177,16 @@ export default {
         enableloadingCircle.value = true;
         term.value = paramValue.target.value;
         await search({ term: term.value, locationIs: location.value });
-        // eslint-disable-next-line camelcase
-        await poll({message_id: facetResults.value.data.ackResponse.context.message_id});
-        console.log('POLL', pollResults.value.length);
+
         watch(()=>pollResults.value.length, (newValue)=>{
           if (newValue > 0 && enableloadingCircle.value && !enableLoadindBar.value) {
             enableloadingCircle.value = false;
             enableLoadindBar.value = true;
           }
         });
+        // eslint-disable-next-line camelcase
+        await poll({message_id: facetResults.value.data.ackResponse.context.message_id});
+        console.log('POLL', pollResults.value.length);
 
         result.value = pollResults;
         watch(()=>polling.value, (newValue)=>{
