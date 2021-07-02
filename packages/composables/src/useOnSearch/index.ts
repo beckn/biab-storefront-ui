@@ -13,12 +13,13 @@ const factoryParams = {
       const oldCodes = pollResults.map((obj) => {
         return obj.bpp_descriptor.code;
       });
+      // debugger;
       const data = catalogs.filter((bpp) => {
         return !(oldCodes.includes(bpp.bpp_descriptor.code));
       });
       return data;
     }
-    return ackResponse;
+    return [];
   }
 };
 

@@ -36,18 +36,18 @@ const usePollerFactory = (factoryParams: UsePollerFactoryParams) => {
       clearInterval(pollFunction.value.interval);
       clearTimeout(pollFunction.value.interval);
       const data = await _factoryParams.poll({params, pollResults});
-      pollResults.value = data;
+      pollResults.value = [...pollResults.value, ...data];
+      // pollResults.value = data;
       // const data = await _factoryParams.poll(params,pollResults.value);
-      // pollResults.value = [...pollResults.value, ...data];
       // console.log('pollloll', data, pollResults);
       polling.value = true;
 
       pollFunction.value.interval = setInterval(async () => {
         try {
           const data = await _factoryParams.poll({params, pollResults});
-          pollResults.value = data;
+          pollResults.value = [...pollResults.value, ...data];
+          // pollResults.value = data;
           // const data = await _factoryParams.poll(params);
-          // pollResults.value = [...pollResults.value, ...data];
         } catch (err) {
           clearInterval(pollFunction.value.interval);
           error.value.poll = err;
