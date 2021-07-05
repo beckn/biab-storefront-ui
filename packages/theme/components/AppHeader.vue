@@ -166,7 +166,6 @@ export default {
     };
 
     const locationSelected = (latitude, longitude, address) => {
-      console.log(address);
       location.value = latitude + ',' + longitude;
     };
 

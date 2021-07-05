@@ -4,7 +4,7 @@ module.exports = {
       location: '@vue-storefront/beckn-api/server',
       configuration: {
         api: {
-          url: 'http://beckn-in-a-box-qa-api-1484045857.ap-south-1.elb.amazonaws.com/bap/client',
+          url: 'http://qa.api.box.beckn.org/bap/client',
           endpoints: {
             search: '/v1/search',
             onSearch: '/v1/on_search'
