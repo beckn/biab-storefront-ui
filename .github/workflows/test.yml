@@ -65,6 +65,7 @@ jobs:
         run: |
           export MAPS_KEY=AIzaSyBUPDeGX6_bkM1QjJPWTtIkGUL510l4czc
           yarn dev > /dev/null &
+          sleep 20
           export PROCESS_ID=$!
           yarn test:e2e:hl:theme
           kill $PROCESS_ID
