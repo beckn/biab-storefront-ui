@@ -1,10 +1,10 @@
 <template>
   <div class="location-blk d-flex w-100">
     <SfCircleIcon
-      class="sf-circle-icon--large left-pos green-primary"
+      class="sf-circle-icon--large left-pos"
       aria-label="marker"
       icon="marker"
-      icon-size="28px"
+      icon-size="18px"
     />
     <div class="location-content">
       <client-only>
@@ -94,11 +94,11 @@ export default {
       location: ''
     };
   },
-  methods:{
-    locationSelected(latitude, longitude, address){
+  methods: {
+    locationSelected(latitude, longitude, address) {
       this.location = address;
       this.toggleLocationDrop();
-      this.$emit('locationSelected',latitude, longitude, address)
+      this.$emit('locationSelected', latitude, longitude, address);
     }
 
   },

@@ -28,7 +28,7 @@
               class="sf-search-bar__button sf-button--pure pos-left"
             >
               <span class="sf-search-bar__icon">
-                <SfIcon color="var(--c-text)" size="30px" icon="marker" />
+                <SfIcon color="var(--c-text)" size="10px" icon="marker" />
               </span>
             </SfButton>
             {{ result.structured_formatting.main_text }}
@@ -52,7 +52,7 @@ export default {
   }),
   created() {
     this.service = new window.google.maps.places.AutocompleteService();
-    this.geocodeService = new window.google.maps.Geocoder()
+    this.geocodeService = new window.google.maps.Geocoder();
   },
   methods: {
     displaySuggestions (predictions, status) {
@@ -62,10 +62,11 @@ export default {
       }
       this.searchResults = predictions;
     },
-    getLocationDetails (selectedLocation){
-      this.location=selectedLocation.description;
-      this.geocodeService.geocode({'placeId':selectedLocation.place_id}).then( response =>{
-        this.$emit('locationSelected',response.results[0].geometry.location.lat(), response.results[0].geometry.location.lng(), selectedLocation.description)
+    getLocationDetails (selectedLocation) {
+      this.location = selectedLocation.description;
+      this.geocodeService.geocode({placeId: selectedLocation.place_id}).then(response =>{
+        this.$emit('locationSelected', response.results[0].geometry.location.lat(), response.results[0].geometry.location.lng(), selectedLocation.description);
+        // eslint-disable-next-line no-alert
       }).catch(err => alert(err));
     }
   },

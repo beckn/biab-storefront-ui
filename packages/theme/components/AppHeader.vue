@@ -18,8 +18,8 @@
       <Location @locationSelected="locationSelected" class="location-section v-center-pos" v-e2e="'app-header-location'" />
     </div>
     <div
-      class="sf-header--has-mobile-search"
-      :class="{'header-on-top h-padding': isSearchOpen}"
+      class="sf-header--has-mobile-search h-padding"
+      :class="{'header-on-top': isSearchOpen}"
     >
       <div class="search-bar">
         <SfSearchBar
