@@ -1,5 +1,7 @@
 import webpack from 'webpack';
 
+var mapsKey = (process.env.MAPS_KEY)?process.env.MAPS_KEY:"AIzaSyC7a8StVzn6y8rQzrLyFEUA1TnHhd5RRXg";
+
 export default {
   mode: 'universal',
   server: {
@@ -9,7 +11,7 @@ export default {
   head: {
     title: 'Beckn storefront',
     script:[{
-      src: `https://maps.googleapis.com/maps/api/js?key=AIzaSyC7a8StVzn6y8rQzrLyFEUA1TnHhd5RRXg&libraries=places`,
+      src: `https://maps.googleapis.com/maps/api/js?key=${mapsKey}&libraries=places`,
       async: true,
       defer: true,
     }],

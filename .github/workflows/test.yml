@@ -61,6 +61,15 @@ jobs:
       - name: Test theme
         run: yarn test:theme
 
+      - name: Test e2e theme
+        run: |
+          export MAPS_KEY=AIzaSyBUPDeGX6_bkM1QjJPWTtIkGUL510l4czc
+          yarn dev > /dev/null &
+          sleep 1m
+          export PROCESS_ID=$!
+          yarn test:e2e:hl:theme
+          kill $PROCESS_ID
+
   deploy:
     name: package and deploy the service
     needs: test
