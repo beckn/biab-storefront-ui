@@ -108,6 +108,7 @@ export default {
     SfCircleIcon,
     Location,
     LoadingBar
+    // Product
   },
   directives: { clickOutside },
   setup(props, { root }) {
@@ -123,7 +124,7 @@ export default {
     const { setTermForUrl } = useUiHelpers();
     const { isAuthenticated, load: loadUser } = useUser();
     const { cart, load: loadCart } = useCart();
-    const { result: facetResults, search } = useFacet();
+    const { search } = useFacet();
     const { pollResults, poll, polling } = useOnSearch();
     const { load: loadWishlist } = useWishlist();
     const searchBarRef = ref(null);
