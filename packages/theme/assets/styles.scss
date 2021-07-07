@@ -191,9 +191,44 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f0f1f4', end
     }
 }
 .popover-blk{
-    position: relative;
+    position: absolute;
+    width: 100%;
+    left: 0;
+    &::after{
+        content: '';
+        background-color: rgba(0, 0, 0, 0.8);
+        height: 140%;
+        width: 100%;
+        left: 0;
+        right: 0;
+        position: absolute;
+        z-index: 99;
+        overflow: hidden;
+        margin-top: -21px;
+    }
     .popover-content{
+        margin-top: 15px;
         background: #fff;
+        border: 2px solid $primary-color;
+        z-index: 99999;
+        padding: 15px;
+        border-radius: 5px;
+        border-bottom-left-radius: 20px;
+        border-bottom-right-radius: 20px;
+        &:before {
+            position: absolute;
+            content: '';
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-bottom: 15px solid $primary-color;
+            top: -15px;
+            left: 0;
+            right: 0;
+            margin: auto;
+        }
+        
         h3{
             font-size: 14px;
             color: $Primary-text;

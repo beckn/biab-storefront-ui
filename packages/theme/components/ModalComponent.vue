@@ -1,8 +1,4 @@
-<template>
-  <transition name="sf-fade">
-    <div class="sf-overlay">
-      <div class="be-overlay">
-        <div class="popover-blk">
+
     <!-- <button @click="isShow = !isShow">click Me</button> -->
 
       <template>
@@ -56,11 +52,6 @@
           </div>
         </div>
       </template>
-    </div>
-      </div>
-    </div>
-  </transition>
-</template>
 
 <script>
 import { SfButton, SfIcon } from '@storefront-ui/vue';
