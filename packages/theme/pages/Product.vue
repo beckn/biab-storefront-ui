@@ -150,54 +150,25 @@
           </SfTabs>
         </LazyHydrate>
         <div class="bottom-bar-cart">
-          <div>Total</div>
-          <div class="cart-checkout">
-            <svg
-              width="26"
-              height="25"
-              viewBox="0 0 26 25"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fill-rule="evenodd"
-                clip-rule="evenodd"
-                d="M7.27824 21.7754C7.80574 21.7754 8.23449 22.2041 8.23449 22.7316C8.23449 23.2591 7.80574 23.6866 7.27824 23.6866C6.75074 23.6866 6.32324 23.2591 6.32324 22.7316C6.32324 22.2041 6.75074 21.7754 7.27824 21.7754Z"
-                stroke="white"
-                stroke-width="1.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-              <path
-                fill-rule="evenodd"
-                clip-rule="evenodd"
-                d="M21.3435 21.7754C21.871 21.7754 22.2997 22.2041 22.2997 22.7316C22.2997 23.2591 21.871 23.6866 21.3435 23.6866C20.816 23.6866 20.3872 23.2591 20.3872 22.7316C20.3872 22.2041 20.816 21.7754 21.3435 21.7754Z"
-                stroke="white"
-                stroke-width="1.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M1.4375 1.0625L4.0375 1.5125L5.24125 15.8538C5.33875 17.0225 6.315 17.92 7.4875 17.92H21.1275C22.2475 17.92 23.1975 17.0975 23.3588 15.9875L24.545 7.79C24.6913 6.77875 23.9075 5.87375 22.8863 5.87375H4.455"
-                stroke="white"
-                stroke-width="1.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M15.6567 10.4938H19.123"
-                stroke="white"
-                stroke-width="1.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
-            <div>View Cart</div>
+          <ul class="list-inline">
+            <li>
+              <h3>Total</h3>
+              <h4>150 <span>6 Items</span></h4>
+            </li>
+            <li class="d-flex b-cart-blk">
+              <SfIcon icon="add_to_cart" size="sm" color="white" :coverage="1" />
+              View Cart <SfIcon class="mt" icon="chevron_right" size="20px" color="white" :coverage="1" />
+             </li>
+          </ul>
+          <!-- <div class="cart-checkout">
+
+            <div>
+              </div>
             <div class="sf-chevron--right sf-chevron">
               <span class="sf-chevron__bar sf-chevron__bar--left" />
               <span class="sf-chevron__bar sf-chevron__bar--right" />
             </div>
-          </div>
+          </div> -->
         </div>
       </div>
     </div>
@@ -419,8 +390,52 @@ export default {
   display: flex;
   justify-content: space-around;
   margin-bottom: 0px;
+  box-shadow: 0px -5px 40px rgba(0, 0, 0, 0.15);
+  position: fixed;
+  bottom: 0;
+  z-index: 999;
+  width: 100%;
   .cart-checkout {
     background: #f37a20;
+  }
+  ul{
+    list-style: none;
+    padding: 0;
+    display: flex;
+    width: 100%;
+    margin: 0;
+    li{
+      width: 50%;
+      padding: 12px 0px 12px 50px;
+      display: block;
+      background: #fff;
+      h3{
+        font-size: 12px;
+        font-weight: 600;
+        color: #000;
+      }
+      h4{
+        font-size: 16px;
+        color: #F37A20;
+        span{
+          font-size: 10px;
+          color: #8D9091;
+          font-weight: 400;
+        }
+      }
+      &.b-cart-blk{
+        font-size: 16px;
+        color: #fcfcfc;
+        background: #F37A20;
+        display: flex !important;
+        justify-content: space-around;
+        padding: 0px 25px !important;
+        padding-top: 20px !important;
+        .mt{
+              margin-top: 4px;
+        }
+      }
+    }
   }
 }
 .product {
