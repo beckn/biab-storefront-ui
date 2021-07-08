@@ -45,7 +45,7 @@
         </div>
       </client-only>
       <template>
-        <div id="location">
+        <div id="location" class="location-drop">
           <SfSidebar
             :visible="!!isLocationdropOpen"
             :button="false"
@@ -53,7 +53,7 @@
             @close="toggleLocationDrop"
             class="sidebar sf-sidebar--right"
           >
-            <transition name="fade" mode="out-in">
+            <transition name="fade" mode="in-in">
               <client-only>
                 <LocationSearchBar @locationSelected="locationSelected" @toggleLocationDrop="toggleLocationDrop" v-e2e="'app-location-sidebar'" />
               </client-only>

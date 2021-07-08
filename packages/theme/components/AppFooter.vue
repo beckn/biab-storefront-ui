@@ -21,6 +21,7 @@ export default {
   position: absolute;
     bottom: 10px;
     width: 100%;
+    padding: 0;
   p{
     margin: 0;
     span{

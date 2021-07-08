@@ -1,10 +1,5 @@
 <template>
   <div>
-    <slot>
-      <div>
-        <p>Your Location</p>
-      </div>
-    </slot>
     <slot name="locationInput">
       <div class="position-relative">
         <input
@@ -22,6 +17,13 @@
           "
           v-e2e="'app-location-sidebar-input'"
         />
+         <SfButton
+                  class="sf-search-bar__button sf-button--pure"
+                  >
+                  <span class="sf-search-bar__icon">
+                    <SfIcon color="var(--c-text)" size="18px" icon="search" />
+                  </span>
+                </SfButton>
         <ul class="location-list">
           <li v-for="(result, i) in searchResults" :key="i" @click="getLocationDetails(result)" v-e2e="'app-location-sidebar-input-options-'+i" >
             <SfButton
