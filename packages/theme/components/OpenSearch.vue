@@ -4,8 +4,8 @@
         <h4>for All</h4>
         <p>A global marketplace to discover and buy anything you need. Just type what you want to buy and we'll take care of the rest.</p>
         <div class="open-search-input">
-        <input type="text" placeholder="Search for anything" />
-        <SfButton class="sf-search-bar__button sf-button--pure">
+        <input v-on:keyup.enter="openSearch" v-model="message" type="text" placeholder="Search for anything" />
+        <SfButton class="sf-search-bar__button sf-button--pure" @click="openSearch">
             <span class="sf-search-bar__icon">
             <SfIcon color="var(--c-text)" size="18px" icon="search" />
             </span>
@@ -18,11 +18,25 @@ import {
   SfButton,
   SfIcon
 } from '@storefront-ui/vue';
+import { useUiState } from '~/composables';
+
+const { toggleSearch, changeSearchString } = useUiState();
 
 export default {
   components: {
     SfButton,
     SfIcon
+  },
+  data() {
+    return {
+      message: ''
+    };
+  },
+  methods: {
+    openSearch() {
+      changeSearchString(this.message);
+      toggleSearch();
+    }
   }
 };
 </script>

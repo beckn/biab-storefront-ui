@@ -55,11 +55,10 @@
           <p >{{ $t('Please try searching again using ') }}</p>
           <p >{{ $t('different keyword') }}</p>
         </div>
-        <div v-else key="no-results" class="before-results">
+        <div v-else-if="false" key="no-results" class="before-results">
           <SfImage src="/error/error.svg" class="before-results__picture" alt="error" loading="lazy"/>
           <p class="before-results__paragraph">{{ $t('You haven’t searched for items yet') }}</p>
           <p class="before-results__paragraph">{{ $t('Let’s start now – we’ll help you') }}</p>
-          <!-- <SfButton class="before-results__button color-secondary smartphone-only" @click="$emit('close')">{{ $t('Go back') }}</SfButton> -->
         </div>
       </transition-group>
     </SfMegaMenu>
@@ -128,9 +127,12 @@ export default {
     });
 
     watch(()=> props.result?.value, (newValue) => {
-      for (const bpp of newValue) {
-        totalSearch.value = bpp.bpp_providers.length;
+      if (newValue) {
+        for (const bpp of newValue) {
+          totalSearch.value = bpp.bpp_providers.length;
+        }
       }
+
     });
 
     return {
@@ -200,6 +202,7 @@ export default {
   --mega-menu-content-padding: 0;
   --mega-menu-height: auto;
   padding-bottom: 70px;
+  height: 70%;
   @include for-desktop {
     --mega-menu-content-padding: var(--spacer-xl) 0;
   }

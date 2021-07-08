@@ -18,6 +18,7 @@
       <Location @locationSelected="locationSelected" class="location-section v-center-pos" v-e2e="'app-header-location'" />
     </div>
     <div
+      v-if="isSearchOpen"
       class="sf-header--has-mobile-search h-padding"
       :class="{'header-on-top': isSearchOpen}"
     >
@@ -28,9 +29,8 @@
           aria-label="Search"
           class="sf-header__search be-search-location"
           :value="term"
-          @input="handleSearch"
+          @input="onSearchChange"
           @keydown.enter="handleSearch($event)"
-          @focus="isSearchOpen = true"
           @keydown.esc="closeSearch"
           v-e2e="'app-header-search-box'"
         >
@@ -57,8 +57,7 @@
         </SfSearchBar>
       </div>
     </div>
-    <SearchResults :visible="isSearchOpen" :result="result" :noSearchFound="noSearchFound" :enableLoader="enableloadingCircle" @close="closeSearch" @removeSearchResults="removeSearchResults" />
-    <!-- <SfOverlay :visible="isSearchOpen" /> -->
+    <SearchResults :visible="isSearchOpen" :result="result" :noSearchFound="noSearchFound" :enableLoader="enableloadingCircle" @removeSearchResults="removeSearchResults" />
   </div>
 </template>
 
@@ -115,21 +114,24 @@ export default {
     const {
       toggleCartSidebar,
       toggleWishlistSidebar,
-      toggleLoginModal
+      toggleLoginModal,
+      searchString,
+      isSearchOpen,
+      toggleSearch,
+      changeSearchString
     } = useUiState();
-    const { setTermForUrl, getFacetsFromURL } = useUiHelpers();
+    const { setTermForUrl } = useUiHelpers();
     const { isAuthenticated, load: loadUser } = useUser();
     const { cart, load: loadCart } = useCart();
     const { result: facetResults, search } = useFacet();
     const { pollResults, poll, polling } = useOnSearch();
     const { load: loadWishlist } = useWishlist();
-    const term = ref(getFacetsFromURL().phrase);
-    const isSearchOpen = ref(false);
     const searchBarRef = ref(null);
     const result = ref(null);
     const location = ref(null);
     const enableLoadindBar = ref(false);
     const enableloadingCircle = ref(false);
+    const term = ref('');
     const noSearchFound = ref(false);
 
     const cartTotalItems = computed(() => {
@@ -140,6 +142,10 @@ export default {
     const accountIcon = computed(
       () => (isAuthenticated.value ? 'profile_fill' : 'profile')
     );
+
+    const onSearchChange = (data) => {
+      term.value = data;
+    };
 
     // TODO: https://github.com/DivanteLtd/vue-storefront/issues/4927
     const handleAccountClick = async () => {
@@ -157,75 +163,67 @@ export default {
     });
 
     const closeSearch = () => {
-      if (!isSearchOpen.value) return;
+      if (!isSearchOpen) return;
 
-      term.value = '';
+      changeSearchString('');
       if (enableloadingCircle.value) enableloadingCircle.value = false;
       if (enableLoadindBar.value) enableLoadindBar.value = false;
-      isSearchOpen.value = false;
+      toggleSearch();
     };
 
     const locationSelected = (latitude, longitude, address) => {
+      console.log(address);
       location.value = latitude + ',' + longitude;
     };
 
     const handleSearch = debounce(async (paramValue) => {
-      if (!paramValue.target) {
-        // term.value = paramValue;
-      } else {
-        enableloadingCircle.value = true;
-        term.value = paramValue.target.value;
-        await search({ term: term.value, locationIs: location.value });
-
-        watch(()=>pollResults.value.length, (newValue)=>{
-          if (newValue > 0 && enableloadingCircle.value && !enableLoadindBar.value) {
-            enableloadingCircle.value = false;
-            enableLoadindBar.value = true;
-          }
-        });
-        // eslint-disable-next-line camelcase
-        await poll({message_id: facetResults.value.data.ackResponse.context.message_id});
-        console.log('POLL', pollResults.value.length);
-
-        result.value = pollResults;
-        watch(()=>polling.value, (newValue)=>{
-          if (!newValue) {
-            enableloadingCircle.value = false;
-            enableLoadindBar.value = false;
-            if (result.value.value.length === 0) {
-              noSearchFound.value = true;
-            }
-          }
-        });
-
-        console.log('result value', result.value);
+      if (paramValue?.target?.value) {
+        changeSearchString(paramValue.target.value);
+        return;
       }
+      enableloadingCircle.value = true;
+      await search({ term: paramValue, locationIs: location.value });
 
+      watch(()=>pollResults.value.length, (newValue)=>{
+        if (newValue > 0 && enableloadingCircle.value && !enableLoadindBar.value) {
+          enableloadingCircle.value = false;
+          enableLoadindBar.value = true;
+        }
+      });
+      // eslint-disable-next-line camelcase
+      await poll({message_id: facetResults.value.data.ackResponse.context.message_id});
+      console.log('POLL', pollResults.value.length);
+
+      result.value = pollResults;
+      watch(()=>polling.value, (newValue)=>{
+        if (!newValue) {
+          enableloadingCircle.value = false;
+          enableLoadindBar.value = false;
+          if (result?.value?.value.length === 0) {
+            noSearchFound.value = true;
+          }
+        }
+      });
+
+      console.log('result value', result.value);
     }, 1000);
+
+    watch(searchString, (newVal)=>{
+      if (newVal !== '') {
+        term.value = newVal;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        handleSearch(newVal);
+      }
+    });
 
     const isMobile = computed(() => mapMobileObserver().isMobile.get());
 
-    const closeOrFocusSearchBar = () => {
-      if (isMobile.value) {
-        return closeSearch();
-      } else {
-        term.value = '';
-        return searchBarRef.value.$el.children[0].focus();
-      }
-    };
-
     const clearSearch = () => {
       term.value = '';
+      changeSearchString('');
       if (enableloadingCircle.value) enableloadingCircle.value = false;
       if (noSearchFound.value) noSearchFound.value = false;
     };
-
-    watch(() => term.value, (newVal, oldVal) => {
-      const shouldSearchBeOpened = (!isMobile.value && term.value.length > 0) && ((!oldVal && newVal) || (newVal.length !== oldVal.length && isSearchOpen.value === false));
-      if (shouldSearchBeOpened) {
-        isSearchOpen.value = true;
-      }
-    });
 
     const removeSearchResults = () => {
       result.value = null;
@@ -242,12 +240,9 @@ export default {
       toggleCartSidebar,
       toggleWishlistSidebar,
       setTermForUrl,
-      term,
-      isSearchOpen,
       closeSearch,
       handleSearch,
       result,
-      closeOrFocusSearchBar,
       searchBarRef,
       isMobile,
       removeSearchResults,
@@ -257,7 +252,11 @@ export default {
       LoadingBar,
       enableLoadindBar,
       enableloadingCircle,
-      noSearchFound
+      noSearchFound,
+      isSearchOpen,
+      searchString,
+      onSearchChange,
+      term
     };
   }
 };
