@@ -17,7 +17,7 @@ export default {
 <style lang="scss">
 .sf-footer {
   text-align: center;
-  background: #fff;
+  background: #fff !important;
   position: absolute;
     bottom: 10px;
     width: 100%;

@@ -24,6 +24,7 @@
                     <SfIcon color="var(--c-text)" size="18px" icon="search" />
                   </span>
                 </SfButton>
+        </div>
         <ul class="location-list">
           <li v-for="(result, i) in searchResults" :key="i" @click="getLocationDetails(result)" v-e2e="'app-location-sidebar-input-options-'+i" >
             <SfButton
@@ -37,7 +38,6 @@
             <p>{{ result.structured_formatting.secondary_text }} </p>
           </li>
         </ul>
-      </div>
 
     </slot>
   </div>
