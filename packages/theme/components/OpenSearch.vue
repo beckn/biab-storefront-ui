@@ -68,6 +68,7 @@ export default {
       margin-bottom: 30px;
     }
     .open-search-input{
+          display: flex;
       margin-bottom: 40px;
       position: relative;
       &.disable{
@@ -86,7 +87,7 @@ export default {
         border-radius: 6px;
         border: 1px solid #F37A20;
         padding: 22px 10px;
-        width: calc(100% - 20px);
+        width: calc(100% - 22px);
         font-size: 15px;
         font-weight: 700;
         &::placeholder{
@@ -97,12 +98,12 @@ export default {
       }
       button{
         padding: 17px;
-        height: 100%;
+        height: 63px;
         top: 0;
         background: #F37A20;
         border-top-right-radius: 6px;
         border-bottom-right-radius: 6px;
-        right: -2px;
+            right: 0;
         .sf-icon{
           --icon-color: #fff !important;
         }
