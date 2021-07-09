@@ -11,7 +11,9 @@ const state = reactive({
   isCategoryGridView: true,
   isFilterSidebarOpen: false,
   isSearchOpen: false,
-  searchString: ''
+  searchString: '',
+  isLocationVisible: true,
+  IsSearchVisible: true
 });
 
 const useUiState = () => {
@@ -51,6 +53,18 @@ const useUiState = () => {
   const searchString = computed(() => state.searchString);
   const changeSearchString = (data) => {
     state.searchString = data;
+
+  };
+
+  
+  const IsSearchVisible = computed(() => state.IsSearchVisible);
+  const toggleSearchVisible = () => {
+    state.IsSearchVisible = !state.IsSearchVisible;
+  };
+
+  const isLocationVisible = computed(() => state.isLocationVisible);
+  const toggleLocationVisible = () => {
+    state.isLocationVisible = !state.isLocationVisible;
   };
 
   return {
@@ -61,6 +75,8 @@ const useUiState = () => {
     isFilterSidebarOpen,
     isSearchOpen,
     searchString,
+    IsSearchVisible,
+    isLocationVisible,
     toggleCartSidebar,
     toggleWishlistSidebar,
     toggleLoginModal,
@@ -68,7 +84,9 @@ const useUiState = () => {
     changeToCategoryListView,
     toggleFilterSidebar,
     toggleSearch,
-    changeSearchString
+    changeSearchString,
+    toggleSearchVisible,
+    toggleLocationVisible
   };
 };
 

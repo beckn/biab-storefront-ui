@@ -5,13 +5,21 @@
       :breadcrumbs="breadcrumbs"
     />
     <div class="product">
+      <div @click="goBack" class="sf-chevron--left sf-chevron icon_back">
+        <span class="sf-chevron__bar sf-chevron__bar--left" />
+        <span class="sf-chevron__bar sf-chevron__bar--right" />
+      </div>
+      <!-- <div class="shadow"></div> -->
+
       <LazyHydrate when-idle>
+        <!-- <SfIcon class="mt" icon="chevron_left" size="20px" color="white" :coverage="1" /> -->
         <!-- <SfGallery :images="productGallery" class="product__gallery" /> -->
         <SfImage
+          class="product__image"
           :src="productGetters.getGallery(product)[0].small[0]"
           alt="product img"
           :width="550"
-          :height="350"
+          :height="400"
         />
       </LazyHydrate>
 
@@ -22,132 +30,41 @@
             :level="3"
             class="sf-heading--no-underline sf-heading--left"
           />
-          <SfIcon
+          <!-- <SfIcon
             icon="drag"
             size="xxl"
             color="var(--c-text-disabled)"
             class="product__drag-icon smartphone-only"
-          />
+          /> -->
         </div>
         <div class="product__price-and-rating">
           <div class="s-p-price">
             ₹ {{ productGetters.getPrice(product).regular }}
           </div>
           <AddToCart :value="null" @updateItemCount="null" />
-          <!-- <SfPrice
-            :regular="$n(productGetters.getPrice(product).regular, 'currency')"
-            :special="productGetters.getPrice(product).special && $n(productGetters.getPrice(product).special, 'currency')"
-          /> -->
-          <!-- <div>
-            <div class="product__rating">
-              <SfRating
-                :score="averageRating"
-                :max="5"
-              />
-              <a v-if="!!totalReviews" href="#" class="product__count">
-                ({{ totalReviews }})
-              </a>
-            </div>
-            <SfButton class="sf-button--text">{{ $t('Read all reviews') }}</SfButton>
-          </div> -->
         </div>
         <div>
           <!-- <p class="product__description">
             {{ description }}
-          </p>
-          <SfButton class="sf-button--text desktop-only product__guide">
-            {{ $t('Size guide') }}
-          </SfButton> -->
-          <!-- <SfSelect
-            v-if="options.size"
-            :value="configuration.size"
-            @input="size => updateFilter({ size })"
-            label="Size"
-            class="sf-select--underlined product__select-size"
-            :required="true"
-          >
-            <SfSelectOption
-              v-for="size in options.size"
-              :key="size.value"
-              :value="size.value"
-            >
-              {{size.label}}
-            </SfSelectOption>
-          </SfSelect> -->
-          <!-- <div v-if="options.color && options.color.length > 1" class="product__colors desktop-only">
-            <p class="product__color-label">{{ $t('Color') }}:</p>
-            <SfColor
-              v-for="(color, i) in options.color"
-              :key="i"
-              :color="color.value"
-              class="product__color"
-              @click="updateFilter({color})"
-            />
-          </div>
-          <SfAddToCart
-            v-e2e="'product_add-to-cart'"
-            :stock="stock"
-            v-model="qty"
-            :disabled="loading"
-            :canAddToCart="stock > 0"
-            class="product__add-to-cart"
-            @click="addItem({ product, quantity: parseInt(qty) })"
-          /> -->
+          </p> -->
         </div>
+        <div><hr class="sf-divider" /></div>
 
         <LazyHydrate when-idle>
-          <SfTabs :open-tab="1" class="product__tabs">
-            <SfTab title="Description">
-              <div class="product__description">
+          <!-- <SfTabs :open-tab="1" class="product__tabs">
+            <SfTab title="Product Description">
+              <div class="prouct__description">
                 {{ description }}
               </div>
-              <!-- <SfProperty
-                v-for="(property, i) in properties"
-                :key="i"
-                :name="property.name"
-                :value="property.value"
-                class="product__property"
-              >
-                <template v-if="property.name === 'Category'" #value>
-                  <SfButton class="product__property__button sf-button--text">
-                    {{ property.value }}
-                  </SfButton>
-                </template>
-              </SfProperty>-->
             </SfTab>
-            <!-- <SfTab title="Read reviews">
-              <SfReview
-                v-for="review in reviews"
-                :key="reviewGetters.getReviewId(review)"
-                :author="reviewGetters.getReviewAuthor(review)"
-                :date="reviewGetters.getReviewDate(review)"
-                :message="reviewGetters.getReviewMessage(review)"
-                :max-rating="5"
-                :rating="reviewGetters.getReviewRating(review)"
-                :char-limit="250"
-                read-more-text="Read more"
-                hide-full-text="Read less"
-                class="product__review"
-              />
-            </SfTab>
-            <SfTab
-              title="Additional Information"
-              class="product__additional-info"
-            >
-            <div class="product__additional-info">
-              <p class="product__additional-info__title">{{ $t('Brand') }}</p>
-              <p>{{ brand }}</p>
-              <p class="product__additional-info__title">{{ $t('Instruction1') }}</p>
-              <p class="product__additional-info__paragraph">
-                {{ $t('Instruction2') }}
-              </p>
-              <p class="product__additional-info__paragraph">
-                {{ $t('Instruction3') }}
-              </p>
-              <p>{{ careInstructions }}</p>
-            </div>
-            </SfTab>-->
-          </SfTabs>
+          </SfTabs> -->
+          <SfAccordion :open="l" class="product__tabs">
+            <SfAccordionItem :header="'Product Description'">
+              <div class="prouct__description">
+                {{ description }}
+              </div>
+            </SfAccordionItem>
+          </SfAccordion>
         </LazyHydrate>
         <div class="bottom-bar-cart">
           <ul class="list-inline">
@@ -155,13 +72,24 @@
               <h3>Total</h3>
               <h4>150 <span>6 Items</span></h4>
             </li>
-            <li class="d-flex b-cart-blk">
-              <SfIcon icon="add_to_cart" size="sm" color="white" :coverage="1" />
-              View Cart <SfIcon class="mt" icon="chevron_right" size="20px" color="white" :coverage="1" />
-             </li>
+            <li class="d-flex b-cart-blk" @click="toggleCartSidebar">
+              <SfIcon
+                icon="add_to_cart"
+                size="sm"
+                color="white"
+                :coverage="1"
+              />
+              View Cart
+              <SfIcon
+                class="mt"
+                icon="chevron_right"
+                size="20px"
+                color="white"
+                :coverage="1"
+              />
+            </li>
           </ul>
           <!-- <div class="cart-checkout">
-
             <div>
               </div>
             <div class="sf-chevron--right sf-chevron">
@@ -172,22 +100,6 @@
         </div>
       </div>
     </div>
-
-    <!-- <LazyHydrate when-visible>
-      <RelatedProducts
-        :products="relatedProducts"
-        :loading="relatedLoading"
-        title="Match it with"
-      />
-    </LazyHydrate>
-
-    <LazyHydrate when-visible>
-      <InstagramFeed />
-    </LazyHydrate>
-
-    <LazyHydrate when-visible>
-      <MobileStoreBanner />
-    </LazyHydrate> -->
   </div>
 </template>
 <script>
@@ -200,6 +112,7 @@ import {
   SfAddToCart,
   SfTabs,
   SfGallery,
+  SfAccordion,
   SfIcon,
   SfImage,
   SfBanner,
@@ -214,21 +127,28 @@ import {
 import InstagramFeed from '~/components/InstagramFeed.vue';
 import RelatedProducts from '~/components/RelatedProducts.vue';
 import AddToCart from '~/components/AddToCart.vue';
+import SfAccordionItem from '~/components/Accordion.vue';
+import { useUiState } from '~/composables';
 // import { ref, computed } from '@vue/composition-api';
 import {
-//   useCart,
+  //   useCart,
   productGetters
 } from '@vue-storefront/beckn';
 import { onSSR } from '@vue-storefront/core';
 import MobileStoreBanner from '~/components/MobileStoreBanner.vue';
 import LazyHydrate from 'vue-lazy-hydration';
+import { onMounted } from '@vue/composition-api';
 
 export default {
   name: 'Product',
   transition: 'fade',
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  setup() {
+  setup(props, context) {
+    const { toggleCartSidebar, toggleSearchVisible, toggleLocationVisible } = useUiState();
+    const data = context.root.$route.query.data;
+    const product = JSON.parse(Buffer.from(data, 'base64').toString());
+    // toggleLocationVisible()
     // const qty = ref(1);
     // const { id } = context.root.$route.params;
     // const { products, search } = useProduct('products');
@@ -250,11 +170,17 @@ export default {
     //   big: { url: img.big },
     //   alt: product.value._name || product.value.name
     // })));
+    const goBack = ()=>context.root.$router.back();
 
     onSSR(async () => {
       // await search({ id });
+      // toggleLocationVisible()
       // await searchRelatedProducts({ catId: [categories.value[0]], limit: 8 });
       // await searchReviews({ productId: id });
+    });
+    onMounted(async () => {
+      toggleSearchVisible();
+      toggleLocationVisible();
     });
 
     // const updateFilter = (filter) => {
@@ -281,7 +207,13 @@ export default {
       // qty,
       // addItem,
       // loading,
-      productGetters
+
+      toggleCartSidebar,
+      goBack,
+      product,
+      toggleSearchVisible,
+      productGetters,
+      toggleLocationVisible
       // productGallery
     };
   },
@@ -307,27 +239,14 @@ export default {
     InstagramFeed,
     RelatedProducts,
     MobileStoreBanner,
-    LazyHydrate
+    LazyHydrate,
+    SfAccordionItem,
+    SfAccordion
   },
   data() {
-    const product = JSON.parse(`{
-  "descriptor": {
-    "images": [
-      "https://i.ibb.co/rZqPDd2/Coffee-2-Cothas.jpg"
-    ],
-    "name": "Cothas Coffee 1 kg"
-  },
-  "id": "cothas-coffee-1-kg",
-  "matched": true,
-  "price": {
-    "currency": "INR",
-    "value": "250"
-  },
-  "recommended": true
-}`);
     return {
       stock: 5,
-      product,
+      l: 'pp',
       properties: [
         {
           name: 'Product Code',
@@ -386,6 +305,13 @@ export default {
   }
 }
 
+.icon_back{
+  position: absolute;
+  margin: 20px;
+  z-index: 2;
+  // width:100%;
+}
+
 .bottom-bar-cart {
   display: flex;
   justify-content: space-around;
@@ -398,49 +324,64 @@ export default {
   .cart-checkout {
     background: #f37a20;
   }
-  ul{
+  ul {
     list-style: none;
     padding: 0;
     display: flex;
     width: 100%;
     margin: 0;
-    li{
+    li {
       width: 50%;
       padding: 12px 0px 12px 50px;
       display: block;
       background: #fff;
-      h3{
+      h3 {
         font-size: 12px;
         font-weight: 600;
         color: #000;
       }
-      h4{
+      h4 {
         font-size: 16px;
-        color: #F37A20;
-        span{
+        color: #f37a20;
+        span {
           font-size: 10px;
-          color: #8D9091;
+          color: #8d9091;
           font-weight: 400;
         }
       }
-      &.b-cart-blk{
+      &.b-cart-blk {
         font-size: 16px;
         color: #fcfcfc;
-        background: #F37A20;
+        background: #f37a20;
         display: flex !important;
         justify-content: space-around;
         padding: 0px 25px !important;
         padding-top: 20px !important;
-        .mt{
-              margin-top: 4px;
+        .mt {
+          margin-top: 4px;
         }
       }
     }
   }
 }
+
+.shadow{
+
+}
+.s-p-price {
+  color: #f37a20;
+  font-size: 22px;
+}
+
 .product {
   @include for-desktop {
     display: flex;
+  }
+
+  &__image {
+    .sf-image {
+      object-fit: contain !important;
+    }
   }
   &__info {
     margin: var(--spacer-sm) auto;
