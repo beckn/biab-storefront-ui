@@ -313,6 +313,8 @@ export default {
     color: #37474F;
     padding: 13px 15px;
     box-shadow: 0px 4px 60px rgba(0, 0, 0, 0.07);
+    position: relative;
+    z-index: 99;
     .selected-location{
       font-size: 13px;
       font-weight: 500;

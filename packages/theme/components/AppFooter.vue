@@ -18,7 +18,7 @@ export default {
 .sf-footer {
   text-align: center;
   background: #fff !important;
-  position: absolute;
+  position: fixed;
     bottom: 10px;
     width: 100%;
     padding: 0;
