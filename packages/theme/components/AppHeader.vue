@@ -311,8 +311,8 @@ export default {
 
   .location-btn{
     color: #37474F;
-    padding-top: 10px;
-    padding-bottom: 5px;
+    padding: 13px 15px;
+    box-shadow: 0px 4px 60px rgba(0, 0, 0, 0.07);
     .selected-location{
       font-size: 13px;
       font-weight: 500;

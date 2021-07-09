@@ -3,7 +3,9 @@
 
       <template>
         <div v-if="!isShow" >
+          <div class="popover-bg">
           <div class="popover-content position-relative">
+
             <h3>Device location is not enabled</h3>
             <p>Please provide the permission to access better & hassle free delivery</p>
             <div class="position-relative" >
@@ -45,10 +47,9 @@
             <SfButton
                 class="sf-button--pure enable-location-btn"
               >
-              <span class="sf-search-bar__icon">
-                <SfIcon color="var(--c-white)" size="18px" icon="search" />
-              </span>ENABLE LOCATION
+             <img src="../assets/images/current_location.svg" alt="" /> ENABLE LOCATION
             </SfButton>
+            </div>
           </div>
         </div>
       </template>
