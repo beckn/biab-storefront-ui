@@ -84,9 +84,9 @@ export const getProductAttributes = (products: Product[] | Product, filterByAttr
   return {};
 };
 
-export const getProductShortDescription = (product: Product): any => product?.descriptor?.short_des || '';
+export const getShortDescription = (product: Product): any => product?.descriptor?.short_des || '';
 
-export const getProductLongDescription = (product: Product): any => product?.descriptor?.long_desc || '';
+export const getLongDescription = (product: Product): any => product?.descriptor?.long_desc || '';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getProductWeight = (product: Product): any =>'12';
@@ -118,7 +118,8 @@ const productGetters = {
   getId: getProductId,
   getFormattedPrice: getFormattedPrice,
   getTotalReviews: getProductTotalReviews,
-  getProductWeight: getProductWeight
+  getProductWeight: getProductWeight,
+  getLongDescription
   // getAverageRating: getProductAverageRating
 };
 

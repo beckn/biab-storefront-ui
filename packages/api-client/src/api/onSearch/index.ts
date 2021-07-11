@@ -15,6 +15,7 @@ export default async function onSearch(context: Context, params: PollRequest): P
   return client.get(config.api.url + config.api.endpoints.onSearch)
     .query(qParams)
     .then(res => {
+      console.log(res.body);
       return (res.body as any);
     });
 }

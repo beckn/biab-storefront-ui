@@ -11,7 +11,7 @@
       <SfIcon icon="more" color="green-primary" />
     </div>
     <LoadingBar :enable='enableLoadindBar'/>
-    <div class="location-btn h-padding flexy">
+    <div v-if="isLocationVisible" class="location-btn h-padding flexy">
       <div v-if="isSearchOpen" class="icon-padding center-pos" @click="closeSearch">
         <SfIcon color="var(--c-text)" size="20px" icon="chevron_left" />
       </div>
@@ -22,7 +22,7 @@
       class="sf-header--has-mobile-search h-padding"
       :class="{'header-on-top': isSearchOpen}"
     >
-      <div class="search-bar">
+      <div v-if="IsSearchVisible" class="search-bar">
         <SfSearchBar
           ref="searchBarRef"
           :placeholder="$t('Search for items E.g. atta, milk')"
@@ -108,6 +108,7 @@ export default {
     SfCircleIcon,
     Location,
     LoadingBar
+    // Product
   },
   directives: { clickOutside },
   setup(props, { root }) {
@@ -118,12 +119,15 @@ export default {
       searchString,
       isSearchOpen,
       toggleSearch,
-      changeSearchString
+      changeSearchString,
+      IsSearchVisible, toggleSearchVisible,
+      toggleLocationVisible, isLocationVisible
     } = useUiState();
-    const { setTermForUrl } = useUiHelpers();
+    // const { setTermForUrl } = useUiHelpers();
+    const { setTermForUrl} = useUiHelpers();
     const { isAuthenticated, load: loadUser } = useUser();
     const { cart, load: loadCart } = useCart();
-    const { result: facetResults, search } = useFacet();
+    const { search, facetResults } = useFacet();
     const { pollResults, poll, polling } = useOnSearch();
     const { load: loadWishlist } = useWishlist();
     const searchBarRef = ref(null);
@@ -256,7 +260,11 @@ export default {
       isSearchOpen,
       searchString,
       onSearchChange,
-      term
+      term,
+      IsSearchVisible,
+      toggleSearchVisible,
+      toggleLocationVisible,
+      isLocationVisible
     };
   }
 };
