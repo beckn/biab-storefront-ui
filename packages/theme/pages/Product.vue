@@ -11,7 +11,7 @@
       </div>
       <!-- <div class="shadow"></div> -->
 
-      <LazyHydrate when-idle>
+      <LazyHydrate when-visible>
         <!-- <SfIcon class="mt" icon="chevron_left" size="20px" color="white" :coverage="1" /> -->
         <!-- <SfGallery :images="productGallery" class="product__gallery" /> -->
         <SfImage
@@ -41,14 +41,14 @@
           <div class="s-p-price">
             ₹ {{ productGetters.getPrice(product).regular }}
           </div>
-          <AddToCart :value="null" @updateItemCount="null" />
+          <AddToCart :value="null" @updateItemCount="updateCart" />
         </div>
         <div>
           <!-- <p class="product__description">
             {{ description }}
           </p> -->
         </div>
-        <div><hr class="sf-divider" /></div>
+        <div><hr class="sf-divider divider" /></div>
 
         <LazyHydrate when-idle>
           <!-- <SfTabs :open-tab="1" class="product__tabs">
@@ -61,16 +61,16 @@
           <SfAccordion :open="l" class="product__tabs">
             <SfAccordionItem :header="'Product Description'">
               <div class="prouct__description">
-                {{ description }}
+                {{ productGetters.getLongDescription(product) }}
               </div>
             </SfAccordionItem>
           </SfAccordion>
         </LazyHydrate>
-        <div class="bottom-bar-cart">
+        <div v-if="cart>0" class="bottom-bar-cart">
           <ul class="list-inline">
             <li>
               <h3>Total</h3>
-              <h4>150 <span>6 Items</span></h4>
+              <h4>{{productGetters.getPrice(product).regular * cart}} <span>{{cart}} Items</span></h4>
             </li>
             <li class="d-flex b-cart-blk" @click="toggleCartSidebar">
               <SfIcon
@@ -129,7 +129,7 @@ import RelatedProducts from '~/components/RelatedProducts.vue';
 import AddToCart from '~/components/AddToCart.vue';
 import SfAccordionItem from '~/components/Accordion.vue';
 import { useUiState } from '~/composables';
-// import { ref, computed } from '@vue/composition-api';
+import { ref } from '@vue/composition-api';
 import {
   //   useCart,
   productGetters
@@ -148,6 +148,7 @@ export default {
     const { toggleCartSidebar, toggleSearchVisible, toggleLocationVisible } = useUiState();
     const data = context.root.$route.query.data;
     const product = JSON.parse(Buffer.from(data, 'base64').toString());
+    console.log('roduct', product);
     // toggleLocationVisible()
     // const qty = ref(1);
     // const { id } = context.root.$route.params;
@@ -183,6 +184,12 @@ export default {
       toggleLocationVisible();
     });
 
+    const cart = ref(0);
+
+    const updateCart = (value)=>{
+      cart.value = value;
+    };
+
     // const updateFilter = (filter) => {
     //   context.root.$router.push({
     //     path: context.root.$route.path,
@@ -210,6 +217,8 @@ export default {
 
       toggleCartSidebar,
       goBack,
+      cart,
+      updateCart,
       product,
       toggleSearchVisible,
       productGetters,
@@ -365,8 +374,9 @@ export default {
   }
 }
 
-.shadow{
-
+.divider{
+  width: 90%;
+  margin: auto;
 }
 .s-p-price {
   color: #f37a20;
@@ -379,7 +389,7 @@ export default {
   }
 
   &__image {
-    .sf-image {
+    img {
       object-fit: contain !important;
     }
   }

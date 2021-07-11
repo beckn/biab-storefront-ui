@@ -123,11 +123,11 @@ export default {
       IsSearchVisible, toggleSearchVisible,
       toggleLocationVisible, isLocationVisible
     } = useUiState();
-    const { setTermForUrl } = useUiHelpers();
-    const { setTermForUrl, getFacetsFromURL } = useUiHelpers();
+    // const { setTermForUrl } = useUiHelpers();
+    const { setTermForUrl} = useUiHelpers();
     const { isAuthenticated, load: loadUser } = useUser();
     const { cart, load: loadCart } = useCart();
-    const { search } = useFacet();
+    const { search, facetResults } = useFacet();
     const { pollResults, poll, polling } = useOnSearch();
     const { load: loadWishlist } = useWishlist();
     const searchBarRef = ref(null);
