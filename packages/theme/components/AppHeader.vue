@@ -1,6 +1,5 @@
 <style lang="scss">
 @import '../assets/styles.scss';
-@import '../assets/fonts/stylesheet.scss';
 </style>
 
 <template>
