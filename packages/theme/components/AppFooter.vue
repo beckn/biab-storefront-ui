@@ -1,6 +1,6 @@
 <template>
   <SfFooter class="footer">
-    <p><span>By</span> <img src="../assets/images/p-b-google.png" alt="" /> </p>
+    <p><span>By</span> <img src="../assets/images/p-b-phonepe.png" alt="" /> </p>
     <p><span class="powered-by">Powered by</span> <img src="../assets/images/beckn-logo.png" alt="" /> </p>
   </SfFooter>
 </template>
