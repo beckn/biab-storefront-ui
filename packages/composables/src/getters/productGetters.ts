@@ -21,6 +21,8 @@ export const getProductPrice = (product: Product): AgnosticPrice => {
   };
 };
 
+export const getImages = (product: Product)=>product?.descriptor?.images;
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getProductGallery = (product: Product): AgnosticMediaGalleryItem[] => [
   {
@@ -119,7 +121,8 @@ const productGetters = {
   getFormattedPrice: getFormattedPrice,
   getTotalReviews: getProductTotalReviews,
   getProductWeight: getProductWeight,
-  getLongDescription
+  getLongDescription,
+  getImages
   // getAverageRating: getProductAverageRating
 };
 
