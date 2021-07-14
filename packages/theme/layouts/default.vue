@@ -9,7 +9,7 @@
 
     <div id="layout">
       <nuxt :key="$route.fullPath"/>
-
+      <ClearCartPopup/>
       <LazyHydrate when-visible>
         <!-- <BottomNavigation /> -->
       </LazyHydrate>
@@ -34,6 +34,7 @@ import WishlistSidebar from '~/components/WishlistSidebar.vue';
 import LoginModal from '~/components/LoginModal.vue';
 import LazyHydrate from 'vue-lazy-hydration';
 import Notification from '~/components/Notification';
+import ClearCartPopup from '~/components/ClearCartPopup.vue';
 
 export default {
   name: 'DefaultLayout',
@@ -47,7 +48,8 @@ export default {
     CartSidebar,
     WishlistSidebar,
     LoginModal,
-    Notification
+    Notification,
+    ClearCartPopup
   }
 };
 </script>
