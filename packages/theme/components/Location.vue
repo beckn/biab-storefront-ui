@@ -88,6 +88,13 @@ export default {
     ModalComponent
   },
 
+  props: {
+    isDisabled: {
+      type: Boolean,
+      default: false
+    }
+  },
+
   data() {
     return {
       isActive: false,
