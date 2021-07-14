@@ -4,8 +4,8 @@
       <div class="holder">
         <div class="f-total">Total</div>
         <div>
-          <span class="f-p-total">₹ {{ totlePrice }} </span
-          ><span class="f-items">{{ totleItem }} Items</span>
+          <span class="f-p-total">₹ {{ totalPrice }} </span
+          ><span class="f-items">{{ totalItem }} Items</span>
         </div>
       </div>
     </div>
@@ -32,8 +32,8 @@ export default {
     SfIcon
   },
   props: {
-    totlePrice: { type: Number, default: 0 },
-    totleItem: { type: Number, default: 0 },
+    totalPrice: { type: Number, default: 0 },
+    totalItem: { type: Number, default: 0 },
     footerEnable: { type: Boolean, default: true },
     buttonEnable: { type: Boolean, default: false },
     buttonText: {type: String, default: ''}

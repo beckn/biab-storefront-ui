@@ -1,27 +1,24 @@
 <template>
   <div id="product">
-    <SfBreadcrumbs
+    <!-- <SfBreadcrumbs
       class="breadcrumbs desktop-only"
       :breadcrumbs="breadcrumbs"
-    />
+    /> -->
     <div class="product">
       <div @click="goBack" class="sf-chevron--left sf-chevron icon_back">
         <span class="sf-chevron__bar sf-chevron__bar--left" />
         <span class="sf-chevron__bar sf-chevron__bar--right" />
       </div>
-      <!-- <div class="shadow"></div> -->
-
-      <LazyHydrate when-visible>
-        <!-- <SfIcon class="mt" icon="chevron_left" size="20px" color="white" :coverage="1" /> -->
-        <!-- <SfGallery :images="productGallery" class="product__gallery" /> -->
-        <SfImage
-          class="product__image"
-          :src="productGetters.getGallery(product)[0].small[0]"
-          alt="product img"
-          :width="550"
-          :height="400"
+      <div class="images">
+        <LazyHydrate when-visible>
+        <ImagesScroll
+          :imageWidth="550"
+          :imageHeight="400"
+          :images="images"
+          class="product__gallery"
         />
       </LazyHydrate>
+      </div>
 
       <div class="product__info">
         <div class="product__header">
@@ -43,22 +40,10 @@
           </div>
           <AddToCart :value="null" @updateItemCount="updateCart" />
         </div>
-        <div>
-          <!-- <p class="product__description">
-            {{ description }}
-          </p> -->
-        </div>
         <div><hr class="sf-divider divider" /></div>
 
         <LazyHydrate when-idle>
-          <!-- <SfTabs :open-tab="1" class="product__tabs">
-            <SfTab title="Product Description">
-              <div class="prouct__description">
-                {{ description }}
-              </div>
-            </SfTab>
-          </SfTabs> -->
-          <SfAccordion :open="l" class="product__tabs">
+          <SfAccordion class="product__tabs">
             <SfAccordionItem :header="'Product Description'">
               <div class="prouct__description">
                 {{ productGetters.getLongDescription(product) }}
@@ -66,8 +51,9 @@
             </SfAccordionItem>
           </SfAccordion>
         </LazyHydrate>
+
         <div v-if="cart>0" class="bottom-bar-cart">
-          <ul class="list-inline">
+        <ul class="list-inline">
             <li>
               <h3>Total</h3>
               <h4>{{productGetters.getPrice(product).regular * cart}} <span>{{cart}} Items</span></h4>
@@ -89,7 +75,7 @@
               />
             </li>
           </ul>
-          <!-- <div class="cart-checkout">
+        <!-- <div class="cart-checkout">
             <div>
               </div>
             <div class="sf-chevron--right sf-chevron">
@@ -109,9 +95,6 @@ import {
   SfPrice,
   SfRating,
   SfSelect,
-  SfAddToCart,
-  SfTabs,
-  SfGallery,
   SfAccordion,
   SfIcon,
   SfImage,
@@ -124,10 +107,10 @@ import {
   SfColor
 } from '@storefront-ui/vue';
 
-import InstagramFeed from '~/components/InstagramFeed.vue';
-import RelatedProducts from '~/components/RelatedProducts.vue';
 import AddToCart from '~/components/AddToCart.vue';
+import ImagesScroll from '~/components/ImagesScroll.vue';
 import SfAccordionItem from '~/components/Accordion.vue';
+// import Footer from '~/components/Footer.vue';
 import { useUiState } from '~/composables';
 import { ref } from '@vue/composition-api';
 import {
@@ -137,7 +120,7 @@ import {
 import { onSSR } from '@vue-storefront/core';
 import MobileStoreBanner from '~/components/MobileStoreBanner.vue';
 import LazyHydrate from 'vue-lazy-hydration';
-import { onMounted } from '@vue/composition-api';
+import { onBeforeMount } from '@vue/composition-api';
 
 export default {
   name: 'Product',
@@ -145,10 +128,19 @@ export default {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   setup(props, context) {
-    const { toggleCartSidebar, toggleSearchVisible, toggleLocationVisible } = useUiState();
+    const { toggleCartSidebar, toggleSearchVisible, toggleLocationVisible } =
+      useUiState();
+
+    toggleSearchVisible();
+    toggleLocationVisible();
     const data = context.root.$route.query.data;
     const product = JSON.parse(Buffer.from(data, 'base64').toString());
-    console.log('roduct', product);
+    console.log(product);
+    const images = [
+      productGetters.getGallery(product)[0].small[0],
+      productGetters.getGallery(product)[0].small[0],
+      productGetters.getGallery(product)[0].small[0]
+    ];
     // toggleLocationVisible()
     // const qty = ref(1);
     // const { id } = context.root.$route.params;
@@ -171,7 +163,7 @@ export default {
     //   big: { url: img.big },
     //   alt: product.value._name || product.value.name
     // })));
-    const goBack = ()=>context.root.$router.back();
+    const goBack = () => context.root.$router.back();
 
     onSSR(async () => {
       // await search({ id });
@@ -179,14 +171,14 @@ export default {
       // await searchRelatedProducts({ catId: [categories.value[0]], limit: 8 });
       // await searchReviews({ productId: id });
     });
-    onMounted(async () => {
-      toggleSearchVisible();
-      toggleLocationVisible();
+    onBeforeMount(async () => {
+      // toggleSearchVisible();
+      // toggleLocationVisible();
     });
 
     const cart = ref(0);
 
-    const updateCart = (value)=>{
+    const updateCart = (value) => {
       cart.value = value;
     };
 
@@ -214,7 +206,7 @@ export default {
       // qty,
       // addItem,
       // loading,
-
+      images,
       toggleCartSidebar,
       goBack,
       cart,
@@ -234,9 +226,6 @@ export default {
     SfPrice,
     SfRating,
     SfSelect,
-    SfAddToCart,
-    SfTabs,
-    SfGallery,
     SfIcon,
     SfImage,
     AddToCart,
@@ -245,62 +234,11 @@ export default {
     SfReview,
     SfBreadcrumbs,
     SfButton,
-    InstagramFeed,
-    RelatedProducts,
     MobileStoreBanner,
     LazyHydrate,
     SfAccordionItem,
-    SfAccordion
-  },
-  data() {
-    return {
-      stock: 5,
-      l: 'pp',
-      properties: [
-        {
-          name: 'Product Code',
-          value: '578902-00'
-        },
-        {
-          name: 'Category',
-          value: 'Pants'
-        },
-        {
-          name: 'Material',
-          value: 'Cotton'
-        },
-        {
-          name: 'Country',
-          value: 'Germany'
-        }
-      ],
-      description:
-        'Find stunning women cocktail and party dresses. Stand out in lace and metallic cocktail dresses and party dresses from all your favorite brands.',
-      detailsIsActive: false,
-      brand:
-        'Brand name is the perfect pairing of quality and design. This label creates major everyday vibes with its collection of modern brooches, silver and gold jewellery, or clips it back with hair accessories in geo styles.',
-      careInstructions: 'Do not wash!',
-      breadcrumbs: [
-        {
-          text: 'Home',
-          route: {
-            link: '#'
-          }
-        },
-        {
-          text: 'Category',
-          route: {
-            link: '#'
-          }
-        },
-        {
-          text: 'Pants',
-          route: {
-            link: '#'
-          }
-        }
-      ]
-    };
+    SfAccordion,
+    ImagesScroll
   }
 };
 </script>
@@ -314,7 +252,12 @@ export default {
   }
 }
 
-.icon_back{
+.images {
+  height: 400px;
+  overflow: hidden;
+}
+
+.icon_back {
   position: absolute;
   margin: 20px;
   z-index: 2;
@@ -374,7 +317,7 @@ export default {
   }
 }
 
-.divider{
+.divider {
   width: 90%;
   margin: auto;
 }

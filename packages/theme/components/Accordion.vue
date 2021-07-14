@@ -27,7 +27,7 @@
         />
       </SfButton>
     <!-- </slot> -->
-    <transition >
+    <transition class="accordian__transition-content" >
       <div v-if="isOpen">
         <div class="sf-accordion-item__content">
           <!-- @slot -->
