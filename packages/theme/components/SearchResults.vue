@@ -43,6 +43,7 @@
                   :pPrice="productGetters.getPrice(product).regular"
                   :pImage="productGetters.getGallery(product)[0].small[0]"
                   :pWieght="productGetters.getProductWeight(product)+' kg'"
+                  @updateItemCount="(item)=>updateItemCount(item, provider, index)"
                 />
               </div>
               <div><hr class="sf-divider" /></div>
@@ -78,7 +79,7 @@ import {
 } from '@storefront-ui/vue';
 import { ref, watch, computed } from '@vue/composition-api';
 import { productGetters, providerGetters } from '@vue-storefront/beckn';
-
+import { useCart } from '@vue-storefront/beckn';
 import ProductCard from './ProductCard';
 import LoadingCircle from './LoadingCircle';
 
@@ -114,6 +115,7 @@ export default {
     }
   },
   setup(props, { emit, root }) {
+    const { addItem } = useCart();
     const isSearchOpen = ref(props.visible);
     const catalogs = computed(() => props.result?.value);
     const totalSearch = ref(0);
@@ -146,6 +148,10 @@ export default {
         }
       });
     };
+    const updateItemCount = (data, provider, index) => {
+      provider.items[index].quantity = data;
+      addItem({bppName: provider.descriptor.name, item: provider.items[index]});
+    };
 
     return {
       isSearchOpen,
@@ -154,7 +160,8 @@ export default {
       providerGetters,
       LoadingCircle,
       totalSearch,
-      goToProduct
+      goToProduct,
+      updateItemCount
     };
   }
 };
@@ -169,6 +176,10 @@ export default {
 .flexy-center{
   display: flex;
   align-items: center;
+}
+
+.s-product{
+  margin-right: 10px;
 }
 .result-num{
   font-size: 12px;

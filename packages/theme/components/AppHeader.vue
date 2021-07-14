@@ -76,7 +76,7 @@ import {
   SfCircleIcon
 } from '@storefront-ui/vue';
 import { useUiState } from '~/composables';
-import { useCart, useWishlist, useUser, cartGetters, useFacet, useOnSearch } from '@vue-storefront/beckn';
+import { useWishlist, useUser, useFacet, useOnSearch } from '@vue-storefront/beckn';
 import { computed, ref, onBeforeUnmount, watch } from '@vue/composition-api';
 import { onSSR } from '@vue-storefront/core';
 import { useUiHelpers } from '~/composables';
@@ -126,7 +126,6 @@ export default {
     // const { setTermForUrl } = useUiHelpers();
     const { setTermForUrl} = useUiHelpers();
     const { isAuthenticated, load: loadUser } = useUser();
-    const { cart, load: loadCart } = useCart();
     const { search, result: facetResults } = useFacet();
     const { pollResults, poll, polling } = useOnSearch();
     const { load: loadWishlist } = useWishlist();
@@ -137,11 +136,6 @@ export default {
     const enableloadingCircle = ref(false);
     const term = ref('');
     const noSearchFound = ref(false);
-
-    const cartTotalItems = computed(() => {
-      const count = cartGetters.getTotalItems(cart.value);
-      return count ? count.toString() : null;
-    });
 
     const accountIcon = computed(
       () => (isAuthenticated.value ? 'profile_fill' : 'profile')
@@ -162,7 +156,6 @@ export default {
 
     onSSR(async () => {
       await loadUser();
-      await loadCart();
       await loadWishlist();
     });
 
@@ -239,7 +232,6 @@ export default {
 
     return {
       accountIcon,
-      cartTotalItems,
       handleAccountClick,
       toggleCartSidebar,
       toggleWishlistSidebar,

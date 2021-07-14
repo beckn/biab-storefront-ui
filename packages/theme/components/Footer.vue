@@ -35,7 +35,7 @@ export default {
     totalPrice: { type: Number, default: 0 },
     totalItem: { type: Number, default: 0 },
     footerEnable: { type: Boolean, default: true },
-    buttonEnable: { type: Boolean, default: false },
+    buttonEnable: { type: Boolean, default: true },
     buttonText: {type: String, default: ''}
   },
   setup() {

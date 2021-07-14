@@ -9,13 +9,21 @@
       />
       <div class="title">Clear your Cart</div>
       <div class="text-detail">
-        Your cart has items from {{ currentApp }} Mart.
+        Your cart has items from {{ currentBpp.value }} Mart.
       </div>
       <div class="text-detail">Do you wish to clear cart and add</div>
-      <div class="text-detail">items from {{ newBpp }} mart?</div>
+      <div class="text-detail">items from {{ newBpp.value }} mart?</div>
       <div class="button-container">
-        <button class="sf-button sf-button--full-width button-s no">No</button>
-        <button class="sf-button sf-button--full-width button-s">
+        <button
+          class="sf-button sf-button--full-width button-s no"
+          @click="onClickNo"
+        >
+          No
+        </button>
+        <button
+          class="sf-button sf-button--full-width button-s"
+          @click="onClickYes"
+        >
           yes, Clear Cart
         </button>
       </div>
@@ -24,7 +32,8 @@
 </template>
 <script>
 import { SfIcon, SfOverlay, SfImage } from '@storefront-ui/vue';
-import { ref } from '@vue/composition-api';
+import { ref, watch } from '@vue/composition-api';
+import { useCart } from '@vue-storefront/beckn';
 
 export default {
   name: 'ClearCartPopup',
@@ -33,21 +42,30 @@ export default {
     SfOverlay,
     SfImage
   },
-  props: {
-    show: {
-      type: Boolean,
-      default: false
-    }
-  },
   setup() {
-    const currentApp = ref('abc');
-    const newBpp = ref('xyz');
-    const product = ref({});
+    const { currentBpp, newBpp } = useCart();
+    const show = ref(false);
+    console.log(newBpp.value);
+
+    watch(() => newBpp.value, (newval) => {
+      console.log(newval, 'popup');
+      show.value = true;
+    });
+
+    const onClickYes = () => {
+      show.value = false;
+    };
+
+    const onClickNo = () => {
+      show.value = false;
+    };
 
     return {
-      currentApp,
+      show,
+      currentBpp,
       newBpp,
-      product
+      onClickYes,
+      onClickNo
     };
   }
 };
