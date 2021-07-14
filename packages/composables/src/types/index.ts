@@ -57,7 +57,7 @@ export type SearchData = FacetSearchResult<FacetResultsData>
 
 export type ProductPrice = {
   currency: string,
-  value: number,
+  value: string,
   estimated_value?: number,
   computed_value?: number,
   listed_value?: number,

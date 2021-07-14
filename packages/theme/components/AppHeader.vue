@@ -55,9 +55,9 @@
             </SfButton>
           </template>
         </SfSearchBar>
+    <SearchResults :visible="isSearchOpen" :result="result" :noSearchFound="noSearchFound" :enableLoader="enableloadingCircle" @removeSearchResults="removeSearchResults" />
       </div>
     </div>
-    <SearchResults :visible="isSearchOpen" :result="result" :noSearchFound="noSearchFound" :enableLoader="enableloadingCircle" @removeSearchResults="removeSearchResults" />
   </div>
 </template>
 

@@ -56,7 +56,7 @@
         <ul class="list-inline">
             <li>
               <h3>Total</h3>
-              <h4>{{productGetters.getPrice(product).regular * cart}} <span>{{cart}} Items</span></h4>
+              <h4>₹{{productGetters.getPrice(product).regular * cart}} <span>{{cart}} Items</span></h4>
             </li>
             <li class="d-flex b-cart-blk" @click="toggleCartSidebar">
               <SfIcon
@@ -117,10 +117,9 @@ import {
   //   useCart,
   productGetters
 } from '@vue-storefront/beckn';
-import { onSSR } from '@vue-storefront/core';
 import MobileStoreBanner from '~/components/MobileStoreBanner.vue';
 import LazyHydrate from 'vue-lazy-hydration';
-import { onBeforeMount } from '@vue/composition-api';
+import { onUnmounted, computed } from '@vue/composition-api';
 
 export default {
   name: 'Product',
@@ -133,47 +132,28 @@ export default {
 
     toggleSearchVisible();
     toggleLocationVisible();
+
     const data = context.root.$route.query.data;
-    const product = JSON.parse(Buffer.from(data, 'base64').toString());
+    const product = computed(() => {
+      return JSON.parse(Buffer.from(data, 'base64').toString());
+    });
     console.log(product);
     const images = [
       productGetters.getGallery(product)[0].small[0],
       productGetters.getGallery(product)[0].small[0],
       productGetters.getGallery(product)[0].small[0]
     ];
-    // toggleLocationVisible()
-    // const qty = ref(1);
-    // const { id } = context.root.$route.params;
-    // const { products, search } = useProduct('products');
-    // const { products: relatedProducts, search: searchRelatedProducts, loading: relatedLoading } = useProduct('relatedProducts');
-    // const { addItem, loading } = useCart();
-    // const { reviews: productReviews, search: searchReviews } = useReview('productReviews');
-
-    // const product = computed(() => productGetters.getFiltered(products.value, { master: true, attributes: context.root.$route.query })[0]);
-    // const options = computed(() => productGetters.getAttributes(products.value, ['color', 'size']));
-    // const configuration = computed(() => productGetters.getAttributes(product.value, ['color', 'size']));
-    // const categories = computed(() => productGetters.getCategoryIds(product.value));
-    // const reviews = computed(() => reviewGetters.getItems(productReviews.value));
-
-    // TODO: Breadcrumbs are temporary disabled because productGetters return undefined. We have a mocks in data
-    // const breadcrumbs = computed(() => productGetters.getBreadcrumbs ? productGetters.getBreadcrumbs(product.value) : props.fallbackBreadcrumbs);
-    // const productGallery = computed(() => productGetters.getGallery(product.value).map(img => ({
-    //   mobile: { url: img.small },
-    //   desktop: { url: img.normal },
-    //   big: { url: img.big },
-    //   alt: product.value._name || product.value.name
-    // })));
     const goBack = () => context.root.$router.back();
 
-    onSSR(async () => {
-      // await search({ id });
-      // toggleLocationVisible()
-      // await searchRelatedProducts({ catId: [categories.value[0]], limit: 8 });
-      // await searchReviews({ productId: id });
-    });
-    onBeforeMount(async () => {
-      // toggleSearchVisible();
-      // toggleLocationVisible();
+    // onSSR(async () => {
+    //   // await search({ id });
+    //   // toggleLocationVisible()
+    //   // await searchRelatedProducts({ catId: [categories.value[0]], limit: 8 });
+    //   // await searchReviews({ productId: id });
+    // });
+    onUnmounted(async () => {
+      toggleSearchVisible();
+      toggleLocationVisible();
     });
 
     const cart = ref(0);
