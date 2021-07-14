@@ -37,6 +37,7 @@
               <div class="results--mobile">
                 <ProductCard
                   v-for="(product, index) in provider.items"
+                  @click.native="goToProduct(product)"
                   :key="index"
                   :pName="productGetters.getName(product)"
                   :pPrice="productGetters.getPrice(product).regular"
@@ -112,7 +113,7 @@ export default {
       default: false
     }
   },
-  setup(props, { emit }) {
+  setup(props, { emit, root }) {
     const isSearchOpen = ref(props.visible);
     const catalogs = computed(() => props.result?.value);
     const totalSearch = ref(0);
@@ -135,13 +136,25 @@ export default {
 
     });
 
+    const goToProduct = (product) => {
+      const data = btoa(JSON.stringify(product));
+      emit('removeSearchResults');
+      root.$router.push({
+        path: root.$route.path + 'product',
+        query: {
+          data: data
+        }
+      });
+    };
+
     return {
       isSearchOpen,
       productGetters,
       catalogs,
       providerGetters,
       LoadingCircle,
-      totalSearch
+      totalSearch,
+      goToProduct
     };
   }
 };
