@@ -127,7 +127,7 @@ export default {
     const { setTermForUrl} = useUiHelpers();
     const { isAuthenticated, load: loadUser } = useUser();
     const { cart, load: loadCart } = useCart();
-    const { search, facetResults } = useFacet();
+    const { search, result: facetResults } = useFacet();
     const { pollResults, poll, polling } = useOnSearch();
     const { load: loadWishlist } = useWishlist();
     const searchBarRef = ref(null);
