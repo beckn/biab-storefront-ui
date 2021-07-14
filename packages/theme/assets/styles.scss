@@ -72,6 +72,16 @@ body{
     }
 }
 
+.disable-location{
+    cursor: not-allowed;
+    opacity: 0.6;
+    .popover-blk{
+        display: none;
+    }
+    input{
+        cursor: not-allowed;
+    }
+}
   
 //   button.sf-button--pure{
 //       background-color: transparent;

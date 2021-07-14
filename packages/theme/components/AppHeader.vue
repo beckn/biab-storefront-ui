@@ -15,7 +15,7 @@
       <div v-if="isSearchOpen" class="icon-padding center-pos" @click="closeSearch">
         <SfIcon color="var(--c-text)" size="20px" icon="chevron_left" />
       </div>
-      <Location @locationSelected="locationSelected" class="location-section v-center-pos" v-e2e="'app-header-location'" />
+      <Location :isDisabled="!isSearchOpen" @locationSelected="locationSelected" :class="{'disable-location' : isSearchOpen }" class="location-section v-center-pos" v-e2e="'app-header-location'" />
     </div>
     <div
       v-if="isSearchOpen"
@@ -315,6 +315,7 @@ export default {
 
   .icon-padding{
     padding-right: 10px;
+    cursor: pointer;
   }
 
   .location-btn{
