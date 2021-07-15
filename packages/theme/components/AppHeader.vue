@@ -290,6 +290,9 @@ export default {
 
 .header-container{
   background-color: #ffffff;
+  box-shadow: 0px 4px 60px rgba(0, 0, 0, 0.07);
+  z-index: 999;
+  position: relative;
   .header{
     display: flex;
     justify-content: space-between;
@@ -313,7 +316,6 @@ export default {
   .location-btn{
     color: #37474F;
     padding: 13px 15px;
-    box-shadow: 0px 4px 60px rgba(0, 0, 0, 0.07);
     position: relative;
     // z-index: 99;
     .selected-location{
