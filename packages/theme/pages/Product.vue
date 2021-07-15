@@ -38,7 +38,7 @@
           <div class="s-p-price">
             ₹ {{ productGetters.getPrice(product).regular }}
           </div>
-          <AddToCart  @updateItemCount="updateCart" />
+          <AddToCart :value='product.quantity' @updateItemCount="updateCart" />
         </div>
         <div><hr class="sf-divider divider" /></div>
 
@@ -52,11 +52,11 @@
           </SfAccordion>
         </LazyHydrate>
 
-        <div v-if="cart>0" class="bottom-bar-cart">
+        <div v-if="product.quantity>0" class="bottom-bar-cart">
         <ul class="list-inline">
             <li>
               <h3>Total</h3>
-              <h4>₹{{productGetters.getPrice(product).regular * cart}} <span>{{cart}} Items</span></h4>
+              <h4>₹{{cartGetters.getTotalItems(products)}} <span>{{cartGetters.getTotals(products)}} Items</span></h4>
             </li>
             <li class="d-flex b-cart-blk" @click="toggleCartSidebar">
               <SfIcon
@@ -114,7 +114,8 @@ import SfAccordionItem from '~/components/Accordion.vue';
 import { useUiState } from '~/composables';
 import { ref } from '@vue/composition-api';
 import {
-  //   useCart,
+  useCart,
+  // cartGetters,
   productGetters
 } from '@vue-storefront/beckn';
 import MobileStoreBanner from '~/components/MobileStoreBanner.vue';
@@ -134,52 +135,29 @@ export default {
     toggleLocationVisible();
 
     const data = context.root.$route.query.data;
-    const product = JSON.parse(Buffer.from(data, 'base64').toString());
+    const {product, provider} = JSON.parse(Buffer.from(data, 'base64').toString());
+    const {addItem, loadCart} = useCart();
+    console.log('product', product, provider);
     // debugger;
     const images = productGetters.getImages(product);
     const goBack = () => context.root.$router.back();
 
-    // onSSR(async () => {
-    //   // await search({ id });
-    //   // toggleLocationVisible()
-    //   // await searchRelatedProducts({ catId: [categories.value[0]], limit: 8 });
-    //   // await searchReviews({ productId: id });
-    // });
     onUnmounted(async () => {
       toggleSearchVisible();
       toggleLocationVisible();
     });
 
-    const cart = ref(0);
-
-    const updateCart = (value) => {
+    const cart = ref();
+    loadCart().then(value=>{
       cart.value = value;
+    });
+
+    const updateCart = async (value) => {
+      product.quantity = value;
+      cart.value = addItem({bppName: provider.name, item: product});
     };
 
-    // const updateFilter = (filter) => {
-    //   context.root.$router.push({
-    //     path: context.root.$route.path,
-    //     query: {
-    //       ...configuration.value,
-    //       ...filter,
-    //     },
-    //   });
-    // };
-
     return {
-      // updateFilter,
-      // configuration,
-      // product,
-      // reviews,
-      // reviewGetters,
-      // averageRating: computed(() => productGetters.getAverageRating(product.value)),
-      // totalReviews: computed(() => productGetters.getTotalReviews(product.value)),
-      // relatedProducts: computed(() => productGetters.getFiltered(relatedProducts.value, { master: true })),
-      // relatedLoading,
-      // options,
-      // qty,
-      // addItem,
-      // loading,
       images,
       toggleCartSidebar,
       goBack,
