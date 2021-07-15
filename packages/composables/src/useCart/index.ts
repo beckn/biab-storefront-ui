@@ -15,7 +15,7 @@ const useCart = () => {
   const loadCart = async () => {
     console.log('Mocked: loadCart');
     let cartData = [];
-    if (localStorage.getItem('cartData')) {
+    if (localStorage.getItem('cartData') && JSON.parse(localStorage.getItem('cartData')).length > 0) {
       cartData = JSON.parse(localStorage.getItem('cartData'));
       currentBpp.value = cartData[0].bppName;
     }
@@ -26,7 +26,7 @@ const useCart = () => {
   const addItem = (productData: { bppName: string, item: { id: any, quantity: number } }, reset = false) => {
     let cartData = [];
     if (reset) localStorage.removeItem('cartData');
-    if (localStorage.getItem('cartData')) {
+    if (localStorage.getItem('cartData') && JSON.parse(localStorage.getItem('cartData')).length > 0) {
       cartData = JSON.parse(localStorage.getItem('cartData'));
     } else {
       cartData = [productData];

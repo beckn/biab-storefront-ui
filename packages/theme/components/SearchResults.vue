@@ -26,7 +26,7 @@
                   />
                   <div class="text-padding">
                     <div class="flexy-center">
-                      <div class="p-name">{{providerGetters.getProviderName(provider)}}</div>
+                      <div class="p-name">{{providerGetters.getProviderName(provider,provider)}}</div>
                       <div class="text-padding"> <span class="p-distance">by</span>  <span>{{providerGetters.getProviderBpp(bpp.bpp_descriptor)}}</span></div>
                     </div>
                     <div class="p-distance">{{providerGetters.getProviderDistance(provider)}} km</div>
@@ -37,7 +37,7 @@
               <div class="results--mobile">
                 <ProductCard
                   v-for="(product, index) in provider.items"
-                  @goToProduct="goToProduct(product)"
+                  @goToProduct="goToProduct(product,provider)"
                   :key="index"
                   :pName="productGetters.getName(product)"
                   :pPrice="productGetters.getPrice(product).regular"
@@ -138,9 +138,8 @@ export default {
 
     });
 
-    const goToProduct = (product) => {
-      const data = btoa(JSON.stringify(product));
-      emit('removeSearchResults');
+    const goToProduct = (product, provider) => {
+      const data = btoa(JSON.stringify({product, provider: provider.descriptor}));
       root.$router.push({
         path: root.$route.path + 'product',
         query: {

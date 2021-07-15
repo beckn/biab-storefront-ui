@@ -49,16 +49,18 @@
           </div>
         </div>
       </transition>
-      <Footer
-        @buttonClick="footerClick"
-        :totalPrice="totals.total"
-        :totalItem="totalItems"
-        buttonText="checkout"
-      >
-        <template v-slot:buttonIcon>
-          <SfIcon icon="empty_cart" color="white" :coverage="1" />
-        </template>
-      </Footer>
+      <div class="c-footer">
+          <Footer
+            @buttonClick="footerClick"
+            :totalPrice="totals.total"
+            :totalItem="totalItems"
+            buttonText="checkout"
+          >
+            <template v-slot:buttonIcon>
+              <SfIcon icon="empty_cart" color="white" :coverage="1" />
+            </template>
+          </Footer>
+      </div>
     </SfSidebar>
   </div>
 </template>
@@ -161,6 +163,13 @@ export default {
 
 .sf-sidebar__content {
   padding: 0 !important;
+}
+
+.c-footer{
+  width: 100%;
+  position: fixed;
+  left: 0;
+  bottom: 0;
 }
 
 .product-card {
