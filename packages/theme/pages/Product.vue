@@ -52,8 +52,8 @@
           </SfAccordion>
         </LazyHydrate>
 
-        <div v-if="product.quantity>0" class="bottom-bar-cart">
-        <ul class="list-inline">
+        <div v-if="totalCartItem" class="bottom-bar-cart">
+          <!-- <ul class="list-inline">
             <li>
               <h3>Total</h3>
               <h4>₹{{cartGetters.getTotalItems(products)}} <span>{{cartGetters.getTotals(products)}} Items</span></h4>
@@ -74,7 +74,7 @@
                 :coverage="1"
               />
             </li>
-          </ul>
+          </ul> -->
         <!-- <div class="cart-checkout">
             <div>
               </div>
@@ -83,6 +83,16 @@
               <span class="sf-chevron__bar sf-chevron__bar--right" />
             </div>
           </div> -->
+          <Footer
+            @buttonClick="toggleCartSidebar"
+            :totalPrice="totalCartPrice.total"
+            :totalItem="totalCartItem"
+            buttonText="View Cart"
+          >
+            <template v-slot:buttonIcon>
+              <SfIcon icon="empty_cart" color="white" :coverage="1" />
+            </template>
+          </Footer>
         </div>
       </div>
     </div>
@@ -110,12 +120,12 @@ import {
 import AddToCart from '~/components/AddToCart.vue';
 import ImagesScroll from '~/components/ImagesScroll.vue';
 import SfAccordionItem from '~/components/Accordion.vue';
-// import Footer from '~/components/Footer.vue';
+import Footer from '~/components/Footer';
 import { useUiState } from '~/composables';
 import { ref } from '@vue/composition-api';
 import {
   useCart,
-  // cartGetters,
+  cartGetters,
   productGetters
 } from '@vue-storefront/beckn';
 import MobileStoreBanner from '~/components/MobileStoreBanner.vue';
@@ -141,20 +151,29 @@ export default {
     // debugger;
     const images = productGetters.getImages(product);
     const goBack = () => context.root.$router.back();
+    const totalCartItem = ref(0);
+    const totalCartPrice = ref(0);
+    const cart = ref();
+
+    const geItemPrice = () => {
+      totalCartPrice.value = cartGetters.getTotals(cart);
+      totalCartItem.value = cartGetters.getTotalItems(cart);
+    };
 
     onUnmounted(async () => {
       toggleSearchVisible();
       toggleLocationVisible();
     });
 
-    const cart = ref();
     loadCart().then(value=>{
       cart.value = value;
+      geItemPrice();
     });
 
     const updateCart = async (value) => {
       product.quantity = value;
       cart.value = addItem({bppName: provider.name, item: product});
+      geItemPrice();
     };
 
     return {
@@ -166,7 +185,9 @@ export default {
       product,
       toggleSearchVisible,
       productGetters,
-      toggleLocationVisible
+      toggleLocationVisible,
+      totalCartItem,
+      totalCartPrice
       // productGallery
     };
   },
@@ -190,7 +211,8 @@ export default {
     LazyHydrate,
     SfAccordionItem,
     SfAccordion,
-    ImagesScroll
+    ImagesScroll,
+    Footer
   }
 };
 </script>
@@ -217,13 +239,13 @@ export default {
 }
 
 .bottom-bar-cart {
-  display: flex;
-  justify-content: space-around;
-  margin-bottom: 0px;
-  box-shadow: 0px -5px 40px rgba(0, 0, 0, 0.15);
+  // display: flex;
+  // justify-content: space-around;
+  // margin-bottom: 0px;
+  // box-shadow: 0px -5px 40px rgba(0, 0, 0, 0.15);
   position: fixed;
   bottom: 0;
-  z-index: 999;
+  z-index: 1;
   width: 100%;
   .cart-checkout {
     background: #f37a20;
