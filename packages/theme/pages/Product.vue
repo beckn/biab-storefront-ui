@@ -38,7 +38,7 @@
           <div class="s-p-price">
             ₹ {{ productGetters.getPrice(product).regular }}
           </div>
-          <AddToCart :value="null" @updateItemCount="updateCart" />
+          <AddToCart  @updateItemCount="updateCart" />
         </div>
         <div><hr class="sf-divider divider" /></div>
 
@@ -119,7 +119,7 @@ import {
 } from '@vue-storefront/beckn';
 import MobileStoreBanner from '~/components/MobileStoreBanner.vue';
 import LazyHydrate from 'vue-lazy-hydration';
-import { onUnmounted, computed } from '@vue/composition-api';
+import { onUnmounted } from '@vue/composition-api';
 
 export default {
   name: 'Product',
@@ -134,15 +134,9 @@ export default {
     toggleLocationVisible();
 
     const data = context.root.$route.query.data;
-    const product = computed(() => {
-      return JSON.parse(Buffer.from(data, 'base64').toString());
-    });
-    console.log(product);
-    const images = [
-      productGetters.getGallery(product)[0].small[0],
-      productGetters.getGallery(product)[0].small[0],
-      productGetters.getGallery(product)[0].small[0]
-    ];
+    const product = JSON.parse(Buffer.from(data, 'base64').toString());
+    // debugger;
+    const images = productGetters.getImages(product);
     const goBack = () => context.root.$router.back();
 
     // onSSR(async () => {

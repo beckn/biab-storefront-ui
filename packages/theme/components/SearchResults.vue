@@ -37,7 +37,7 @@
               <div class="results--mobile">
                 <ProductCard
                   v-for="(product, index) in provider.items"
-                  @click.native="goToProduct(product)"
+                  @goToProduct="goToProduct(product)"
                   :key="index"
                   :pName="productGetters.getName(product)"
                   :pPrice="productGetters.getPrice(product).regular"
