@@ -51,8 +51,8 @@
       </transition>
       <Footer
         @buttonClick="footerClick"
-        :totlePrice="totals.total"
-        :totleItem="totalItems"
+        :totalPrice="totals.total"
+        :totalItem="totalItems"
         buttonText="checkout"
       >
         <template v-slot:buttonIcon>
