@@ -1,60 +1,71 @@
 /* istanbul ignore file */
 
-import {
-  Context,
-  useCartFactory,
-  UseCartFactoryParams
-} from '@vue-storefront/core';
-import { Cart, CartItem, Coupon, Product } from '../types';
+// import {
+//   Context,
+// } from '@vue-storefront/core';
+// import { Cart, CartItem, Coupon, Product } from '../types';
+import { ref, computed } from '@vue/composition-api';
+import { vsfRef } from '@vue-storefront/core';
 
-const params: UseCartFactoryParams<Cart, CartItem, Product, Coupon> = {
+const useCart = () => {
+  const currentBpp = vsfRef('paisool', '1');
+  const newBpp = vsfRef('', '2');
+  const newBppProduct = ref({});
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  load: async (context: Context, { customQuery }) => {
+  const loadCart = async () => {
     console.log('Mocked: loadCart');
-    return {};
-  },
+    let cartData = [];
+    if (localStorage.getItem('cartData')) {
+      cartData = JSON.parse(localStorage.getItem('cartData'));
+    }
+    return cartData;
+  };
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  addItem: async (context: Context, { currentCart, product, quantity, customQuery }) => {
-    console.log('Mocked: addToCart');
-    return {};
-  },
+  const addItem = (productData: { bppName: string, item: { id: any, quantity: number } }, reset = false) => {
+    let cartData = [];
+    if (reset) localStorage.removeItem('cartData');
+    if (localStorage.getItem('cartData')) {
+      cartData = JSON.parse(localStorage.getItem('cartData'));
+    } else {
+      cartData = [productData];
+      currentBpp.value = productData.bppName;
+      localStorage.setItem('cartData', JSON.stringify(cartData));
+      return cartData;
+    }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  removeItem: async (context: Context, { currentCart, product, customQuery }) => {
-    console.log('Mocked: removeFromCart');
-    return {};
-  },
+    if (productData.bppName === currentBpp.value) {
+      for (let i = 0; i < cartData.length; i++) {
+        if (cartData[i].item.id === productData.item.id) {
+          // eslint-disable-next-line max-depth
+          if (productData.item.quantity === 0) {
+            cartData.splice(i, 1);
+            localStorage.setItem('cartData', JSON.stringify(cartData));
+            return cartData;
+          }
+          cartData[i] = productData;
+          localStorage.setItem('cartData', JSON.stringify(cartData));
+          return cartData;
+        }
+      }
+      cartData.push(productData);
+      localStorage.setItem('cartData', JSON.stringify(cartData));
+      return cartData;
+    } else {
+      newBpp.value = productData.bppName;
+      newBppProduct.value = productData;
+      console.log(newBpp.value);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  updateItemQty: async (context: Context, { currentCart, product, quantity, customQuery }) => {
-    console.log('Mocked: updateQuantity');
-    return {};
-  },
+    }
+  };
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  clear: async (context: Context, { currentCart }) => {
-    console.log('Mocked: clearCart');
-    return {};
-  },
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  applyCoupon: async (context: Context, { currentCart, couponCode, customQuery }) => {
-    console.log('Mocked: applyCoupon');
-    return {updatedCart: {}, updatedCoupon: {}};
-  },
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  removeCoupon: async (context: Context, { currentCart, coupon, customQuery }) => {
-    console.log('Mocked: removeCoupon');
-    return {updatedCart: {}};
-  },
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  isInCart: (context: Context, { currentCart, product }) => {
-    console.log('Mocked: isInCart');
-    return false;
-  }
+  return {
+    loadCart,
+    addItem,
+    currentBpp: computed(() => currentBpp.value),
+    newBpp: computed(() => newBpp.value)
+  };
 };
 
-export default useCartFactory<Cart, CartItem, Product, Coupon>(params);
+export default useCart;

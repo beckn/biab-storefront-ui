@@ -2,7 +2,7 @@
   <div>
     <div class="s-p-addcart">
       <button
-        v-if="value == 0"
+        v-if="_value == 0"
         class="color-primary sf-button add-btn"
         :disabled="false"
         link=""
@@ -15,7 +15,6 @@
         <button
           class="sf-button--pure sf-quantity-selector__button sf-button"
           :disabled="false"
-          link=""
           data-testid="+"
           @click="changeItemNumber('remove')"
         >
@@ -23,15 +22,14 @@
         </button>
         <div
           class="quantity-value"
-          :value="value"
+          :value="_value.value"
           data-testid="sf-quantity-selector"
         >
-          {{ value }}
+          {{ _value }}
         </div>
         <button
           class="sf-button--pure sf-quantity-selector__button sf-button"
           :disabled="false"
-          link=""
           data-testid="-"
           @click="changeItemNumber('add')"
         >
@@ -43,6 +41,7 @@
 </template>
 <script>
 import { SfInput, SfIcon } from '@storefront-ui/vue';
+import { ref } from '@vue/composition-api';
 
 export default {
   name: 'AddToCart',
@@ -50,30 +49,34 @@ export default {
     SfInput,
     SfIcon
   },
-  props: ['_value', '_maxLimit'],
-  data: () => {
-    return {
-      value: 0,
-      maxLimit: 10
-    };
+  props: {
+    value: { type: Number, default: 0 },
+    maxLimit: { type: Number, default: 10 }
   },
-  methods: {
-    changeItemNumber(type) {
+  setup(props, { emit}) {
+    const _value = ref(props.value);
+    const _maxLimit = ref(props.maxLimit);
+    const changeItemNumber = (type) => {
       if (type === 'add') {
-        if (this.maxLimit) {
-          if (this.value < this.maxLimit) {
-            this.value++;
+        if (_maxLimit.value) {
+          if (_value.value < _maxLimit.value) {
+            _value.value++;
           }
         } else {
-          this.value++;
+          _value.value++;
         }
       } else if (type === 'remove') {
-        if (this.value > 0) {
-          this.value--;
+        if (_value.value > 0) {
+          _value.value--;
         }
       }
-      this.$emit('updateItemCount', this.value);
-    }
+      emit('updateItemCount', _value.value);
+    };
+    return {
+      _value,
+      _maxLimit,
+      changeItemNumber
+    };
   }
 };
 </script>
