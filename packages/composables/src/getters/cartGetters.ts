@@ -1,5 +1,6 @@
 import { CartGetters, AgnosticPrice, AgnosticTotals, AgnosticCoupon, AgnosticDiscount } from '@vue-storefront/core';
 import { Cart, LineItem } from '@vue-storefront/beckn-api/src/types';
+import { productGetters } from '.';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getCartItems = (): LineItem[] => [];
@@ -8,14 +9,11 @@ export const getCartItems = (): LineItem[] => [];
 export const getCartItemName = (product: any): string => product?.descriptor?.name || 'Product\'s name';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const getCartItemImage = (product: any): string => product?.descriptor?.images || 'https://s3-eu-west-1.amazonaws.com/commercetools-maximilian/products/081223_1_large.jpg';
+export const getCartItemImage = (product: any): string => productGetters.getGallery(product)[0].small[0] || 'https://s3-eu-west-1.amazonaws.com/commercetools-maximilian/products/081223_1_large.jpg';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getCartItemPrice = (product: any): AgnosticPrice => {
-  return {
-    regular: product?.price?.value || 12,
-    special: product?.price?.value || 10
-  };
+  return productGetters.getPrice(product);
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

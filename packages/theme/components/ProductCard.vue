@@ -1,10 +1,10 @@
 <template>
   <div class="s-product">
     <div :class="{'horizontal':horizontalView, 'vertical': !horizontalView}">
-      <div class="s-p-image">
+      <div @click="$emit('goToProduct')" class="s-p-image">
         <SfImage :src="_pImage" alt="product img" :width="85" :height="90" />
       </div>
-      <div class="s-p-details">
+      <div @click="$emit('goToProduct')" class="s-p-details">
         <div class="s-p-name">{{ _pName }}</div>
         <!-- <div class="s-p-weight">{{ _pWieght }}</div> -->
         <div class="s-p-price">₹ {{ _pPrice }}</div>
@@ -42,7 +42,7 @@ export default {
     product: {type: Object},
     pName: { type: String, default: '' },
     pWieght: { type: String, default: '' },
-    pPrice: { type: String, default: '' },
+    pPrice: { type: Number, default: '' },
     pImage: { type: String, default: '' },
     pCount: { type: Number, default: 0 },
     horizontalView: { type: Boolean, default: true },
