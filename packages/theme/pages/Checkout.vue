@@ -37,8 +37,8 @@
         <div class="p-name">Shipping</div>
         <div class="color-def">Change</div>
       </div>
-      <div class="address-card">
-        <div class="address-card-bar">
+      <Card>
+        <CardContent>
           <div class="address-bar-icon">
             <svg
               width="19"
@@ -56,10 +56,10 @@
               />
             </svg>
           </div>
-          <div class="address-text">Jasmine</div>
-        </div>
+          <div class="address-text">{{ address.name }}</div>
+        </CardContent>
         <div><hr class="sf-divider divider" /></div>
-        <div class="address-card-bar">
+        <CardContent>
           <div class="address-bar-icon">
             <svg
               width="20"
@@ -87,17 +87,31 @@
           <div class="address-text">
             2702, 31st Main, HSR Layout, Sector 1, Bangalore-560102
           </div>
-        </div>
+        </CardContent>
         <div><hr class="sf-divider divider" /></div>
-        <div class="address-card-bar">
+        <CardContent>
           <div class="address-bar-icon">
-            <svg  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  xmlns="http://www.w3.org/2000/svg">  <path    d="M14.57 5.37109C15.5467 5.56166 16.4443 6.03935 17.148 6.74303C17.8517 7.44671 18.3294 8.34436 18.52 9.32109L14.57 5.37109ZM14.57 1.37109C16.5992 1.59653 18.4915 2.50527 19.9362 3.9481C21.3808 5.39093 22.292 7.2821 22.52 9.31109L14.57 1.37109ZM21.52 17.2911V20.2911C21.5211 20.5696 21.464 20.8453 21.3525 21.1004C21.2409 21.3556 21.0773 21.5847 20.872 21.773C20.6668 21.9612 20.4245 22.1046 20.1607 22.1938C19.8969 22.283 19.6173 22.3162 19.34 22.2911C16.2628 21.9567 13.307 20.9052 10.71 19.2211C8.29378 17.6858 6.24529 15.6373 4.70995 13.2211C3.01993 10.6123 1.9682 7.64209 1.63995 4.55109C1.61496 4.27456 1.64783 3.99585 1.73645 3.73272C1.82508 3.46958 1.96752 3.22778 2.15472 3.02271C2.34191 2.81765 2.56976 2.6538 2.82374 2.54162C3.07773 2.42943 3.35229 2.37136 3.62995 2.37109H6.62995C7.11526 2.36632 7.58574 2.53817 7.95371 2.85463C8.32168 3.17108 8.56203 3.61054 8.62995 4.09109C8.75658 5.05116 8.9914 5.99382 9.32995 6.90109C9.4645 7.25902 9.49362 7.64801 9.41386 8.02197C9.3341 8.39594 9.14882 8.7392 8.87995 9.01109L7.60995 10.2811C9.03351 12.7846 11.1064 14.8575 13.61 16.2811L14.88 15.0111C15.1518 14.7422 15.4951 14.5569 15.8691 14.4772C16.243 14.3974 16.632 14.4266 16.99 14.5611C17.8972 14.8996 18.8399 15.1345 19.8 15.2611C20.2857 15.3296 20.7294 15.5743 21.0465 15.9486C21.3636 16.3229 21.5321 16.8007 21.52 17.2911Z"    stroke="black"    stroke-width="2"    stroke-linecap="round"    stroke-linejoin="round"  /></svg>
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M14.57 5.37109C15.5467 5.56166 16.4443 6.03935 17.148 6.74303C17.8517 7.44671 18.3294 8.34436 18.52 9.32109L14.57 5.37109ZM14.57 1.37109C16.5992 1.59653 18.4915 2.50527 19.9362 3.9481C21.3808 5.39093 22.292 7.2821 22.52 9.31109L14.57 1.37109ZM21.52 17.2911V20.2911C21.5211 20.5696 21.464 20.8453 21.3525 21.1004C21.2409 21.3556 21.0773 21.5847 20.872 21.773C20.6668 21.9612 20.4245 22.1046 20.1607 22.1938C19.8969 22.283 19.6173 22.3162 19.34 22.2911C16.2628 21.9567 13.307 20.9052 10.71 19.2211C8.29378 17.6858 6.24529 15.6373 4.70995 13.2211C3.01993 10.6123 1.9682 7.64209 1.63995 4.55109C1.61496 4.27456 1.64783 3.99585 1.73645 3.73272C1.82508 3.46958 1.96752 3.22778 2.15472 3.02271C2.34191 2.81765 2.56976 2.6538 2.82374 2.54162C3.07773 2.42943 3.35229 2.37136 3.62995 2.37109H6.62995C7.11526 2.36632 7.58574 2.53817 7.95371 2.85463C8.32168 3.17108 8.56203 3.61054 8.62995 4.09109C8.75658 5.05116 8.9914 5.99382 9.32995 6.90109C9.4645 7.25902 9.49362 7.64801 9.41386 8.02197C9.3341 8.39594 9.14882 8.7392 8.87995 9.01109L7.60995 10.2811C9.03351 12.7846 11.1064 14.8575 13.61 16.2811L14.88 15.0111C15.1518 14.7422 15.4951 14.5569 15.8691 14.4772C16.243 14.3974 16.632 14.4266 16.99 14.5611C17.8972 14.8996 18.8399 15.1345 19.8 15.2611C20.2857 15.3296 20.7294 15.5743 21.0465 15.9486C21.3636 16.3229 21.5321 16.8007 21.52 17.2911Z"
+                stroke="black"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
           </div>
           <div class="address-text">+91 9876543210</div>
-        </div>
-      </div>
-      <div class="address-card">
-        <div class="address-card-bar">
+        </CardContent>
+      </Card>
+      <Card>
+        <CardContent>
           <div class="address-bar-icon">
             <svg
               width="16"
@@ -112,16 +126,18 @@
               />
             </svg>
           </div>
-          <div class="address-text color-def">Add Shipping Details</div>
-        </div>
-      </div>
+          <div @click="toggleShippingModal" class="address-text color-def">
+            Add Shipping Details
+          </div>
+        </CardContent>
+      </Card>
 
       <div class="sub-heading">
         <div class="p-name">Billing</div>
         <div class="color-def">Change</div>
       </div>
-      <div class="address-card">
-        <div class="address-card-bar">
+      <Card>
+        <CardContent>
           <div class="address-bar-icon">
             <SfCheckbox
               @change="changeShippingAsBilling"
@@ -130,42 +146,91 @@
             />
           </div>
           <div class="address-text">Same as Shipping Details</div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
 
       <div class="sub-heading">
         <div class="p-name">Payment</div>
       </div>
-      <div class="address-card">
-        <div class="address-card-bar flex-space-bw">
+      <Card>
+        <CardContent class="flex-space-bw">
           <div class="address-text">SubTotal</div>
           <div class="address-text">SubTotal</div>
-        </div>
-        <div class="address-card-bar flex-space-bw">
+        </CardContent>
+        <CardContent class="flex-space-bw">
           <div class="address-text">Delivery Charges</div>
           <div class="address-text">Delivery Charges</div>
-        </div>
-        <div class="address-card-bar flex-space-bw">
+        </CardContent>
+        <CardContent class="flex-space-bw">
           <div class="address-text">Taxes (CGST)</div>
           <div class="address-text">Taxes (CGST)</div>
-        </div>
-        <div class="address-card-bar flex-space-bw">
+        </CardContent>
+        <CardContent class="flex-space-bw">
           <div class="address-text">Taxes(SGST)</div>
           <div class="address-text">Taxes(SGST)</div>
-        </div>
+        </CardContent>
         <div><hr class="sf-divider divider" /></div>
-        <div class="address-card-bar flex-space-bw">
+        <CardContent class="flex-space-bw">
           <div class="address-text bold">Total</div>
           <div class="address-text bold">Total</div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
 
       <div class="sub-heading">
         <div class="p-name">Order Policy</div>
       </div>
     </div>
     <Footer />
-    <SfOverlay :transition="'sf-fade'" :visible="true" />
+    <ModalSlide :visible="shippingAddressModal" @close="toggleShippingModal">
+      <div class="modal-heading">Shipping Details</div>
+      <div><hr class="sf-divider" /></div>
+      <div class="address-inputs-container">
+        <SfInput
+          v-model="address.name"
+          :type="'text'"
+          :label="'Name'"
+          :name="'Name'"
+          @change="() => {}"
+        />
+        <SfInput
+          v-model="address.mobile"
+          :type="'tel'"
+          :label="'Mobile Number'"
+          pattern="[0-9]{10}"
+          :name="'mobile'"
+          @change="() => {}"
+        />
+        <SfInput
+          v-model="address.address"
+          :type="'text'"
+          :label="'Complete Address'"
+          :name="'address'"
+          @change="() => {}"
+        />
+        <SfInput
+          v-model="address.building"
+          :type="'text'"
+          :label="'Building Name Floor'"
+          :name="'bulding'"
+          @change="() => {}"
+        />
+        <SfInput
+          v-model="address.locality"
+          :type="'text'"
+          :label="'Landmark (Optional)'"
+          :name="'locality'"
+          @change="() => {}"
+        />
+        <SfButton
+          class="address-button"
+          aria-label="Close modal"
+          type="button"
+          @click="close"
+          style="width: 100%"
+          >Save Shipping Details</SfButton
+        >
+      </div>
+    </ModalSlide>
   </div>
 </template>
 <script>
@@ -175,12 +240,14 @@ import {
   SfButton,
   SfModal,
   SfCheckbox,
-  SfOverlay
+  SfInput
 } from '@storefront-ui/vue';
-import CartPreview from '~/components/Checkout/CartPreview';
+import ModalSlide from '~/components/ModalSlide.vue';
 import Footer from '~/components/Footer.vue';
 import { useUiState } from '~/composables';
 import { computed, ref } from '@vue/composition-api';
+import Card from '~/components/Card.vue';
+import CardContent from '~/components/CardContent.vue';
 
 const STEPS = {
   shipping: 'Shipping',
@@ -193,24 +260,39 @@ export default {
   components: {
     SfButton,
     SfSteps,
-    CartPreview,
     SfSidebar,
     SfModal,
     SfCheckbox,
     Footer,
-    SfOverlay
+    ModalSlide,
+    SfInput,
+    Card,
+    CardContent
   },
   setup(props, context) {
     // const isThankYou = computed(() => currentStep.value === 'thank-you');
 
     const shippingAsBilling = ref(false);
+    const shippingAddressModal = ref(false);
+    // const billingAddressModal = ref(false);
+
+    const address = ref({
+      name: 'Chirag',
+      mobile: '+91 9876543210',
+      building: '221',
+      landmark: '',
+      address: '2702, 31st Main, HSR Layout, Sector 1, Bangalore-560102'
+    });
+
+    const toggleShippingModal = () => {
+      shippingAddressModal.value = !shippingAddressModal.value;
+    };
 
     const changeShippingAsBilling = () => {
       shippingAsBilling.value = !shippingAsBilling.value;
     };
 
-    const { toggleSearchVisible, toggleLocationVisible } =
-      useUiState();
+    const { toggleSearchVisible, toggleLocationVisible } = useUiState();
 
     toggleSearchVisible();
     toggleLocationVisible();
@@ -234,7 +316,10 @@ export default {
       closemodal,
       open,
       shippingAsBilling,
-      changeShippingAsBilling
+      changeShippingAsBilling,
+      shippingAddressModal,
+      toggleShippingModal,
+      address
     };
   }
 };
@@ -245,12 +330,22 @@ export default {
   font-weight: 600;
 }
 
+.modal-heading {
+  margin: 20px;
+  font-size: 20px;
+  font-weight: 500;
+}
+
 .flex-space-bw {
   justify-content: space-between;
 }
 
 .details {
   margin: 2px 34px;
+}
+
+.address-inputs-container {
+  margin: 12px 28px;
 }
 
 .address-bar-icon {
@@ -260,18 +355,6 @@ export default {
 .address-text {
   align-self: center;
   margin-left: 6px;
-}
-.address-card-bar {
-  padding: 6px 0px;
-  display: flex;
-  width: 100%;
-}
-
-.address-card {
-  border-radius: 10px;
-  background: white;
-  padding: 10px 28px;
-  box-shadow: 0px 10px 40px 0px #00000008;
 }
 
 .sub-heading {
