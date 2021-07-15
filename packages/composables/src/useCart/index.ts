@@ -5,11 +5,10 @@
 // } from '@vue-storefront/core';
 // import { Cart, CartItem, Coupon, Product } from '../types';
 import { ref, computed } from '@vue/composition-api';
-import { vsfRef } from '@vue-storefront/core';
 
 const useCart = () => {
-  const currentBpp = vsfRef('paisool', '1');
-  const newBpp = vsfRef('', '2');
+  const currentBpp = ref('');
+  const newBpp = ref('');
   const newBppProduct = ref({});
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -18,6 +17,7 @@ const useCart = () => {
     let cartData = [];
     if (localStorage.getItem('cartData')) {
       cartData = JSON.parse(localStorage.getItem('cartData'));
+      currentBpp.value = cartData[0].bppName;
     }
     return cartData;
   };
