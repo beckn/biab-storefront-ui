@@ -2,7 +2,7 @@
   <div id="home">
   <OpenSearch />
   <div @click="openCart">
-    <button>cart</button>
+    <!-- <button>cart</button> -->
   </div>
   </div>
 </template>

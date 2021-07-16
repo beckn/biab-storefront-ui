@@ -19,7 +19,7 @@
                 <div class="flexy">
                   <SfImage
                     class="back"
-                    :src='providerGetters.getProviderImages(provider)[0]'
+                    :src="providerGetters.getProviderImages(provider)[0]?providerGetters.getProviderImages(provider)[0]:require('~/assets/images/store-placeholder.png')"
                     alt="Vila stripe maxi shirt dress"
                     :width="35"
                     :height="35"
@@ -226,6 +226,7 @@ export default {
   --mega-menu-height: auto;
   padding-bottom: 70px;
   height: 70%;
+  background: #FBFCFF;
   @include for-desktop {
     --mega-menu-content-padding: var(--spacer-xl) 0;
   }

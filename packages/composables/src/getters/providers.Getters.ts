@@ -13,7 +13,7 @@ export const getProviderName = (provider: ProviderVariant): string => provider?.
 export const getProviderCode = (provider: ProviderVariant): string => provider?.descriptor?.code || 'Provider\'s code';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const getProviderImages = (provider: ProviderVariant): string[] => provider?.descriptor?.images || [''];
+export const getProviderImages = (provider: ProviderVariant): string[] => provider?.descriptor?.images || [];
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getProviderBpp = (bpp: bppDescriptor): string => bpp?.name;

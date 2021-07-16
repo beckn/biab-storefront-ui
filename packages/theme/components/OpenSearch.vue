@@ -1,4 +1,5 @@
 <template>
+<div>
     <div class="open-search">
         <h3>Open <br /> Commerce</h3>
         <h4>for All</h4>
@@ -12,6 +13,14 @@
         </SfButton>
         </div>
     </div>
+
+    <div class="sf-footer">
+      <SfFooter class="footer">
+    <p><span>By</span> <img src="../assets/images/p-b-phonepe.png" alt="" /> </p>
+    <p><span class="powered-by">Powered by</span> <img src="../assets/images/beckn-logo.png" alt="" /> </p>
+  </SfFooter>
+    </div>
+    </div>
 </template>
 <script>
 import {
@@ -19,13 +28,14 @@ import {
   SfIcon
 } from '@storefront-ui/vue';
 import { useUiState } from '~/composables';
-
+import { SfFooter } from '@storefront-ui/vue';
 const { toggleSearch, changeSearchString } = useUiState();
 
 export default {
   components: {
     SfButton,
-    SfIcon
+    SfIcon,
+    SfFooter
   },
   data() {
     return {
@@ -109,5 +119,25 @@ export default {
         }
       }
     }
+}
+.sf-footer {
+  text-align: center;
+  background: #FBFCFF !important;
+  position: fixed;
+    bottom: 10px;
+    width: 100%;
+    padding: 0;
+  p{
+    margin: 0;
+    span{
+      font-size: 17px;
+      position: relative;
+      top: -6px;
+        &.powered-by{
+          font-size: 10px;
+          top: -1px !important;
+        }
+    }
+  }
 }
 </style>

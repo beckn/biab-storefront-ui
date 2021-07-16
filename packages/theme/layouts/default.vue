@@ -19,7 +19,7 @@
       <Notification />
     </div>
     <LazyHydrate when-visible>
-      <AppFooter />
+      <!-- <AppFooter /> -->
     </LazyHydrate>
   </div>
 </template>
@@ -27,7 +27,6 @@
 <script>
 import AppHeader from '~/components/AppHeader.vue';
 import BottomNavigation from '~/components/BottomNavigation.vue';
-import AppFooter from '~/components/AppFooter.vue';
 import TopBar from '~/components/TopBar.vue';
 import CartSidebar from '~/components/CartSidebar.vue';
 import WishlistSidebar from '~/components/WishlistSidebar.vue';
@@ -44,7 +43,6 @@ export default {
     TopBar,
     AppHeader,
     BottomNavigation,
-    AppFooter,
     CartSidebar,
     WishlistSidebar,
     LoginModal,

@@ -29,6 +29,10 @@ body{
     font-family:  "Poppins",sans-serif!important;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    height: 100%;
+    min-height: 100vh;
+    overflow-x: hidden;
+    background: #FBFCFF;
 }
 .d-flex {
     display: flex;
@@ -72,16 +76,16 @@ body{
     }
 }
 
-.disable-location{
-    cursor: not-allowed;
-    opacity: 0.6;
-    .popover-blk{
-        display: none;
-    }
-    input{
-        cursor: not-allowed;
-    }
-}
+// .disable-location{
+//     cursor: not-allowed;
+//     opacity: 0.6;
+//     .popover-blk{
+//         display: none;
+//     }
+//     input{
+//         cursor: not-allowed;
+//     }
+// }
   
 //   button.sf-button--pure{
 //       background-color: transparent;
@@ -161,6 +165,7 @@ body{
         &::placeholder{
             font-size: 13px;
             font-weight: 500; 
+            color: $primary-color;
         }
     }
     button{
@@ -176,7 +181,9 @@ body{
         border-bottom: 2px solid $primary-color;
     }
 }
-
+.sf-sidebar__aside{
+    z-index: 99;
+}
 .location-list{
     padding-left: 0;
     margin-top: 0;
@@ -333,14 +340,40 @@ open-search{
     }
 }
 
+.product-gallery{
+    margin-top: 20px;
+    ul{
+        text-align: center;
+        li{
+            img{
+                width: 80%;
+                margin: auto;
+            }
+        }
+    }
+}
+.collected-product-list{
+    .s-product{
+        width: auto;
+    }
+}
 .s-product{
     background: $s-p-bg;
     padding: 15px 10px;
     border-radius: 7px;
+    width: 155px;
     .s-p-name{
         color: $s-p-name-color;
-        font-size: 10px;
+        font-size: 11px;
         font-weight: 600;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        min-height: 34px;
+        max-height: 34px;        
+    -webkit-box-orient: vertical;
+    overflow: hidden;
     }
     .s-p-weight{
         color: #8A8D8E;
@@ -351,6 +384,7 @@ open-search{
         color: $s-p-weight-color;
         font-size: 16px;
         font-weight: 500;
+        font-family: 'Roboto';
     }
     .horizontal{
         .s-p-image{   
@@ -358,6 +392,7 @@ open-search{
             width: 136px;     
             text-align: center;
             margin-bottom: 12px;
+            margin: 0px auto 12px;
         }
     }
     .vertical{
@@ -376,7 +411,7 @@ open-search{
             display: flex;
             flex-direction: column;
             align-items: flex-end;
-            justify-content: space-between;
+            justify-content: space-between;            
         }
     }
 }
@@ -441,6 +476,10 @@ open-search{
             width: 30px;
             font-weight: 500;
         }
+        button{
+            font-size: 23px;
+            color: $primary-color;
+        }
     }
 }
 
@@ -466,7 +505,8 @@ open-search{
             .f-p-total{
                 color: $s-p-weight-color;
                 font-size: 16px;
-                font-weight: 700;
+                font-weight: 700;                
+                font-family: 'Roboto';
             }
 
             .f-items{
@@ -488,6 +528,21 @@ open-search{
 
 }
 
+.header{
+    .sf-icon.color-green-primary {
+        width: 24px;
+        height: 24px;
+        position: relative;
+        left: 7px;
+    }
+}
+
+.provider-plho{
+    position: absolute;
+    z-index: 9;
+    padding: 5px;
+}
+
 .sf-mega-menu__menu{
     background: $white;
     .search__wrapper-results{
@@ -501,6 +556,7 @@ open-search{
                     border: 1px solid #E3E3E3;
                     border-radius: 5px;
                     box-shadow: 0px 4px 88px #F5F5F5;
+                    height: 36px;
                 }            
             }
             .exp-provider{
@@ -508,6 +564,18 @@ open-search{
             }
             .p-name{
                 font-size: 16px;
+            }
+            .sf-image {
+                object-fit: contain !important;
+                position: relative !important;
+                // background: url("./images/STORE.png");
+                background-repeat: no-repeat;
+                background-size: 100%;
+                width: 75%;
+                margin: auto;
+                &:not{
+                    position: relative !important;
+                }
             }
         }
 
@@ -521,5 +589,9 @@ open-search{
   
     .sf-image {
         object-fit: contain !important;
+        position: relative !important;
+        &:not{
+            position: relative !important;
+        }
     }
 }

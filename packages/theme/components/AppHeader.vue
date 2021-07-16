@@ -6,7 +6,7 @@
   <div class="header-container">
     <div class="header h-padding">
       <nuxt-link :to="localePath('/')" >
-        <SfImage src="/icons/beckn-logo.svg" :width="63" :height="20" alt="Vue Storefront Next" class=""/>
+        <SfImage src="/icons/beckn.png" :width="63" :height="20" alt="Vue Storefront Next" class=""/>
       </nuxt-link>
       <SfIcon icon="more" color="green-primary" />
     </div>
@@ -294,8 +294,9 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #f5f5f5;
+    background-color: #ffffff;
     padding: 10px 0;
+    border-bottom: 0.5px solid #f1f1f1;
   }
   .h-padding{
     padding-left: var(--spacer-sm);
@@ -313,7 +314,7 @@ export default {
   .location-btn{
     color: #37474F;
     padding: 13px 15px;
-    box-shadow: 0px 4px 60px rgba(0, 0, 0, 0.07);
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.07);
     position: relative;
     // z-index: 99;
     .selected-location{
