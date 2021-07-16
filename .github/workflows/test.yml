@@ -5,6 +5,7 @@ on: [ push ]
 jobs:
   prepare_dependencies:
     name: Prepare dependencies
+    if: github.ref == 'refs/heads/main'
     runs-on: [self-hosted, linux]
     steps:
       - name: Checkout code
@@ -27,6 +28,7 @@ jobs:
   test:
     name: Test api-client and composables
     needs: prepare_dependencies
+    if: github.ref == 'refs/heads/main'
     runs-on: [self-hosted, linux]
     steps:
       - name: Checkout code

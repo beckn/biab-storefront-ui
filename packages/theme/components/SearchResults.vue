@@ -64,6 +64,18 @@
         </div>
       </transition-group>
     </SfMegaMenu>
+      <div v-if="totalCartItem" class="sr-footer">
+        <Footer
+          @buttonClick="toggleCartSidebar"
+          :totalPrice="totalCartPrice.total"
+          :totalItem="totalCartItem"
+          buttonText="View Cart"
+        >
+          <template v-slot:buttonIcon>
+            <SfIcon icon="empty_cart" color="white" :coverage="1" />
+          </template>
+        </Footer>
+    </div>
   </div>
 </template>
 <script>
@@ -75,13 +87,16 @@ import {
   SfScrollable,
   SfMenuItem,
   SfButton,
-  SfImage
+  SfImage,
+  SfIcon
 } from '@storefront-ui/vue';
 import { ref, watch, computed } from '@vue/composition-api';
-import { productGetters, providerGetters } from '@vue-storefront/beckn';
+import { productGetters, providerGetters, cartGetters } from '@vue-storefront/beckn';
 import { useCart } from '@vue-storefront/beckn';
 import ProductCard from './ProductCard';
 import LoadingCircle from './LoadingCircle';
+import Footer from '~/components/Footer';
+import { useUiState } from '~/composables';
 
 export default {
   name: 'SearchResults',
@@ -95,7 +110,9 @@ export default {
     SfButton,
     SfImage,
     ProductCard,
-    LoadingCircle
+    LoadingCircle,
+    SfIcon,
+    Footer
   },
   props: {
     visible: {
@@ -119,6 +136,18 @@ export default {
     const isSearchOpen = ref(props.visible);
     const catalogs = computed(() => props.result?.value);
     const totalSearch = ref(0);
+    const { toggleCartSidebar } = useUiState();
+
+    const totalCartItem = ref(0);
+    const totalCartPrice = ref(0);
+    const cartData = ref([]);
+
+    const geItemPrice = () => {
+      totalCartPrice.value = cartGetters.getTotals(cartData);
+      totalCartItem.value = cartGetters.getTotalItems(cartData);
+      console.log(totalCartItem, totalCartPrice);
+    };
+
     watch(() => props.visible, (newVal) => {
       isSearchOpen.value = newVal;
       if (isSearchOpen.value) {
@@ -131,9 +160,13 @@ export default {
 
     watch(()=> props.result?.value, (newValue) => {
       if (newValue) {
+        let reusltNum = 0;
         for (const bpp of newValue) {
-          totalSearch.value = bpp.bpp_providers.length;
+          for (const provider of bpp.bpp_providers) {
+            reusltNum += provider.items.length;
+          }
         }
+        totalSearch.value = reusltNum;
       }
 
     });
@@ -149,7 +182,9 @@ export default {
     };
     const updateItemCount = (data, provider, index) => {
       provider.items[index].quantity = data;
-      addItem({bppName: provider.descriptor.name, item: provider.items[index]});
+      cartData.value = addItem({bppName: provider.descriptor.name, item: provider.items[index]});
+      console.log(cartData);
+      geItemPrice();
     };
 
     return {
@@ -160,7 +195,10 @@ export default {
       LoadingCircle,
       totalSearch,
       goToProduct,
-      updateItemCount
+      updateItemCount,
+      toggleCartSidebar,
+      totalCartItem,
+      totalCartPrice
     };
   }
 };
@@ -184,6 +222,13 @@ export default {
   font-size: 12px;
   font-weight: 400;
   padding-bottom: 10px;
+}
+.sr-footer{
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: 3;
 }
 .provider-head{
   display: flex;
