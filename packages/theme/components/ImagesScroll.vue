@@ -1,5 +1,5 @@
 <template>
-  <div class="sf-gallery">
+  <div class="sf-gallery product-gallery">
     <div>
       <div ref="glide" class="glide">
         <div class="glide__track" data-glide-el="track">
@@ -207,7 +207,7 @@ export default {
 
 .corousel_indicators {
   position: relative;
-  bottom: 50px;
+  bottom: 25px;
   display: flex;
   margin: auto;
 

@@ -12,8 +12,7 @@
       <div class="images">
         <LazyHydrate when-visible>
         <ImagesScroll
-          :imageWidth="550"
-          :imageHeight="400"
+          :imageHeight="350"
           :images="images"
           class="product__gallery"
         />
@@ -227,7 +226,7 @@ export default {
 }
 
 .images {
-  height: 400px;
+  // height: 400px;
   overflow: hidden;
 }
 
@@ -298,6 +297,7 @@ export default {
 .s-p-price {
   color: #f37a20;
   font-size: 22px;
+  font-family: 'Roboto';
 }
 
 .product {
