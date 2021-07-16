@@ -9,7 +9,7 @@ jobs:
     runs-on: [self-hosted, linux]
     steps:
       - name: Running a git level clean
-        run: git clean -fdxX
+        run: git clean -fdX
 
       - name: Checkout code
         uses: actions/checkout@v2
