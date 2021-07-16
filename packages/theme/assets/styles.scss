@@ -370,10 +370,12 @@ open-search{
         overflow: hidden;
         display: -webkit-box;
         -webkit-line-clamp: 2;
-        min-height: 34px;
-        max-height: 34px;        
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+        min-height: 30px;
+        max-height: 30px;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        line-height: 14px;
+        margin-bottom: 6px;
     }
     .s-p-weight{
         color: #8A8D8E;
@@ -582,7 +584,7 @@ open-search{
 
     }
     .results--mobile{
-        background: transparent;
+        background: transparent !important;
     }
  
 }
