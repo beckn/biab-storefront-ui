@@ -8,6 +8,9 @@ jobs:
     if: github.ref == 'refs/heads/main'
     runs-on: [self-hosted, linux]
     steps:
+      - name: Running a git level clean
+        run: git clean -fdxX
+
       - name: Checkout code
         uses: actions/checkout@v2
 
@@ -44,6 +47,9 @@ jobs:
         with:
           path: '**/node_modules'
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+      
+      - name: Clean yarn cache
+        run: yarn cache clean
 
       - name: Build api-client
         run: yarn build:api-client

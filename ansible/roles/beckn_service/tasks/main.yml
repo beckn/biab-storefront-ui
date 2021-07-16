@@ -29,3 +29,6 @@
     src: "../../../../nginx.conf.j2"
     dest: "{{ user_dir }}/nginx.conf"
     backup: yes
+
+- name: Cleanup older docker images
+  command: "docker image prune --all --force --filter until=$(date "--date=`date` -2 DAY" +%Y-%m-%dT%H:%m)"
