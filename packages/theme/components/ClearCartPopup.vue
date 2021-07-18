@@ -9,10 +9,10 @@
       />
       <div class="title">Clear your Cart</div>
       <div class="text-detail">
-        Your cart has items from {{ currentBpp.value }} Mart.
+        Your cart has items from {{ cart.bppName }} Mart.
       </div>
       <div class="text-detail">Do you wish to clear cart and add</div>
-      <div class="text-detail">items from {{ newBpp.value }} mart?</div>
+      <div class="text-detail">items from {{ cart.bppName }} mart?</div>
       <div class="button-container">
         <button
           class="sf-button sf-button--full-width button-s no"
@@ -43,11 +43,10 @@ export default {
     SfImage
   },
   setup() {
-    const { currentBpp, newBpp } = useCart();
+    const { cart } = useCart();
     const show = ref(false);
-    console.log(newBpp.value);
 
-    watch(() => newBpp.value, (newval) => {
+    watch(() => cart.bppName, (newval) => {
       console.log(newval, 'popup');
       show.value = true;
     });
@@ -62,8 +61,7 @@ export default {
 
     return {
       show,
-      currentBpp,
-      newBpp,
+      cart,
       onClickYes,
       onClickNo
     };

@@ -1,6 +1,6 @@
 import { CartGetters, AgnosticPrice, AgnosticTotals, AgnosticCoupon, AgnosticDiscount } from '@vue-storefront/core';
 import { Cart, LineItem } from '@vue-storefront/beckn-api/src/types';
-import { productGetters } from '.';
+import productGetters from './productGetters';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getCartItems = (): LineItem[] => [];

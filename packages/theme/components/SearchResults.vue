@@ -181,8 +181,8 @@ export default {
       });
     };
     const updateItemCount = (data, provider, index) => {
-      provider.items[index].quantity = data;
-      cartData.value = addItem({bppName: provider.descriptor.name, item: provider.items[index]});
+      // debugger;
+      cartData.value = addItem({product: provider.items[index], quantity: data, customQuery: {bppName: provider.descriptor.name} });
       console.log(cartData);
       geItemPrice();
     };

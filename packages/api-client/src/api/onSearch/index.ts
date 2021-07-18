@@ -8,7 +8,7 @@ import { Context } from '@vue-storefront/core';
 export default async function onSearch(context: Context, params: PollRequest): Promise<any> {
   // eslint-disable-next-line camelcase
   // params.message_id = '82ef779d-65db-46cd-9e59-5e349685d181';
-  console.log('onsearch api', params);
+  // console.log('onsearch api', params);
   const qParams = buildOnSearchRequest(params);
   const config = (context.config as Config);
   const client = (context.client as sa.SuperAgent<sa.SuperAgentRequest>);
