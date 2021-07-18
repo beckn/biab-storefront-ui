@@ -55,7 +55,7 @@
             </SfButton>
           </template>
         </SfSearchBar>
-    <SearchResults :visible="isSearchOpen" :result="result" :noSearchFound="noSearchFound" :enableLoader="enableloadingCircle" @removeSearchResults="removeSearchResults" />
+    <SearchResults :visible="isSearchOpen" :result="pollResults" :noSearchFound="noSearchFound" :enableLoader="enableloadingCircle" @removeSearchResults="removeSearchResults" />
       </div>
     </div>
   </div>
@@ -126,11 +126,10 @@ export default {
     // const { setTermForUrl } = useUiHelpers();
     const { setTermForUrl} = useUiHelpers();
     const { isAuthenticated, load: loadUser } = useUser();
-    const { search, result: facetResults } = useFacet();
+    const { search, result } = useFacet();
     const { pollResults, poll, polling } = useOnSearch();
     const { load: loadWishlist } = useWishlist();
     const searchBarRef = ref(null);
-    const result = ref(null);
     const location = ref(null);
     const enableLoadindBar = ref(false);
     const enableloadingCircle = ref(false);
@@ -188,21 +187,20 @@ export default {
         }
       });
       // eslint-disable-next-line camelcase
-      await poll({message_id: facetResults.value.data.ackResponse.context.message_id});
+      await poll({message_id: result.value.data.ackResponse.context.message_id});
       console.log('POLL', pollResults.value.length);
 
-      result.value = pollResults;
       watch(()=>polling.value, (newValue)=>{
         if (!newValue) {
           enableloadingCircle.value = false;
           enableLoadindBar.value = false;
-          if (result?.value?.value.length === 0) {
+          if (pollResults?.value.length === 0) {
             noSearchFound.value = true;
           }
         }
       });
 
-      console.log('result value', result.value);
+      console.log('result value', pollResults.value);
     }, 1000);
 
     watch(searchString, (newVal)=>{
@@ -223,7 +221,7 @@ export default {
     };
 
     const removeSearchResults = () => {
-      result.value = null;
+      pollResults.value = null;
     };
 
     onBeforeUnmount(() => {
@@ -238,7 +236,7 @@ export default {
       setTermForUrl,
       closeSearch,
       handleSearch,
-      result,
+      pollResults,
       searchBarRef,
       isMobile,
       removeSearchResults,
