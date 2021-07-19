@@ -120,7 +120,7 @@ export default {
       default: false
     },
     result: {
-      type: Object
+      type: Array
     },
     enableLoader: {
       type: Boolean,
@@ -134,7 +134,7 @@ export default {
   setup(props, { emit, root }) {
     const { addItem } = useCart();
     const isSearchOpen = ref(props.visible);
-    const catalogs = computed(() => props.result?.value);
+    const catalogs = computed(() => props.result);
     const totalSearch = ref(0);
     const { toggleCartSidebar } = useUiState();
 
@@ -158,7 +158,7 @@ export default {
       }
     });
 
-    watch(()=> props.result?.value, (newValue) => {
+    watch(()=> props.result, (newValue) => {
       if (newValue) {
         let reusltNum = 0;
         for (const bpp of newValue) {
