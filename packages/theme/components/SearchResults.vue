@@ -37,14 +37,14 @@
               <div class="results--mobile">
                 <ProductCard
                   v-for="(product, index) in provider.items"
-                  @goToProduct="goToProduct(product,provider)"
+                  @goToProduct="goToProduct(product,provider,bpp)"
                   :key="index"
                   :pName="productGetters.getName(product)"
                   :pPrice="productGetters.getPrice(product).regular"
                   :pImage="productGetters.getGallery(product)[0].small[0]"
                   :pWieght="productGetters.getProductWeight(product)+' kg'"
                   :pCount="cartGetters.getItemQty(isInCart({product}))"
-                  @updateItemCount="(item)=>updateItemCount(item, provider, index)"
+                  @updateItemCount="(item)=>updateItemCount(item, provider, bpp, index)"
                 />
               </div>
               <div><hr class="sf-divider" /></div>
@@ -170,8 +170,8 @@ export default {
 
     };
 
-    const goToProduct = (product, provider) => {
-      const data = btoa(JSON.stringify({product, provider: provider.descriptor}));
+    const goToProduct = (product, provider, bpp) => {
+      const data = btoa(JSON.stringify({product, provider: provider.descriptor, bppProvider: bpp.bpp_descriptor}));
       root.$router.push({
         path: root.$route.path + 'product',
         query: {
@@ -179,8 +179,9 @@ export default {
         }
       });
     };
-    const updateItemCount = (data, provider, index) => {
-      addItem({product: provider.items[index], quantity: data, customQuery: {bppName: provider.descriptor.name} });
+    const updateItemCount = (data, provider, bpp, index) => {
+      console.log(bpp.bpp_descriptor.name);
+      addItem({product: provider.items[index], quantity: data, customQuery: {bppName: provider.descriptor.name, bppProvider: bpp.bpp_descriptor.name} });
       geItemPrice();
     };
 

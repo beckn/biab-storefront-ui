@@ -139,7 +139,7 @@ export default {
     toggleLocationVisible();
 
     const data = context.root.$route.query.data;
-    const { product, provider } = JSON.parse(
+    const { product, provider, bppProvider} = JSON.parse(
       Buffer.from(data, 'base64').toString()
     );
     const { addItem, cart, load, isInCart } = useCart();
@@ -151,7 +151,7 @@ export default {
       addItem({
         product: product,
         quantity: value,
-        customQuery: { bppName: provider.name }
+        customQuery: { bppName: provider.name, bppProvider: bppProvider.name}
       });
     };
 

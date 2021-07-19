@@ -15,9 +15,13 @@ export type Coupon = Record<string, unknown>;
 type Cart = {
   // id: number;
   bppName: string;
+  bppProviderName: string,
   items: CartProduct[];
   totalPrice: number;
   totalItems: number;
+  newBpp: string;
+  newProviderName: string;
+  newProduct: Product;
 };
 
 const params = {
@@ -28,8 +32,12 @@ const params = {
     let cartData = {
       items: [],
       bppName: '',
+      bppProviderName: '',
       totalPrice: 0,
-      totalItems: 0
+      totalItems: 0,
+      newBpp: '',
+      newProviderName: '',
+      newProduct: null
     };
     if (localStorage.getItem('cartData')) {
       cartData = JSON.parse(localStorage.getItem('cartData'));
@@ -39,9 +47,27 @@ const params = {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   addItem: async (context: Context, { currentCart, product, quantity, customQuery }) => {
-
+    // debugger;
+    if (customQuery.clearCart) {
+      localStorage.removeItem('cartData');
+      currentCart = {
+        items: [],
+        bppName: '',
+        bppProviderName: '',
+        totalPrice: 0,
+        totalItems: 0,
+        newBpp: '',
+        newProviderName: '',
+        newProduct: null
+      };
+    }
     const price = productGetters.getPrice(product).regular;
-    if (currentCart.bppName !== '' && customQuery.bppName !== currentCart.bppName) {
+    if (currentCart.bppName !== '' && (currentCart.bppProviderName !== customQuery.bppProvider || customQuery.bppName !== currentCart.bppName)) {
+      console.log('chcek', customQuery.bppName, customQuery.bppProvider);
+
+      currentCart.newBpp = customQuery.bppName;
+      currentCart.newProviderName = customQuery.bppProvider;
+      currentCart.newProduct = { quantity, ...product };
       return { ...currentCart };
     }
     const exisitingIndex = currentCart.items.findIndex(p => p.id === product.id);
@@ -55,6 +81,12 @@ const params = {
       currentCart.items[exisitingIndex].quantity = quantity;
       if (quantity === 0) {
         currentCart.items.splice(exisitingIndex, 1);
+        if (currentCart.totalItems === 0) {
+          currentCart.bppName = '';
+          currentCart.newBpp = '';
+          currentCart.bppProviderName = '';
+          currentCart.newProviderName = '';
+        }
       }
     } else {
       product = { quantity, ...product };
@@ -63,46 +95,15 @@ const params = {
       currentCart.totalPrice += priceDifference;
       currentCart.totalItems += quantity;
       currentCart.items.push(product);
+      currentCart.bppName = customQuery.bppName;
+      currentCart.newBpp = customQuery.bppName;
+      currentCart.bppProviderName = customQuery.bppProvider;
+      currentCart.newProviderName = customQuery.bppProvider;
     }
 
     localStorage.setItem('cartData', JSON.stringify(currentCart));
-    return { ...currentCart, bppName: customQuery.bppName };
+    return { ...currentCart };
   },
-
-  // const addItem = (context, productData: { bppName: string, item: { id: any, quantity: number } }, reset = false) => {
-  //   if (localStorage.getItem('cartData') && JSON.parse(localStorage.getItem('cartData')).length > 0) {
-  //     cartData = JSON.parse(localStorage.getItem('cartData'));
-  //   } else {
-  //     cartData = [productData];
-  //     currentBpp.value = productData.bppName;
-  //     localStorage.setItem('cartData', JSON.stringify(cartData));
-  //     return cartData;
-  //   }
-
-  //   if (productData.bppName === currentBpp.value) {
-  //     for (let i = 0; i < cartData.length; i++) {
-  //       if (cartData[i].item.id === productData.item.id) {
-  //         // eslint-disable-next-line max-depth
-  //         if (productData.item.quantity === 0) {
-  //           cartData.splice(i, 1);
-  //           localStorage.setItem('cartData', JSON.stringify(cartData));
-  //           return cartData;
-  //         }
-  //         cartData[i] = productData;
-  //         localStorage.setItem('cartData', JSON.stringify(cartData));
-  //         return cartData;
-  //       }
-  //     }
-  //     cartData.push(productData);
-  //     localStorage.setItem('cartData', JSON.stringify(cartData));
-  //     return cartData;
-  //   } else {
-  //     newBpp.value = productData.bppName;
-  //     newBppProduct.value = productData;
-  //     console.log(newBpp.value);
-
-  //   }
-  // };
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   removeItem: async (context: Context, { currentCart, product, customQuery }) => {
