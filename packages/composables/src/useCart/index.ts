@@ -8,6 +8,7 @@ import { useCartFactory } from '@vue-storefront/core';
 // import { ref, computed } from '@vue/composition-api';
 import { Context } from 'node:vm';
 import { CartProduct, Product } from '../types';
+import productGetters from '../getters/productGetters';
 
 export type Coupon = Record<string, unknown>;
 
@@ -15,8 +16,8 @@ type Cart = {
   // id: number;
   bppName: string;
   items: CartProduct[];
-  totalPrice:number;
-  totalItems:number;
+  totalPrice: number;
+  totalItems: number;
 };
 
 const params = {
@@ -38,21 +39,34 @@ const params = {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   addItem: async (context: Context, { currentCart, product, quantity, customQuery }) => {
-    // debugger;
-    const items = currentCart.items;
+
+    const price = productGetters.getPrice(product).regular;
     if (currentCart.bppName !== '' && customQuery.bppName !== currentCart.bppName) {
       return { ...currentCart };
     }
-    const exisiting = items.find(p => p.id === product.id);
-    if (exisiting) {
-      exisiting.quantity = exisiting.quantity + quantity;
+    const exisitingIndex = currentCart.items.findIndex(p => p.id === product.id);
+    if (exisitingIndex !== -1) {
+      const oldQuantity = currentCart.items[exisitingIndex].quantity;
+      const quantityDiff = (quantity - oldQuantity);
+      const priceDifference = quantityDiff * price;
+
+      currentCart.totalPrice += priceDifference;
+      currentCart.totalItems += quantityDiff;
+      currentCart.items[exisitingIndex].quantity = quantity;
+      if (quantity === 0) {
+        currentCart.items.splice(exisitingIndex, 1);
+      }
     } else {
-      product = { quantity: 1, ...product };
+      product = { quantity, ...product };
+      const priceDifference = quantity * price;
+
+      currentCart.totalPrice += priceDifference;
+      currentCart.totalItems += quantity;
       currentCart.items.push(product);
     }
 
     localStorage.setItem('cartData', JSON.stringify(currentCart));
-    return currentCart;
+    return { ...currentCart, bppName: customQuery.bppName };
   },
 
   // const addItem = (context, productData: { bppName: string, item: { id: any, quantity: number } }, reset = false) => {
@@ -122,7 +136,8 @@ const params = {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   isInCart: (context: Context, { currentCart, product }) => {
-    const exisiting = currentCart.items.find(p => p.id === product.id);
+    // debugger
+    const exisiting = currentCart?.items.find(p => p.id === product.id);
     if (exisiting) {
       return exisiting;
     }

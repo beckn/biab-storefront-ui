@@ -11,18 +11,22 @@
         <div></div>
       </template>
       <transition name="sf-fade" mode="out-in">
-        <div v-if="totalItems" key="my-cart" class="my-cart">
+        <div
+          v-if="cartGetters.getTotalItems(cart)"
+          key="my-cart"
+          class="my-cart"
+        >
           <div class="collected-product-list">
             <transition-group name="sf-fade" tag="div">
               <ProductCard
                 name="product-card"
                 class="product-card"
-                v-for="(product, index) in products"
+                v-for="(product, index) in cartGetters.getItems(cart)"
                 :key="index + 'new'"
-                :pName="cartGetters.getItemName(product.item)"
-                :pPrice="cartGetters.getItemPrice(product.item).regular"
-                :pImage="cartGetters.getItemImage(product.item)"
-                :pCount="cartGetters.getItemQty(product.item)"
+                :pName="cartGetters.getItemName(product)"
+                :pPrice="cartGetters.getItemPrice(product).regular"
+                :pImage="cartGetters.getItemImage(product)"
+                :pCount="cartGetters.getItemQty(product)"
                 :horizontalView="false"
                 :deleteCard="true"
                 :dropdownCouner="true"
@@ -50,16 +54,16 @@
         </div>
       </transition>
       <div class="c-footer">
-          <Footer
-            @buttonClick="footerClick"
-            :totalPrice="totals.total"
-            :totalItem="totalItems"
-            buttonText="checkout"
-          >
-            <template v-slot:buttonIcon>
-              <SfIcon icon="empty_cart" color="white" :coverage="1" />
-            </template>
-          </Footer>
+        <Footer
+          @buttonClick="footerClick"
+          :totalPrice="cartGetters.getTotals(cart).total"
+          :totalItem="cartGetters.getTotalItems(cart)"
+          buttonText="checkout"
+        >
+          <template v-slot:buttonIcon>
+            <SfIcon icon="empty_cart" color="white" :coverage="1" />
+          </template>
+        </Footer>
       </div>
     </SfSidebar>
   </div>
@@ -75,7 +79,6 @@ import {
   SfCollectedProduct,
   SfImage
 } from '@storefront-ui/vue';
-import { ref, watch } from '@vue/composition-api';
 import { useCart, cartGetters } from '@vue-storefront/beckn';
 import { useUiState } from '~/composables';
 import ProductCard from './ProductCard';
@@ -95,53 +98,29 @@ export default {
     ProductCard,
     Footer
   },
-  setup() {
+  setup(_, { root }) {
     const { isCartSidebarOpen, toggleCartSidebar } = useUiState();
-    const { loadCart, addItem } = useCart();
-    const products = ref([]);
-    const totals = ref(cartGetters.getTotals(products));
-    const totalItems = ref(cartGetters.getTotalItems(products));
-    console.log(products.value);
-    console.log(totalItems);
-
-    const geItemPrice = () => {
-      totals.value = cartGetters.getTotals(products);
-      totalItems.value = cartGetters.getTotalItems(products);
-    };
-
-    watch(
-      () => isCartSidebarOpen.value,
-      (newVal) => {
-        if (newVal) {
-          loadCart().then((cartData) => {
-            console.log(cartData);
-            products.value = cartData;
-            geItemPrice();
-            console.log(products);
-          });
-        }
-      }
-    );
+    const { cart, addItem } = useCart();
 
     const updateItemCount = (data, index) => {
       console.log(data, index);
-      products.value[index].item.quantity = data;
-      products.value = addItem(products.value[index]);
-      console.log(products);
-      geItemPrice();
+      addItem({
+        product: cart.value.items[index],
+        quantity: data,
+        customQuery: { bppName: cart.value.bppName }
+      });
     };
 
     const footerClick = () => {
-      console.log('click');
+      toggleCartSidebar();
+      root.$router.push('/checkout');
     };
 
     return {
-      products,
       isCartSidebarOpen,
       toggleCartSidebar,
-      totals,
-      totalItems,
       cartGetters,
+      cart,
       updateItemCount,
       footerClick
     };
@@ -165,7 +144,7 @@ export default {
   padding: 0 !important;
 }
 
-.c-footer{
+.c-footer {
   width: 100%;
   position: fixed;
   left: 0;

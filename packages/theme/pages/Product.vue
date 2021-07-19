@@ -11,12 +11,12 @@
       </div>
       <div class="images">
         <LazyHydrate when-visible>
-        <ImagesScroll
-          :imageHeight="350"
-          :images="images"
-          class="product__gallery"
-        />
-      </LazyHydrate>
+          <ImagesScroll
+            :imageHeight="350"
+            :images="images"
+            class="product__gallery"
+          />
+        </LazyHydrate>
       </div>
 
       <div class="product__info">
@@ -37,7 +37,7 @@
           <div class="s-p-price">
             ₹ {{ productGetters.getPrice(product).regular }}
           </div>
-          <AddToCart :value='product.quantity' @updateItemCount="updateCart" />
+          <AddToCart :value="cartGetters.getItemQty(isInCart({product}))" @updateItemCount="updateCart" />
         </div>
         <div><hr class="sf-divider divider" /></div>
 
@@ -51,7 +51,7 @@
           </SfAccordion>
         </LazyHydrate>
 
-        <div v-if="totalCartItem" class="bottom-bar-cart">
+        <div v-if="cartGetters.getTotalItems(cart)" class="bottom-bar-cart">
           <!-- <ul class="list-inline">
             <li>
               <h3>Total</h3>
@@ -74,7 +74,7 @@
               />
             </li>
           </ul> -->
-        <!-- <div class="cart-checkout">
+          <!-- <div class="cart-checkout">
             <div>
               </div>
             <div class="sf-chevron--right sf-chevron">
@@ -84,8 +84,8 @@
           </div> -->
           <Footer
             @buttonClick="toggleCartSidebar"
-            :totalPrice="totalCartPrice.total"
-            :totalItem="totalCartItem"
+            :totalPrice="cart.totalPrice"
+            :totalItem="cartGetters.getTotalItems(cart)"
             buttonText="View Cart"
           >
             <template v-slot:buttonIcon>
@@ -121,15 +121,10 @@ import ImagesScroll from '~/components/ImagesScroll.vue';
 import SfAccordionItem from '~/components/Accordion.vue';
 import Footer from '~/components/Footer';
 import { useUiState } from '~/composables';
-import { ref } from '@vue/composition-api';
-import {
-  useCart,
-  cartGetters,
-  productGetters
-} from '@vue-storefront/beckn';
+import { useCart, cartGetters, productGetters } from '@vue-storefront/beckn';
 import MobileStoreBanner from '~/components/MobileStoreBanner.vue';
 import LazyHydrate from 'vue-lazy-hydration';
-import { onUnmounted } from '@vue/composition-api';
+import { onUnmounted, onBeforeMount } from '@vue/composition-api';
 
 export default {
   name: 'Product',
@@ -144,37 +139,30 @@ export default {
     toggleLocationVisible();
 
     const data = context.root.$route.query.data;
-    const {product, provider} = JSON.parse(Buffer.from(data, 'base64').toString());
-    const {addItem, loadCart} = useCart();
+    const { product, provider } = JSON.parse(
+      Buffer.from(data, 'base64').toString()
+    );
+    const { addItem, cart, load, isInCart } = useCart();
     console.log('product', product, provider);
-    // debugger;
     const images = productGetters.getImages(product);
     const goBack = () => context.root.$router.back();
-    const totalCartItem = ref(0);
-    const totalCartPrice = ref(0);
-    const cart = ref();
 
-    const geItemPrice = () => {
-      totalCartPrice.value = cartGetters.getTotals(cart);
-      totalCartItem.value = cartGetters.getTotalItems(cart);
+    const updateCart = async (value) => {
+      addItem({
+        product: product,
+        quantity: value,
+        customQuery: { bppName: provider.name }
+      });
     };
+
+    onBeforeMount(async () => {
+      await load();
+    });
 
     onUnmounted(async () => {
       toggleSearchVisible();
       toggleLocationVisible();
     });
-
-    loadCart().then(value=>{
-      cart.value = value;
-      geItemPrice();
-    });
-
-    const updateCart = async (value) => {
-      product.quantity = value;
-      cart.value = addItem({bppName: provider.name, item: product});
-      geItemPrice();
-    };
-
     return {
       images,
       toggleCartSidebar,
@@ -185,9 +173,8 @@ export default {
       toggleSearchVisible,
       productGetters,
       toggleLocationVisible,
-      totalCartItem,
-      totalCartPrice
-      // productGallery
+      isInCart,
+      cartGetters
     };
   },
   components: {

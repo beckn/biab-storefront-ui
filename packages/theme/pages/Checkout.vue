@@ -33,6 +33,31 @@
         </div>
       </div>
 
+      <div :key="index + 'new'" v-for="(product, index) in cartGetters.getItems(cart)">
+        <!-- <ProductCard
+          name="product-card"
+          class="product-card"
+          v-for="(product, index) in cartGetters.getItems(cart)"
+          :key="index + 'new'"
+          :pName="cartGetters.getItemName(product)"
+          :pPrice="cartGetters.getItemPrice(product).regular"
+          :pImage="cartGetters.getItemImage(product)"
+          :pCount="cartGetters.getItemQty(product)"
+          :horizontalView="false"
+          :deleteCard="false"
+          @updateItemCount="(item) => updateItemCount(item, index)"
+          @deleteItem="updateItemCount(0, index)"
+        /> -->
+        <div class="s-p-image">
+          <SfImage :src="cartGetters.getItemImage(product)" alt="product img" :width="85" :height="90" />
+        </div>
+        <div class="s-p-details">
+          <div class="s-p-name">{{ cartGetters.getItemName(product) }}</div>
+          <!-- <div class="s-p-weight">{{ _pWieght }}</div> -->
+          <div class="s-p-price">₹ {{ cartGetters.getItemPrice(product).regular }}</div>
+        </div>
+      </div>
+
       <div class="sub-heading">
         <div class="p-name">Shipping</div>
         <div class="color-def">Change</div>
@@ -225,7 +250,7 @@
           class="address-button"
           aria-label="Close modal"
           type="button"
-          @click="close"
+          @click="closemodal"
           style="width: 100%"
           >Save Shipping Details</SfButton
         >
@@ -240,14 +265,19 @@ import {
   SfButton,
   SfModal,
   SfCheckbox,
+  SfImage,
   SfInput
 } from '@storefront-ui/vue';
 import ModalSlide from '~/components/ModalSlide.vue';
 import Footer from '~/components/Footer.vue';
 import { useUiState } from '~/composables';
+import { useCart, cartGetters } from '@vue-storefront/beckn';
+
 import { computed, ref } from '@vue/composition-api';
 import Card from '~/components/Card.vue';
 import CardContent from '~/components/CardContent.vue';
+
+import ProductCard from '~/components/ProductCard';
 
 const STEPS = {
   shipping: 'Shipping',
@@ -267,7 +297,9 @@ export default {
     ModalSlide,
     SfInput,
     Card,
-    CardContent
+    SfImage,
+    CardContent,
+    ProductCard
   },
   setup(props, context) {
     // const isThankYou = computed(() => currentStep.value === 'thank-you');
@@ -275,6 +307,8 @@ export default {
     const shippingAsBilling = ref(false);
     const shippingAddressModal = ref(false);
     // const billingAddressModal = ref(false);
+
+    const { cart } = useCart();
 
     const address = ref({
       name: 'Chirag',
@@ -319,7 +353,9 @@ export default {
       changeShippingAsBilling,
       shippingAddressModal,
       toggleShippingModal,
-      address
+      address,
+      cartGetters,
+      cart
     };
   }
 };

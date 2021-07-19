@@ -43,6 +43,7 @@
                   :pPrice="productGetters.getPrice(product).regular"
                   :pImage="productGetters.getGallery(product)[0].small[0]"
                   :pWieght="productGetters.getProductWeight(product)+' kg'"
+                  :pCount="cartGetters.getItemQty(isInCart({product}))"
                   @updateItemCount="(item)=>updateItemCount(item, provider, index)"
                 />
               </div>
@@ -64,11 +65,11 @@
         </div>
       </transition-group>
     </SfMegaMenu>
-      <div v-if="totalCartItem" class="sr-footer">
+      <div v-if="cart.totalItems" class="sr-footer">
         <Footer
           @buttonClick="toggleCartSidebar"
-          :totalPrice="totalCartPrice.total"
-          :totalItem="totalCartItem"
+          :totalPrice="cart.totalPrice"
+          :totalItem="cart.totalItems"
           buttonText="View Cart"
         >
           <template v-slot:buttonIcon>
@@ -132,20 +133,19 @@ export default {
     }
   },
   setup(props, { emit, root }) {
-    const { addItem } = useCart();
+    const { addItem, cart, isInCart} = useCart();
     const isSearchOpen = ref(props.visible);
     const catalogs = computed(() => props.result);
     const totalSearch = ref(0);
     const { toggleCartSidebar } = useUiState();
 
-    const totalCartItem = ref(0);
-    const totalCartPrice = ref(0);
-    const cartData = ref([]);
+    // const totalCartItem = ref(0);
+    // const totalCartPrice = ref(0);
 
     const geItemPrice = () => {
-      totalCartPrice.value = cartGetters.getTotals(cartData);
-      totalCartItem.value = cartGetters.getTotalItems(cartData);
-      console.log(totalCartItem, totalCartPrice);
+      // totalCartPrice.value = cart.value.totalPrice;
+      // totalCartItem.value = cart.value.items.length;
+      // console.log(totalCartItem, totalCartPrice);
     };
 
     watch(() => props.visible, (newVal) => {
@@ -181,9 +181,7 @@ export default {
       });
     };
     const updateItemCount = (data, provider, index) => {
-      // debugger;
-      cartData.value = addItem({product: provider.items[index], quantity: data, customQuery: {bppName: provider.descriptor.name} });
-      console.log(cartData);
+      addItem({product: provider.items[index], quantity: data, customQuery: {bppName: provider.descriptor.name} });
       geItemPrice();
     };
 
@@ -197,8 +195,9 @@ export default {
       goToProduct,
       updateItemCount,
       toggleCartSidebar,
-      totalCartItem,
-      totalCartPrice
+      cart,
+      isInCart,
+      cartGetters
     };
   }
 };
