@@ -11,7 +11,7 @@
         </div>
         <div v-else-if="catalogs && catalogs.length > 0" class="search__wrapper-results" key="results">
           <div class="h-padding result-num">
-            <span><span v-e2e="'total-result'">{{ totalSearch }}</span> results found</span>
+            <span><span v-e2e="'total-result'">{{ totalResults(catalogs) }}</span> results found</span>
           </div>
           <div  v-for="(bpp, index) in catalogs" :key="index" >
             <div v-for="(provider, index) in bpp.bpp_providers" :key="index" >
@@ -136,7 +136,6 @@ export default {
     const { addItem, cart, isInCart} = useCart();
     const isSearchOpen = ref(props.visible);
     const catalogs = computed(() => props.result);
-    const totalSearch = ref(0);
     const { toggleCartSidebar } = useUiState();
 
     // const totalCartItem = ref(0);
@@ -158,7 +157,7 @@ export default {
       }
     });
 
-    watch(()=> props.result, (newValue) => {
+    const totalResults = (newValue) => {
       if (newValue) {
         let reusltNum = 0;
         for (const bpp of newValue) {
@@ -166,10 +165,10 @@ export default {
             reusltNum += provider.items.length;
           }
         }
-        totalSearch.value = reusltNum;
+        return reusltNum;
       }
 
-    });
+    };
 
     const goToProduct = (product, provider) => {
       const data = btoa(JSON.stringify({product, provider: provider.descriptor}));
@@ -191,12 +190,12 @@ export default {
       catalogs,
       providerGetters,
       LoadingCircle,
-      totalSearch,
       goToProduct,
       updateItemCount,
       toggleCartSidebar,
       cart,
       isInCart,
+      totalResults,
       cartGetters
     };
   }

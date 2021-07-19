@@ -17,7 +17,7 @@ export const getCartItemPrice = (product: any): AgnosticPrice => {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const getCartItemQty = (product: any): number => product?.quantity || 0;
+export const getItemQty = (product: any): number => product?.quantity || 0;
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getMeasureValue = (product: any): string => product?.measure?.value;
@@ -62,7 +62,7 @@ const cartGetters: CartGetters<Cart, LineItem> = {
   getItemName: getCartItemName,
   getItemImage: getCartItemImage,
   getItemPrice: getCartItemPrice,
-  getItemQty: getCartItemQty,
+  getItemQty,
   getItemAttributes: getCartItemAttributes,
   getItemSku: getCartItemSku,
   getFormattedPrice: getFormattedPrice,
