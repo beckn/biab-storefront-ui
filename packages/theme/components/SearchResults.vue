@@ -11,7 +11,7 @@
         </div>
         <div v-else-if="catalogs && catalogs.length > 0" class="search__wrapper-results" key="results">
           <div class="h-padding result-num">
-            <span><span v-e2e="'total-result'">{{ totalSearch }}</span> results found</span>
+            <span><span v-e2e="'total-result'">{{ totalResults(catalogs) }}</span> results found</span>
           </div>
           <div  v-for="(bpp, index) in catalogs" :key="index" >
             <div v-for="(provider, index) in bpp.bpp_providers" :key="index" >
@@ -37,13 +37,14 @@
               <div class="results--mobile">
                 <ProductCard
                   v-for="(product, index) in provider.items"
-                  @goToProduct="goToProduct(product,provider)"
+                  @goToProduct="goToProduct(product,provider,bpp)"
                   :key="index"
                   :pName="productGetters.getName(product)"
                   :pPrice="productGetters.getPrice(product).regular"
                   :pImage="productGetters.getGallery(product)[0].small[0]"
                   :pWieght="productGetters.getProductWeight(product)+' kg'"
-                  @updateItemCount="(item)=>updateItemCount(item, provider, index)"
+                  :pCount="cartGetters.getItemQty(isInCart({product}))"
+                  @updateItemCount="(item)=>updateItemCount(item, provider, bpp, index)"
                 />
               </div>
               <div><hr class="sf-divider" /></div>
@@ -64,11 +65,11 @@
         </div>
       </transition-group>
     </SfMegaMenu>
-      <div v-if="totalCartItem" class="sr-footer">
+      <div v-if="cart.totalItems" class="sr-footer">
         <Footer
           @buttonClick="toggleCartSidebar"
-          :totalPrice="totalCartPrice.total"
-          :totalItem="totalCartItem"
+          :totalPrice="cart.totalPrice"
+          :totalItem="cart.totalItems"
           buttonText="View Cart"
         >
           <template v-slot:buttonIcon>
@@ -132,20 +133,18 @@ export default {
     }
   },
   setup(props, { emit, root }) {
-    const { addItem } = useCart();
+    const { addItem, cart, isInCart} = useCart();
     const isSearchOpen = ref(props.visible);
     const catalogs = computed(() => props.result);
-    const totalSearch = ref(0);
     const { toggleCartSidebar } = useUiState();
 
-    const totalCartItem = ref(0);
-    const totalCartPrice = ref(0);
-    const cartData = ref([]);
+    // const totalCartItem = ref(0);
+    // const totalCartPrice = ref(0);
 
     const geItemPrice = () => {
-      totalCartPrice.value = cartGetters.getTotals(cartData);
-      totalCartItem.value = cartGetters.getTotalItems(cartData);
-      console.log(totalCartItem, totalCartPrice);
+      // totalCartPrice.value = cart.value.totalPrice;
+      // totalCartItem.value = cart.value.items.length;
+      // console.log(totalCartItem, totalCartPrice);
     };
 
     watch(() => props.visible, (newVal) => {
@@ -158,7 +157,7 @@ export default {
       }
     });
 
-    watch(()=> props.result, (newValue) => {
+    const totalResults = (newValue) => {
       if (newValue) {
         let reusltNum = 0;
         for (const bpp of newValue) {
@@ -166,13 +165,13 @@ export default {
             reusltNum += provider.items.length;
           }
         }
-        totalSearch.value = reusltNum;
+        return reusltNum;
       }
 
-    });
+    };
 
-    const goToProduct = (product, provider) => {
-      const data = btoa(JSON.stringify({product, provider: provider.descriptor}));
+    const goToProduct = (product, provider, bpp) => {
+      const data = btoa(JSON.stringify({product, provider: provider.descriptor, bppProvider: bpp.bpp_descriptor}));
       root.$router.push({
         path: root.$route.path + 'product',
         query: {
@@ -180,10 +179,9 @@ export default {
         }
       });
     };
-    const updateItemCount = (data, provider, index) => {
-      provider.items[index].quantity = data;
-      cartData.value = addItem({bppName: provider.descriptor.name, item: provider.items[index]});
-      console.log(cartData);
+    const updateItemCount = (data, provider, bpp, index) => {
+      console.log(bpp.bpp_descriptor.name);
+      addItem({product: provider.items[index], quantity: data, customQuery: {bppName: provider.descriptor.name, bppProvider: bpp.bpp_descriptor.name} });
       geItemPrice();
     };
 
@@ -193,12 +191,13 @@ export default {
       catalogs,
       providerGetters,
       LoadingCircle,
-      totalSearch,
       goToProduct,
       updateItemCount,
       toggleCartSidebar,
-      totalCartItem,
-      totalCartPrice
+      cart,
+      isInCart,
+      totalResults,
+      cartGetters
     };
   }
 };

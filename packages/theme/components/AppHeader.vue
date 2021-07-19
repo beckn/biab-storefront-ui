@@ -76,8 +76,8 @@ import {
   SfCircleIcon
 } from '@storefront-ui/vue';
 import { useUiState } from '~/composables';
-import { useWishlist, useUser, useFacet, useOnSearch } from '@vue-storefront/beckn';
-import { computed, ref, onBeforeUnmount, watch } from '@vue/composition-api';
+import { useWishlist, useUser, useFacet, useOnSearch, useCart } from '@vue-storefront/beckn';
+import { computed, ref, onBeforeUnmount, watch, onMounted } from '@vue/composition-api';
 import { onSSR } from '@vue-storefront/core';
 import { useUiHelpers } from '~/composables';
 import LocaleSelector from './LocaleSelector';
@@ -124,6 +124,7 @@ export default {
       toggleLocationVisible, isLocationVisible
     } = useUiState();
     // const { setTermForUrl } = useUiHelpers();
+    const {load} = useCart();
     const { setTermForUrl} = useUiHelpers();
     const { isAuthenticated, load: loadUser } = useUser();
     const { search, result } = useFacet();
@@ -226,6 +227,10 @@ export default {
 
     onBeforeUnmount(() => {
       unMapMobileObserver();
+    });
+
+    onMounted(async ()=>{
+      await load();
     });
 
     return {

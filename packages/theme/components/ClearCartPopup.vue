@@ -9,10 +9,10 @@
       />
       <div class="title">Clear your Cart</div>
       <div class="text-detail">
-        Your cart has items from {{ currentBpp.value }} Mart.
+        Your cart has items from {{ cart.bppName }} Mart.
       </div>
       <div class="text-detail">Do you wish to clear cart and add</div>
-      <div class="text-detail">items from {{ newBpp.value }} mart?</div>
+      <div class="text-detail">items from {{ cart.newBpp }} mart?</div>
       <div class="button-container">
         <button
           class="sf-button sf-button--full-width button-s no"
@@ -43,27 +43,37 @@ export default {
     SfImage
   },
   setup() {
-    const { currentBpp, newBpp } = useCart();
+    const { cart, addItem } = useCart();
     const show = ref(false);
-    console.log(newBpp.value);
-
-    watch(() => newBpp.value, (newval) => {
-      console.log(newval, 'popup');
-      show.value = true;
-    });
+    watch(
+      () => cart?.value?.newBpp,
+      (newval) => {
+        console.log(newval, 'popup');
+        if (cart.value.bppName !== cart.value.newBpp) {
+          show.value = true;
+        }
+      }
+    );
 
     const onClickYes = () => {
+      console.log(cart.value);
+      addItem({
+        product: cart.value.newProduct,
+        quantity: cart.value.newProduct.quantity,
+        customQuery: { bppName: cart.value.newBpp, bppProvider: cart.value.newProviderName, clearCart: true }
+      });
       show.value = false;
     };
 
     const onClickNo = () => {
+      cart.value.newBpp = cart.value.bppName;
+      cart.value.newProviderName = cart.value.bppProviderName;
       show.value = false;
     };
 
     return {
       show,
-      currentBpp,
-      newBpp,
+      cart,
       onClickYes,
       onClickNo
     };
@@ -80,13 +90,13 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 3;
   .cart-popup {
     text-align: center;
     background: #fff !important;
     width: 341px;
-    height: 307px;
     z-index: 1;
-    padding: 0 15px;
+    padding: 15px;
     border-radius: 10px;
     .clear-icon {
       padding: 20px 0;

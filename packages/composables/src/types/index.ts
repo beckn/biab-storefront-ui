@@ -94,6 +94,10 @@ export type Product = {
   tags?: string[];
 };
 
+export type CartProduct= Product & {
+  quantity: number
+}
+
 export type ProviderDescriptor = {
   name: string;
   code: string;

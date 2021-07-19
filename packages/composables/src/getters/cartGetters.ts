@@ -1,12 +1,12 @@
 import { CartGetters, AgnosticPrice, AgnosticTotals, AgnosticCoupon, AgnosticDiscount } from '@vue-storefront/core';
 import { Cart, LineItem } from '@vue-storefront/beckn-api/src/types';
-import { productGetters } from '.';
+import productGetters from './productGetters';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const getCartItems = (): LineItem[] => [];
+export const getCartItems = (cart): LineItem[] => cart?.items;
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const getCartItemName = (product: any): string => product?.descriptor?.name || 'Product\'s name';
+export const getCartItemName = (product: any): string => productGetters.getName(product) || 'Product\'s name';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getCartItemImage = (product: any): string => productGetters.getGallery(product)[0].small[0] || 'https://s3-eu-west-1.amazonaws.com/commercetools-maximilian/products/081223_1_large.jpg';
@@ -17,7 +17,7 @@ export const getCartItemPrice = (product: any): AgnosticPrice => {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const getCartItemQty = (product: any): number => product?.quantity;
+export const getItemQty = (product: any): number => product?.quantity || 0;
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getMeasureValue = (product: any): string => product?.measure?.value;
@@ -31,13 +31,8 @@ export const getCartItemAttributes = (product: LineItem, filterByAttributeName?:
 export const getCartItemSku = (product: any): string => product?.sku || 'some-sku';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const getCartTotals = (products: any): AgnosticTotals => {
-  let totalPrice = 0;
-  if (products.value) {
-    for (const product of products.value) {
-      totalPrice += product.item.price.value * product.item.quantity;
-    }
-  }
+export const getCartTotals = (cart): AgnosticTotals => {
+  const totalPrice:number = cart?.totalPrice || 0;
   return {
     total: totalPrice,
     subtotal: 10
@@ -48,14 +43,8 @@ export const getCartTotals = (products: any): AgnosticTotals => {
 export const getCartShippingPrice = (cart: Cart): number => 0;
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const getCartTotalItems = (products: any): number => {
-  let totalItems = 0;
-  if (products.value) {
-    for (const product of products.value) {
-      totalItems += product.item.quantity;
-    }
-  }
-  return totalItems;
+export const getCartTotalItems = (cart): number => {
+  return cart?.totalItems || 0;
 };
 
 export const getFormattedPrice = (price: number) => String(price);
@@ -73,7 +62,7 @@ const cartGetters: CartGetters<Cart, LineItem> = {
   getItemName: getCartItemName,
   getItemImage: getCartItemImage,
   getItemPrice: getCartItemPrice,
-  getItemQty: getCartItemQty,
+  getItemQty,
   getItemAttributes: getCartItemAttributes,
   getItemSku: getCartItemSku,
   getFormattedPrice: getFormattedPrice,
