@@ -8,7 +8,16 @@
       @close="toggleCartSidebar"
     >
       <template #content-top>
-        <div></div>
+        <div v-if="cartGetters.getTotalItems(cart)">
+          <div>{{cart.bppName}}</div>
+          <div>by</div>
+          <div>{{cart.bppProviderName}}</div>
+        </div>
+      </template>
+      <template #errorMsg>
+        <div v-if="false"></div>
+        <div v-if="false"></div>
+        <div v-if="false"></div>
       </template>
       <transition name="sf-fade" mode="out-in">
         <div
@@ -32,6 +41,7 @@
                 :dropdownCouner="true"
                 @updateItemCount="(item) => updateItemCount(item, index)"
                 @deleteItem="updateItemCount(0, index)"
+                @dropdownMore="toggleModal(index)"
               />
             </transition-group>
           </div>
@@ -53,7 +63,7 @@
           </div>
         </div>
       </transition>
-      <div class="c-footer">
+      <div class="c-footer"  v-if="cartGetters.getTotalItems(cart)">
         <Footer
           @buttonClick="footerClick"
           :totalPrice="cartGetters.getTotals(cart).total"
@@ -65,6 +75,29 @@
           </template>
         </Footer>
       </div>
+      <ModalSlide :visible="openModal" @close="toggleModal">
+          <div class="modal-heading">Cart Quantity</div>
+          <div><hr class="sf-divider" /></div>
+          <div class="modal-body">
+            <div class="inputs-container">
+              <SfInput
+                v-model="itemNumber"
+                type='number'
+                label='Enter Quantity'
+                name='locality'
+                @change="() => {}"
+              />
+            </div>
+            <SfButton
+              class="add-quantity"
+              aria-label="Close modal"
+              type="button"
+              @click="addQuantity"
+              style="width: 100%"
+              >Add quantity</SfButton
+            >
+          </div>
+      </ModalSlide>
     </SfSidebar>
   </div>
 </template>
@@ -77,12 +110,15 @@ import {
   SfProperty,
   SfPrice,
   SfCollectedProduct,
-  SfImage
+  SfImage,
+  SfInput
 } from '@storefront-ui/vue';
 import { useCart, cartGetters } from '@vue-storefront/beckn';
 import { useUiState } from '~/composables';
 import ProductCard from './ProductCard';
 import Footer from './Footer';
+import ModalSlide from './ModalSlide';
+import { ref } from '@vue/composition-api';
 
 export default {
   name: 'Cart',
@@ -96,18 +132,23 @@ export default {
     SfCollectedProduct,
     SfImage,
     ProductCard,
-    Footer
+    Footer,
+    ModalSlide,
+    SfInput
   },
   setup(_, { root }) {
     const { isCartSidebarOpen, toggleCartSidebar } = useUiState();
     const { cart, addItem } = useCart();
+    const openModal = ref(false);
+    const modelOpenIndex = ref(-1);
+    const itemNumber = ref(null);
 
     const updateItemCount = (data, index) => {
       console.log(data, index);
       addItem({
         product: cart.value.items[index],
         quantity: data,
-        customQuery: { bppName: cart.value.bppName }
+        customQuery: { bppName: cart.value.bppName, bppProvider: cart.value.bppProviderName}
       });
     };
 
@@ -116,13 +157,27 @@ export default {
       root.$router.push('/checkout');
     };
 
+    const toggleModal = (index = -1) => {
+      modelOpenIndex.value = index;
+      openModal.value = !openModal.value;
+    };
+
+    const addQuantity = () => {
+      updateItemCount(Number(itemNumber.value), modelOpenIndex.value);
+      toggleModal();
+    };
+
     return {
       isCartSidebarOpen,
       toggleCartSidebar,
       cartGetters,
       cart,
+      openModal,
+      itemNumber,
       updateItemCount,
-      footerClick
+      footerClick,
+      toggleModal,
+      addQuantity
     };
   }
 };
@@ -138,6 +193,20 @@ export default {
       --sidebar-content-padding: var(--spacer-base);
     }
   }
+}
+
+.modal-heading {
+  margin: 20px;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.modal-body{
+  padding: 28px;
+}
+
+.inputs-container {
+  margin-bottom: 28px;
 }
 
 .sf-sidebar__content {

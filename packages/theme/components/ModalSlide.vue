@@ -89,6 +89,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .modal_main_div {
+  z-index: 3;
   top: auto;
   border-radius: 20px 20px 0px 0px;
 }

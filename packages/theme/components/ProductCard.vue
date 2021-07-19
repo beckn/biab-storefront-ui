@@ -60,7 +60,10 @@ export default {
 
     const dropdownClick = (data) => {
       console.log(data);
-      if (data !== 'More') {
+      if (data === 'More') {
+        emit('dropdownMore');
+        openDropdown.value = false;
+      } else {
         emit('updateItemCount', data);
         openDropdown.value = false;
       }
