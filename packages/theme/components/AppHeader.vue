@@ -312,6 +312,9 @@ export default {
   .icon-padding{
     padding-right: 10px;
     cursor: pointer;
+    .sf-icon {
+            --icon-color: #F37A20 !important;
+          }
   }
 
   .location-btn{

@@ -8,17 +8,18 @@
       @close="goBack"
     >
       <template #content-top>
-        <div v-if="cartGetters.getTotalItems(cart)">
-          <div>{{ cart.bppName }}</div>
-          <div>by</div>
-          <div>{{ cart.bppProviderName }}</div>
+        <div v-if="cartGetters.getTotalItems(cart)" class="provider-head">
+          <div class="provide-img"><img /></div>
+          <div class="p-name"> {{ cart.bppName }} </div>
+          <div class="text-padding"> <span class="p-distance"> by </span> {{ cart.bppProviderName }}</div>
         </div>
       </template>
-      <template #errorMsg>
-        <div v-if="false"></div>
-        <div v-if="false"></div>
-        <div v-if="false"></div>
-      </template>
+      <div>
+        <div v-if="false" class="cart-error-msg"><img src="../assets/images/bx_bx-error.png" alt="" /><p>Some items are currently available. Please remove these items and proceed to checkout.</p> </div>
+        <div v-if="false" class="cart-warning-msg"><img src="../assets/images/bx_bx-error-circle.png" alt="" /><p>Oops, required quantity not available! Update items with available quantity and proceed? <br /><span><a>Yes, update all</a></span></p></div>
+        <div v-if="true" class="cart-warning-msg"><img src="../assets/images/bx_bx-error-circle.png" alt="" /><p>Prices of some of the items in your cart have changed.Please verify and proceed.</p>
+      </div>
+      </div>
       <transition name="sf-fade" mode="out-in">
         <div
           v-if="cartGetters.getTotalItems(cart)"
