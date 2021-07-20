@@ -33,36 +33,38 @@
         </div>
       </div>
 
-      <div :key="index + 'new'" v-for="(product, index) in cartGetters.getItems(cart)">
-        <!-- <ProductCard
-          name="product-card"
-          class="product-card"
-          v-for="(product, index) in cartGetters.getItems(cart)"
-          :key="index + 'new'"
-          :pName="cartGetters.getItemName(product)"
-          :pPrice="cartGetters.getItemPrice(product).regular"
-          :pImage="cartGetters.getItemImage(product)"
-          :pCount="cartGetters.getItemQty(product)"
-          :horizontalView="false"
-          :deleteCard="false"
-          @updateItemCount="(item) => updateItemCount(item, index)"
-          @deleteItem="updateItemCount(0, index)"
-        /> -->
+      <div
+        :key="index + 'new'"
+        v-for="(product, index) in cartGetters.getItems(cart)"
+      >
         <div class="s-p-image">
-          <SfImage :src="cartGetters.getItemImage(product)" alt="product img" :width="85" :height="90" />
+          <SfImage
+            :src="cartGetters.getItemImage(product)"
+            alt="product img"
+            :width="85"
+            :height="90"
+          />
         </div>
         <div class="s-p-details">
           <div class="s-p-name">{{ cartGetters.getItemName(product) }}</div>
           <!-- <div class="s-p-weight">{{ _pWieght }}</div> -->
-          <div class="s-p-price">₹ {{ cartGetters.getItemPrice(product).regular }}</div>
+          <div class="s-p-price">
+            ₹ {{ cartGetters.getItemPrice(product).regular }}
+          </div>
         </div>
       </div>
 
       <div class="sub-heading">
         <div class="p-name">Shipping</div>
-        <div class="color-def">Change</div>
+        <SfButton
+          v-if="isShippingAddressFilled"
+          class="sf-button--pure"
+          @click="toggleShippingModal"
+        >
+          <div class="color-def">Change</div>
+        </SfButton>
       </div>
-      <Card>
+      <Card v-if="isShippingAddressFilled">
         <CardContent>
           <div class="address-bar-icon">
             <svg
@@ -81,7 +83,7 @@
               />
             </svg>
           </div>
-          <div class="address-text">{{ address.name }}</div>
+          <div class="address-text">{{ shippingAddress.name }}</div>
         </CardContent>
         <div><hr class="sf-divider divider" /></div>
         <CardContent>
@@ -110,7 +112,7 @@
             </svg>
           </div>
           <div class="address-text">
-            2702, 31st Main, HSR Layout, Sector 1, Bangalore-560102
+            {{ shippingAddress.address }}
           </div>
         </CardContent>
         <div><hr class="sf-divider divider" /></div>
@@ -132,10 +134,10 @@
               />
             </svg>
           </div>
-          <div class="address-text">+91 9876543210</div>
+          <div class="address-text">{{ shippingAddress.mobile }}</div>
         </CardContent>
       </Card>
-      <Card>
+      <Card v-if="!isShippingAddressFilled">
         <CardContent>
           <div class="address-bar-icon">
             <svg
@@ -159,9 +161,15 @@
 
       <div class="sub-heading">
         <div class="p-name">Billing</div>
-        <div class="color-def">Change</div>
+        <SfButton
+          v-if="isBillingAddressFilled || shippingAsBilling"
+          class="sf-button--pure"
+          @click="toggleShippingModal"
+        >
+          <div class="color-def">Change</div>
+        </SfButton>
       </div>
-      <Card>
+      <Card v-if="!isBillingAddressFilled">
         <CardContent>
           <div class="address-bar-icon">
             <SfCheckbox
@@ -205,56 +213,44 @@
         <div class="p-name">Order Policy</div>
       </div>
     </div>
-    <Footer />
-    <ModalSlide :visible="shippingAddressModal" @close="toggleShippingModal">
-      <div class="modal-heading">Shipping Details</div>
-      <div><hr class="sf-divider" /></div>
-      <div class="address-inputs-container">
-        <SfInput
-          v-model="address.name"
-          :type="'text'"
-          :label="'Name'"
-          :name="'Name'"
-          @change="() => {}"
-        />
-        <SfInput
-          v-model="address.mobile"
-          :type="'tel'"
-          :label="'Mobile Number'"
-          pattern="[0-9]{10}"
-          :name="'mobile'"
-          @change="() => {}"
-        />
-        <SfInput
-          v-model="address.address"
-          :type="'text'"
-          :label="'Complete Address'"
-          :name="'address'"
-          @change="() => {}"
-        />
-        <SfInput
-          v-model="address.building"
-          :type="'text'"
-          :label="'Building Name Floor'"
-          :name="'bulding'"
-          @change="() => {}"
-        />
-        <SfInput
-          v-model="address.locality"
-          :type="'text'"
-          :label="'Landmark (Optional)'"
-          :name="'locality'"
-          @change="() => {}"
-        />
-        <SfButton
-          class="address-button"
-          aria-label="Close modal"
-          type="button"
-          @click="closemodal"
-          style="width: 100%"
-          >Save Shipping Details</SfButton
+    <Footer
+      :totalPrice="cartGetters.getTotals(cart).total"
+      :totalItem="cartGetters.getTotalItems(cart)"
+      buttonText="Proceed To Pay"
+    >
+      <template v-slot:buttonIcon>
+        <svg
+          width="25"
+          height="19"
+          viewBox="0 0 25 19"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
         >
-      </div>
+          <path
+            d="M1.0166 7.10181H23.0166M3.0166 1.10181H21.0166C22.1212 1.10181 23.0166 1.99724 23.0166 3.10181V15.1018C23.0166 16.2064 22.1212 17.1018 21.0166 17.1018H3.0166C1.91203 17.1018 1.0166 16.2064 1.0166 15.1018V3.10181C1.0166 1.99724 1.91203 1.10181 3.0166 1.10181Z"
+            stroke="white"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </template>
+    </Footer>
+    <ModalSlide :visible="shippingAddressModal" @close="toggleShippingModal">
+      <AddressInputs
+        :buttonText="'Save Shipping Details'"
+        :headingText="'Shipping Details'"
+        :addressDetails="shippingAddress"
+        @getAddress="toggleShippingModal"
+      />
+    </ModalSlide>
+    <ModalSlide :visible="billingAddressModal" @close="toggleBillingModal">
+      <AddressInputs
+        :buttonText="'Save Billing Details'"
+        :buttonEnable="false"
+        :headingText="'Billing Details'"
+        :addressDetails="billingAddress"
+      />
     </ModalSlide>
   </div>
 </template>
@@ -269,6 +265,7 @@ import {
   SfInput
 } from '@storefront-ui/vue';
 import ModalSlide from '~/components/ModalSlide.vue';
+import AddressInputs from '~/components/AddressInputs.vue';
 import Footer from '~/components/Footer.vue';
 import { useUiState } from '~/composables';
 import { useCart, cartGetters } from '@vue-storefront/beckn';
@@ -278,12 +275,6 @@ import Card from '~/components/Card.vue';
 import CardContent from '~/components/CardContent.vue';
 
 import ProductCard from '~/components/ProductCard';
-
-const STEPS = {
-  shipping: 'Shipping',
-  billing: 'Billing',
-  payment: 'Payment'
-};
 
 export default {
   name: 'Checkout',
@@ -299,23 +290,53 @@ export default {
     Card,
     SfImage,
     CardContent,
-    ProductCard
+    ProductCard,
+    AddressInputs
   },
-  setup(props, context) {
+  setup() {
     // const isThankYou = computed(() => currentStep.value === 'thank-you');
 
     const shippingAsBilling = ref(false);
     const shippingAddressModal = ref(false);
+    const billingAddressModal = ref(false);
+    const { toggleSearchVisible, toggleLocationVisible } = useUiState();
+
     // const billingAddressModal = ref(false);
 
     const { cart } = useCart();
 
-    const address = ref({
-      name: 'Chirag',
-      mobile: '+91 9876543210',
-      building: '221',
+    const shippingAddress = ref({
+      name: '',
+      mobile: '',
+      building: '',
       landmark: '',
-      address: '2702, 31st Main, HSR Layout, Sector 1, Bangalore-560102'
+      address: ''
+    });
+
+    const billingAddress = ref({
+      name: '',
+      mobile: '',
+      building: '',
+      landmark: '',
+      address: ''
+    });
+
+    const isShippingAddressFilled = computed(() => {
+      // debugger;
+      return (
+        shippingAddress.value.name !== '' &&
+        shippingAddress.value.mobile !== '' &&
+        shippingAddress.value.building !== '' &&
+        shippingAddress.value.address !== ''
+      );
+    });
+    const isBillingAddressFilled = computed(() => {
+      return (
+        billingAddress.value.name !== '' &&
+        billingAddress.value.mobile !== '' &&
+        billingAddress.value.building !== '' &&
+        billingAddress.value.address !== ''
+      );
     });
 
     const toggleShippingModal = () => {
@@ -326,35 +347,25 @@ export default {
       shippingAsBilling.value = !shippingAsBilling.value;
     };
 
-    const { toggleSearchVisible, toggleLocationVisible } = useUiState();
+    const toggleBillingModal = () => {
+      billingAddressModal.value = !billingAddressModal.value;
+    };
 
     toggleSearchVisible();
     toggleLocationVisible();
 
-    const handleStepClick = (stepIndex) => {
-      const key = Object.keys(STEPS)[stepIndex];
-      context.root.$router.push(`/checkout/${key}`);
-    };
-
-    let m = true;
-
-    const open = computed(() => m);
-
-    const closemodal = () => {
-      m = !m;
-    };
-
     return {
-      handleStepClick,
-      STEPS,
-      closemodal,
-      open,
       shippingAsBilling,
       changeShippingAsBilling,
       shippingAddressModal,
+      billingAddressModal,
       toggleShippingModal,
-      address,
+      toggleBillingModal,
+      shippingAddress,
+      billingAddress,
+      isShippingAddressFilled,
       cartGetters,
+      isBillingAddressFilled,
       cart
     };
   }
@@ -366,22 +377,12 @@ export default {
   font-weight: 600;
 }
 
-.modal-heading {
-  margin: 20px;
-  font-size: 20px;
-  font-weight: 500;
-}
-
 .flex-space-bw {
   justify-content: space-between;
 }
 
 .details {
   margin: 2px 34px;
-}
-
-.address-inputs-container {
-  margin: 12px 28px;
 }
 
 .address-bar-icon {
