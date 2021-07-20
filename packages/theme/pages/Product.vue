@@ -83,7 +83,7 @@
             </div>
           </div> -->
           <Footer
-            @buttonClick="toggleCartSidebar"
+            @buttonClick="footerClick"
             :totalPrice="cart.totalPrice"
             :totalItem="cartGetters.getTotalItems(cart)"
             buttonText="View Cart"
@@ -132,7 +132,7 @@ export default {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   setup(props, context) {
-    const { toggleCartSidebar, toggleSearchVisible, toggleLocationVisible } =
+    const { toggleSearchVisible, toggleLocationVisible } =
       useUiState();
 
     toggleSearchVisible();
@@ -163,9 +163,12 @@ export default {
       toggleSearchVisible();
       toggleLocationVisible();
     });
+
+    const footerClick = () => {
+      context.root.$router.push('/cart');
+    };
     return {
       images,
-      toggleCartSidebar,
       goBack,
       cart,
       updateCart,
@@ -174,7 +177,8 @@ export default {
       productGetters,
       toggleLocationVisible,
       isInCart,
-      cartGetters
+      cartGetters,
+      footerClick
     };
   },
   components: {

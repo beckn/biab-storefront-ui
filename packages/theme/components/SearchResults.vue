@@ -67,7 +67,7 @@
     </SfMegaMenu>
       <div v-if="cart.totalItems" class="sr-footer">
         <Footer
-          @buttonClick="toggleCartSidebar"
+          @buttonClick="footerClick"
           :totalPrice="cart.totalPrice"
           :totalItem="cart.totalItems"
           buttonText="View Cart"
@@ -133,19 +133,10 @@ export default {
     }
   },
   setup(props, { emit, root }) {
-    const { addItem, cart, isInCart} = useCart();
+    const { addItem, cart, isInCart } = useCart();
     const isSearchOpen = ref(props.visible);
     const catalogs = computed(() => props.result);
     const { toggleCartSidebar } = useUiState();
-
-    // const totalCartItem = ref(0);
-    // const totalCartPrice = ref(0);
-
-    const geItemPrice = () => {
-      // totalCartPrice.value = cart.value.totalPrice;
-      // totalCartItem.value = cart.value.items.length;
-      // console.log(totalCartItem, totalCartPrice);
-    };
 
     watch(() => props.visible, (newVal) => {
       isSearchOpen.value = newVal;
@@ -167,7 +158,6 @@ export default {
         }
         return reusltNum;
       }
-
     };
 
     const goToProduct = (product, provider, bpp) => {
@@ -182,7 +172,10 @@ export default {
     const updateItemCount = (data, provider, bpp, index) => {
       console.log(bpp.bpp_descriptor.name);
       addItem({product: provider.items[index], quantity: data, customQuery: {bppName: provider.descriptor.name, bppProvider: bpp.bpp_descriptor.name} });
-      geItemPrice();
+    };
+
+    const footerClick = () =>{
+      root.$router.push('/cart');
     };
 
     return {
@@ -197,7 +190,8 @@ export default {
       cart,
       isInCart,
       totalResults,
-      cartGetters
+      cartGetters,
+      footerClick
     };
   }
 };
