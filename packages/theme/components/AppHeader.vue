@@ -331,6 +331,7 @@ export default {
 
 .header-on-top {
   z-index: 2;
+  margin-top: 15px;
 }
 .nav-item {
   --header-navigation-item-margin: 0 var(--spacer-base);

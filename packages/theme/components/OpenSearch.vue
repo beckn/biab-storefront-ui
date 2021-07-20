@@ -95,7 +95,7 @@ export default {
       input{
         box-shadow: 0px 10px 24px rgba(0, 0, 0, 0.1);
         border-radius: 6px;
-        border: 1px solid #F37A20;
+        border: 1px solid transparent;
         padding: 22px 10px;
         width: calc(100% - 22px);
         font-size: 15px;
@@ -103,7 +103,10 @@ export default {
         &::placeholder{
           font-size: 14px;
           line-height: 17px;
-          color: #B4B5B8;
+          color: #DBDBDC;
+        }
+        &:focus{
+          border: 1px solid #F37A20 !important;
         }
       }
       button{
