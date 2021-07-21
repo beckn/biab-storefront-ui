@@ -14,13 +14,13 @@ export type Coupon = Record<string, unknown>;
 
 type Cart = {
   // id: number;
-  bppName: string;
-  bppProviderName: string,
+  bpp: string;
+  bppProvider: string,
   items: CartProduct[];
   totalPrice: number;
   totalItems: number;
   newBpp: string;
-  newProviderName: string;
+  newProvider: string;
   newProduct: Product;
 };
 
@@ -31,12 +31,12 @@ const params = {
     console.log('Mocked: loadCart');
     let cartData = {
       items: [],
-      bppName: '',
-      bppProviderName: '',
+      bpp: null,
+      bppProvider: null,
       totalPrice: 0,
       totalItems: 0,
-      newBpp: '',
-      newProviderName: '',
+      newBpp: null,
+      newProvider: null,
       newProduct: null
     };
     if (localStorage.getItem('cartData')) {
@@ -52,21 +52,21 @@ const params = {
       localStorage.removeItem('cartData');
       currentCart = {
         items: [],
-        bppName: '',
-        bppProviderName: '',
+        bpp: null,
+        bppProvider: null,
         totalPrice: 0,
         totalItems: 0,
-        newBpp: '',
-        newProviderName: '',
+        newBpp: null,
+        newProvider: null,
         newProduct: null
       };
     }
     const price = productGetters.getPrice(product).regular;
-    if (currentCart.bppName !== '' && (currentCart.bppProviderName !== customQuery.bppProvider || customQuery.bppName !== currentCart.bppName)) {
-      console.log('chcek', customQuery.bppName, customQuery.bppProvider);
+    if (Boolean(currentCart.bpp) && (currentCart.bppProvider?.id !== customQuery.bppProvider.id || customQuery.bpp.id !== currentCart.bpp?.id)) {
+      console.log('check');
 
-      currentCart.newBpp = customQuery.bppName;
-      currentCart.newProviderName = customQuery.bppProvider;
+      currentCart.newBpp = customQuery.bpp;
+      currentCart.newProvider = customQuery.bppProvider;
       currentCart.newProduct = { quantity, ...product };
       return { ...currentCart };
     }
@@ -82,10 +82,10 @@ const params = {
       if (quantity === 0) {
         currentCart.items.splice(exisitingIndex, 1);
         if (currentCart.totalItems === 0) {
-          currentCart.bppName = '';
-          currentCart.newBpp = '';
-          currentCart.bppProviderName = '';
-          currentCart.newProviderName = '';
+          currentCart.bpp = null;
+          currentCart.newBpp = null;
+          currentCart.bppProvider = null;
+          currentCart.newProvider = null;
         }
       }
     } else {
@@ -95,10 +95,10 @@ const params = {
       currentCart.totalPrice += priceDifference;
       currentCart.totalItems += quantity;
       currentCart.items.push(product);
-      currentCart.bppName = customQuery.bppName;
-      currentCart.newBpp = customQuery.bppName;
-      currentCart.bppProviderName = customQuery.bppProvider;
-      currentCart.newProviderName = customQuery.bppProvider;
+      currentCart.bpp = customQuery.bpp;
+      currentCart.newBpp = customQuery.bpp;
+      currentCart.bppProvider = customQuery.bppProvider;
+      currentCart.newProvider = customQuery.bppProvider;
     }
 
     localStorage.setItem('cartData', JSON.stringify(currentCart));

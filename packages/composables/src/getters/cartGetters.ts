@@ -1,6 +1,7 @@
 import { CartGetters, AgnosticPrice, AgnosticTotals, AgnosticCoupon, AgnosticDiscount } from '@vue-storefront/core';
 import { Cart, LineItem } from '@vue-storefront/beckn-api/src/types';
 import productGetters from './productGetters';
+import providerGetters from './providers.Getters';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getCartItems = (cart): LineItem[] => cart?.items;
@@ -15,7 +16,8 @@ export const getCartItemImage = (product: any): string => productGetters.getGall
 export const getCartItemPrice = (product: any): AgnosticPrice => {
   return productGetters.getPrice(product);
 };
-
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const getProviderImage = (provider: any): string => providerGetters.getProviderImages(provider)[0] || '';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getItemQty = (product: any): number => product?.quantity || 0;
 
@@ -70,7 +72,8 @@ const cartGetters: CartGetters<Cart, LineItem> = {
   getMeasureValue: getMeasureValue,
   getMeasureUnit: getMeasureUnit,
   getCoupons,
-  getDiscounts
+  getDiscounts,
+  getProviderImage
 };
 
 export default cartGetters;
