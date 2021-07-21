@@ -51,7 +51,7 @@ export default {
   },
   props: {
     value: { type: Number, default: 0 },
-    maxLimit: { type: Number, default: 10 }
+    maxLimit: { type: Number, default: 100 }
   },
   setup(props, { emit}) {
     const _value = ref(props.value);

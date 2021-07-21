@@ -17,12 +17,12 @@
             <div v-for="(provider, index) in bpp.bpp_providers" :key="index" >
               <div class="provider-head flexy-center h-padding">
                 <div class="flexy">
-                  <SfImage
+                  <img
                     class="back"
                     :src="providerGetters.getProviderImages(provider)[0]?providerGetters.getProviderImages(provider)[0]:require('~/assets/images/store-placeholder.png')"
                     alt="Vila stripe maxi shirt dress"
                     :width="35"
-                    :height="35"
+                    :height="36"
                   />
                   <div class="text-padding">
                     <div class="flexy-center">
@@ -161,7 +161,17 @@ export default {
     };
 
     const goToProduct = (product, provider, bpp) => {
-      const data = btoa(JSON.stringify({product, provider: provider.descriptor, bppProvider: bpp.bpp_descriptor}));
+      const data = btoa(JSON.stringify({
+        product,
+        bpp: {
+          id: bpp.bpp_id,
+          descriptor: bpp.bpp_descriptor
+        },
+        bppProvider: {
+          id: provider.id,
+          descriptor: provider.descriptor
+        }
+      }));
       root.$router.push({
         path: root.$route.path + 'product',
         query: {
@@ -169,9 +179,23 @@ export default {
         }
       });
     };
+
     const updateItemCount = (data, provider, bpp, index) => {
       console.log(bpp.bpp_descriptor.name);
-      addItem({product: provider.items[index], quantity: data, customQuery: {bppName: provider.descriptor.name, bppProvider: bpp.bpp_descriptor.name} });
+      addItem({
+        product: provider.items[index],
+        quantity: data,
+        customQuery: {
+          bpp: {
+            id: bpp.bpp_id,
+            descriptor: bpp.bpp_descriptor
+          },
+          bppProvider: {
+            id: provider.id,
+            descriptor: provider.descriptor
+          }
+        }
+      });
     };
 
     const footerClick = () =>{

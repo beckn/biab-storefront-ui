@@ -9,10 +9,10 @@
       />
       <div class="title">Clear your Cart</div>
       <div class="text-detail">
-        Your cart has items from {{ cart.bppName }} Mart.
+        Your cart has items from {{ cart.bppProvider.descriptor.name }} Mart.
       </div>
       <div class="text-detail">Do you wish to clear cart and add</div>
-      <div class="text-detail">items from {{ cart.newBpp }} mart?</div>
+      <div class="text-detail">items from {{ cart.newProvider.descriptor.name }} mart?</div>
       <div class="button-container">
         <button
           class="sf-button sf-button--full-width button-s no"
@@ -46,10 +46,10 @@ export default {
     const { cart, addItem } = useCart();
     const show = ref(false);
     watch(
-      () => cart?.value?.newBpp,
+      () => cart?.value?.newProvider,
       (newval) => {
         console.log(newval, 'popup');
-        if (cart.value.bppName !== cart.value.newBpp) {
+        if (cart.value.bppProvider?.id !== cart.value.newProvider?.id) {
           show.value = true;
         }
       }
@@ -60,14 +60,14 @@ export default {
       addItem({
         product: cart.value.newProduct,
         quantity: cart.value.newProduct.quantity,
-        customQuery: { bppName: cart.value.newBpp, bppProvider: cart.value.newProviderName, clearCart: true }
+        customQuery: { bpp: cart.value.newBpp, bppProvider: cart.value.newProvider, clearCart: true }
       });
       show.value = false;
     };
 
     const onClickNo = () => {
-      cart.value.newBpp = cart.value.bppName;
-      cart.value.newProviderName = cart.value.bppProviderName;
+      cart.value.newBpp = cart.value.bpp;
+      cart.value.newProviderName = cart.value.bppProvider;
       show.value = false;
     };
 

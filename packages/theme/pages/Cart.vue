@@ -9,15 +9,15 @@
     >
       <template #content-top>
         <div v-if="cartGetters.getTotalItems(cart)" class="provider-head">
-          <div class="provide-img"><img /></div>
-          <div class="p-name"> {{ cart.bppName }} </div>
-          <div class="text-padding"> <span class="p-distance"> by </span> {{ cart.bppProviderName }}</div>
+          <div class="provide-img"><img :src="cartGetters.getProviderImage(cart.bppProvider)?cartGetters.getProviderImage(cart.bppProvider):require('~/assets/images/store-placeholder.png')"/></div>
+          <div class="p-name"> {{ cart.bppProvider.descriptor.name }} </div>
+          <div class="text-padding"> <span class="p-distance"> by </span> {{ cart.bpp.descriptor.name }}</div>
         </div>
       </template>
       <div>
         <div v-if="false" class="cart-error-msg"><img src="../assets/images/bx_bx-error.png" alt="" /><p>Some items are currently available. Please remove these items and proceed to checkout.</p> </div>
         <div v-if="false" class="cart-warning-msg"><img src="../assets/images/bx_bx-error-circle.png" alt="" /><p>Oops, required quantity not available! Update items with available quantity and proceed? <br /><span><a>Yes, update all</a></span></p></div>
-        <div v-if="true" class="cart-warning-msg"><img src="../assets/images/bx_bx-error-circle.png" alt="" /><p>Prices of some of the items in your cart have changed.Please verify and proceed.</p>
+        <div v-if="false" class="cart-warning-msg"><img src="../assets/images/bx_bx-error-circle.png" alt="" /><p>Prices of some of the items in your cart have changed.Please verify and proceed.</p>
       </div>
       </div>
       <transition name="sf-fade" mode="out-in">
@@ -118,7 +118,8 @@ import { useCart, cartGetters } from '@vue-storefront/beckn';
 import ProductCard from '~/components/ProductCard';
 import Footer from '~/components/Footer';
 import ModalSlide from '~/components/ModalSlide';
-import { ref, onBeforeMount } from '@vue/composition-api';
+import { ref, onBeforeMount, onUnmounted } from '@vue/composition-api';
+import { useUiState } from '~/composables';
 
 export default {
   name: 'Cart',
@@ -141,6 +142,9 @@ export default {
     const openModal = ref(false);
     const modelOpenIndex = ref(-1);
     const itemNumber = ref(null);
+    const { toggleSearchVisible, toggleLocationVisible } = useUiState();
+    toggleSearchVisible();
+    toggleLocationVisible();
 
     const updateItemCount = (data, index) => {
       console.log(data, index);
@@ -148,8 +152,8 @@ export default {
         product: cart.value.items[index],
         quantity: data,
         customQuery: {
-          bppName: cart.value.bppName,
-          bppProvider: cart.value.bppProviderName
+          bpp: cart.value.bpp,
+          bppProvider: cart.value.bppProvider
         }
       });
     };
@@ -172,6 +176,11 @@ export default {
 
     onBeforeMount(async () => {
       await load();
+    });
+
+    onUnmounted(async () => {
+      toggleSearchVisible();
+      toggleLocationVisible();
     });
 
     return {
