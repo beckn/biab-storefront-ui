@@ -181,7 +181,7 @@ export default {
       enableloadingCircle.value = true;
       await search({ term: paramValue, locationIs: location.value });
 
-      watch(()=>pollResults.value.length, (newValue)=>{
+      watch(()=>pollResults.value?.length, (newValue)=>{
         if (newValue > 0 && enableloadingCircle.value && !enableLoadindBar.value) {
           enableloadingCircle.value = false;
           enableLoadindBar.value = true;
