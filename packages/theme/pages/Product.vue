@@ -225,6 +225,11 @@ export default {
   position: absolute;
   margin: 20px;
   z-index: 2;
+  .sf-icon{
+    --icon-color: #F37A20 !important;
+    width: 20px;
+    height: 20px;
+  }
   // width:100%;
 }
 

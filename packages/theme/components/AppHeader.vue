@@ -41,7 +41,7 @@
               @click="clearSearch"
             >
               <span class="sf-search-bar__icon">
-                <SfIcon color="var(--c-text)" size="18px" icon="cross" />
+                <SfIcon color="var(--c-text)" size="20px" icon="cross" />
               </span>
             </SfButton>
             <SfButton
@@ -307,6 +307,7 @@ export default {
   }
   .search-bar{
     width: 100%;
+    margin-top: 15px;
   }
 
   .icon-padding{
@@ -314,6 +315,8 @@ export default {
     cursor: pointer;
     .sf-icon {
             --icon-color: #F37A20 !important;
+            width: 20px;
+            height: 20px;
           }
   }
 
@@ -339,7 +342,6 @@ export default {
 
 .header-on-top {
   z-index: 2;
-  margin-top: 15px;
 }
 .nav-item {
   --header-navigation-item-margin: 0 var(--spacer-base);

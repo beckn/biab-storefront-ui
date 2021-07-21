@@ -2,8 +2,9 @@
   <div>
     <div class="top-bar">
       <div class="sf-chevron--left sf-chevron icon_back">
-        <span class="sf-chevron__bar sf-chevron__bar--left" />
-        <span class="sf-chevron__bar sf-chevron__bar--right" />
+              <span class="sf-search-bar__icon">
+        <SfIcon color="var(--c-primary)" size="20px" icon="chevron_left" />
+      </span>
       </div>
       <div>Checkout</div>
     </div>
@@ -12,8 +13,7 @@
         <div class="p-name">Items in Cart</div>
       </div>
 
-      <div class="provider-head flexy-center h-padding">
-        <div class="flexy">
+      <div class="provider-head p-0">
           <!-- <SfImage
             class="back"
             :src="providerGetters.getProviderImages(provider)[0]"
@@ -21,7 +21,11 @@
             :width="35"
             :height="35"
           /> -->
-          <div class="text-padding">
+          <div class="provide-img"><img /></div>
+          <div class="p-name"> ABC </div>
+          <div class="text-padding"> <span class="p-distance"> by </span> BCA </div>
+
+          <!-- <div class="text-padding">
             <div class="flexy-center">
               <div class="p-name">Abc</div>
               <div class="text-padding">
@@ -29,13 +33,13 @@
                 <span>BCA</span>
               </div>
             </div>
-          </div>
-        </div>
+          </div> -->
       </div>
 
       <div
         :key="index + 'new'"
         v-for="(product, index) in cartGetters.getItems(cart)"
+        class="checkout-product"
       >
         <div class="s-p-image">
           <SfImage
@@ -262,7 +266,8 @@ import {
   SfModal,
   SfCheckbox,
   SfImage,
-  SfInput
+  SfInput,
+  SfIcon
 } from '@storefront-ui/vue';
 import ModalSlide from '~/components/ModalSlide.vue';
 import AddressInputs from '~/components/AddressInputs.vue';
@@ -291,7 +296,8 @@ export default {
     SfImage,
     CardContent,
     ProductCard,
-    AddressInputs
+    AddressInputs,
+    SfIcon
   },
   setup() {
     // const isThankYou = computed(() => currentStep.value === 'thank-you');
@@ -382,7 +388,7 @@ export default {
 }
 
 .details {
-  margin: 2px 34px;
+  margin: 2px 20px;
 }
 
 .address-bar-icon {
@@ -413,15 +419,16 @@ export default {
 .top-bar {
   align-items: center;
   display: flex;
-  font-size: 20px;
+  font-size: 18px;
   justify-content: space-around;
   height: 60px;
+  font-weight: 500;
   background: white;
-  box-shadow: 0px 11px 18px -25px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.07);
 }
 
 .p-name {
-  font-size: 19px;
+  font-size: 16px;
   font-weight: 600;
   color: #37474f;
 }
@@ -430,6 +437,32 @@ export default {
   @include for-desktop {
     max-width: 1240px;
     margin: 0 auto;
+  }
+}
+.checkout-product:first-child{
+border-top: 0px solid rgba(0, 0, 0, 0.3);
+
+}
+.checkout-product{
+  display: flex;
+  margin-top: 15px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+  padding-bottom: 15px;
+  &:first-child(2){
+    border-top: 0 !important;
+  }
+  .s-p-image{
+    margin-right: 25px;
+  }
+  .s-p-name{
+    font-size: 11px;
+    color: #000;
+  }
+  .s-p-price{
+    font-size: 16px;
+    font-family: 'roboto';
+    margin-top: 10px;
+    color: #F37A20;
   }
 }
 .checkout {
