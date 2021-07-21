@@ -14,6 +14,10 @@ import { computed, Ref } from '@vue/composition-api';
 
 interface UsePollerFactoryParams extends FactoryParams {
   poll: (context: Context, params?: any, oldResults?: Array<any>) => Promise<any>;
+  dataHandler: (currentResult, newResult) => any;
+  continuePolling: (currentResult, newResult) => boolean;
+  pollTime: number,
+  intervalTime: number,
 }
 
 const usePollerFactory = (factoryParams: UsePollerFactoryParams) => {
@@ -35,37 +39,42 @@ const usePollerFactory = (factoryParams: UsePollerFactoryParams) => {
       pollResults.value = [];
       clearInterval(pollFunction.value.interval);
       clearTimeout(pollFunction.value.interval);
-      const data = await _factoryParams.poll({params, pollResults});
-      pollResults.value = [...pollResults.value, ...data];
-      // pollResults.value = data;
-      // const data = await _factoryParams.poll(params,pollResults.value);
-      // console.log('pollloll', data, pollResults);
+      const data = await _factoryParams.poll({ params, pollResults });
+      pollResults.value = _factoryParams.dataHandler(pollResults.value, data);
       polling.value = true;
 
       pollFunction.value.interval = setInterval(async () => {
         try {
-          const data = await _factoryParams.poll({params, pollResults});
-          pollResults.value = [...pollResults.value, ...data];
-          // pollResults.value = data;
-          // const data = await _factoryParams.poll(params);
+          const data = await _factoryParams.poll({ params, pollResults });
+          pollResults.value = _factoryParams.dataHandler(pollResults.value, data);
+          if (!_factoryParams.continuePolling(pollResults.value, data)) {
+            clearInterval(pollFunction.value.interval);
+            clearTimeout(pollFunction.value.interval);
+          }
         } catch (err) {
           clearInterval(pollFunction.value.interval);
           error.value.poll = err;
           Logger.error(`usePoller/${ssrKey}/search`, err);
         }
-      }, 2000);
+      }, _factoryParams.intervalTime);
 
       pollFunction.value.timeout = setTimeout(() => {
         clearInterval(pollFunction.value.interval);
         polling.value = false;
-      }, 60000);
+      }, _factoryParams.pollTime);
+    };
+
+    const stopPolling = async () => {
+      clearInterval(pollFunction.value.interval);
+      clearTimeout(pollFunction.value.interval);
     };
 
     return {
       pollResults: computed(() => pollResults.value),
       polling: computed(() => polling.value),
       error: computed(() => error.value),
-      poll
+      poll,
+      stopPolling
     };
   };
 
