@@ -49,6 +49,10 @@ body{
     margin-right: 25px;
 }
 
+.p-0{
+    padding: 0 !important;
+}
+
 .semi-bold{
     font-weight: 600;
 }
@@ -665,7 +669,7 @@ body{
                 // background: url("./images/STORE.png");
                 background-repeat: no-repeat;
                 background-size: 100%;
-                width: 75%;
+                width: 32px;
                 margin: auto;
                 &:not{
                     position: relative !important;

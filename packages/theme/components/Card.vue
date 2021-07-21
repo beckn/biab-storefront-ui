@@ -20,8 +20,11 @@ export default {
 .card {
   border-radius: 10px;
   background: white;
-  padding: 10px 28px;
-  box-shadow: 0px 10px 40px 0px #00000008;
+  padding: 10px 25px;
+ box-shadow: 0px 10px 40px rgba(0, 0, 0, 0.03);
+ .card-content{
+    font-size: 17px;
+ }
 
 }
 </style>
