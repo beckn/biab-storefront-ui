@@ -15,7 +15,7 @@
       <div v-if="isSearchOpen" class="icon-padding center-pos" @click="closeSearch">
         <SfIcon color="var(--c-text)" size="20px" icon="chevron_left" />
       </div>
-      <Location :isDisabled="!isSearchOpen" @locationSelected="locationSelected" :class="{'disable-location' : isSearchOpen }" class="location-section v-center-pos" v-e2e="'app-header-location'" />
+      <Location :isDisabled="!isSearchOpen" :class="{'disable-location' : isSearchOpen }" class="location-section v-center-pos" v-e2e="'app-header-location'" />
     </div>
     <div
       v-if="isSearchOpen"
@@ -121,7 +121,8 @@ export default {
       toggleSearch,
       changeSearchString,
       IsSearchVisible, toggleSearchVisible,
-      toggleLocationVisible, isLocationVisible
+      toggleLocationVisible, isLocationVisible,
+      selectedLocation
     } = useUiState();
     // const { setTermForUrl } = useUiHelpers();
     const {load} = useCart();
@@ -131,7 +132,6 @@ export default {
     const { pollResults, poll, polling } = useOnSearch();
     const { load: loadWishlist } = useWishlist();
     const searchBarRef = ref(null);
-    const location = ref(null);
     const enableLoadindBar = ref(false);
     const enableloadingCircle = ref(false);
     const term = ref('');
@@ -168,18 +168,13 @@ export default {
       toggleSearch();
     };
 
-    const locationSelected = (latitude, longitude, address) => {
-      console.log(address);
-      location.value = latitude + ',' + longitude;
-    };
-
     const handleSearch = debounce(async (paramValue) => {
       if (paramValue?.target?.value) {
         changeSearchString(paramValue.target.value);
         return;
       }
       enableloadingCircle.value = true;
-      await search({ term: paramValue, locationIs: location.value });
+      await search({ term: paramValue, locationIs: selectedLocation?.value?.latitude + ',' + selectedLocation?.value?.longitude });
 
       watch(()=>pollResults.value?.length, (newValue)=>{
         if (newValue > 0 && enableloadingCircle.value && !enableLoadindBar.value) {
@@ -246,8 +241,6 @@ export default {
       isMobile,
       removeSearchResults,
       clearSearch,
-      location,
-      locationSelected,
       LoadingBar,
       enableLoadindBar,
       enableloadingCircle,

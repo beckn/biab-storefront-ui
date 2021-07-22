@@ -76,6 +76,7 @@ import { SfCircleIcon, SfButton, SfSidebar, SfIcon } from '@storefront-ui/vue';
 import { ref } from '@vue/composition-api';
 import LocationSearchBar from './LocationSearchBar.vue';
 import ModalComponent from './ModalComponent.vue';
+import { useUiState } from '~/composables';
 
 export default {
   name: 'Location',
@@ -97,32 +98,38 @@ export default {
 
   data() {
     return {
-      isActive: false,
-      location: ''
+      isActive: false
     };
   },
-  methods: {
-    locationSelected(latitude, longitude, address) {
-      this.location = address;
-      this.toggleLocationDrop();
-      this.$emit('locationSelected', latitude, longitude, address);
-    }
-
-  },
   setup() {
+    const {selectedLocation, updateLocation } = useUiState();
     const isLocationdropOpen = ref(false);
     const isShow = ref(false);
+    const location = ref(selectedLocation?.value?.address);
+
     const toggleLocationDrop = () => {
       isLocationdropOpen.value = !isLocationdropOpen.value;
     };
     const toggleIsShow = () => {
       isShow.value = !isShow.value;
     };
+
+    const locationSelected = (latitude, longitude, address) => {
+      location.value = address;
+      toggleLocationDrop();
+      updateLocation({
+        latitude: latitude,
+        longitude: longitude,
+        address: address
+      });
+    };
     return {
       isLocationdropOpen,
       toggleLocationDrop,
       isShow,
-      toggleIsShow
+      toggleIsShow,
+      location,
+      locationSelected
     };
   }
 };
