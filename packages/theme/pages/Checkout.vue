@@ -325,7 +325,7 @@ export default {
     const shippingAsBilling = ref(false);
     const shippingAddressModal = ref(false);
     const billingAddressModal = ref(false);
-    const { toggleSearchVisible, toggleLocationVisible } = useUiState();
+    const { toggleSearchVisible } = useUiState();
 
     // const billingAddressModal = ref(false);
 
@@ -380,7 +380,6 @@ export default {
     const goBack = () => context.root.$router.back();
 
     toggleSearchVisible();
-    toggleLocationVisible();
 
     onBeforeMount(() => {
       load();

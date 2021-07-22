@@ -12,7 +12,6 @@ const state = reactive({
   isFilterSidebarOpen: false,
   isSearchOpen: false,
   searchString: '',
-  isLocationVisible: true,
   IsSearchVisible: true,
   selectedLocation: {
     latitude: '',
@@ -66,11 +65,6 @@ const useUiState = () => {
     state.IsSearchVisible = !state.IsSearchVisible;
   };
 
-  const isLocationVisible = computed(() => state.isLocationVisible);
-  const toggleLocationVisible = () => {
-    state.isLocationVisible = !state.isLocationVisible;
-  };
-
   const selectedLocation = computed(() => state.selectedLocation);
   const updateLocation = (location) => {
     state.selectedLocation = location;
@@ -85,7 +79,6 @@ const useUiState = () => {
     isSearchOpen,
     searchString,
     IsSearchVisible,
-    isLocationVisible,
     selectedLocation,
     toggleCartSidebar,
     toggleWishlistSidebar,
@@ -96,7 +89,6 @@ const useUiState = () => {
     toggleSearch,
     changeSearchString,
     toggleSearchVisible,
-    toggleLocationVisible,
     updateLocation
   };
 };

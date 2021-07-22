@@ -142,9 +142,8 @@ export default {
     const openModal = ref(false);
     const modelOpenIndex = ref(-1);
     const itemNumber = ref(null);
-    const { toggleSearchVisible, toggleLocationVisible } = useUiState();
+    const { toggleSearchVisible } = useUiState();
     toggleSearchVisible();
-    toggleLocationVisible();
 
     const updateItemCount = (data, index) => {
       console.log(data, index);
@@ -180,7 +179,6 @@ export default {
 
     onUnmounted(async () => {
       toggleSearchVisible();
-      toggleLocationVisible();
     });
 
     return {
