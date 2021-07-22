@@ -6,8 +6,9 @@
     /> -->
     <div class="product">
       <div @click="goBack" class="sf-chevron--left sf-chevron icon_back">
-        <span class="sf-chevron__bar sf-chevron__bar--left" />
-        <span class="sf-chevron__bar sf-chevron__bar--right" />
+        <span class="sf-search-bar__icon">
+        <SfIcon color="var(--c-primary)" size="20px" icon="chevron_left" />
+      </span>
       </div>
       <div class="images">
         <LazyHydrate when-visible>
@@ -223,7 +224,7 @@ export default {
 
 .icon_back {
   position: absolute;
-  margin: 20px;
+  margin: 15px;
   z-index: 2;
   .sf-icon{
     --icon-color: #F37A20 !important;
@@ -285,7 +286,9 @@ export default {
     }
   }
 }
-
+.sf-accordion.product__tabs.has-chevron{
+  margin-top: 0 !important;
+}
 .divider {
   width: 90%;
   margin: auto;
