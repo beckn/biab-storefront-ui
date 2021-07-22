@@ -199,6 +199,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.sf-bar{
+  padding: 0px 10px;
+}
+.sf-icon{
+  width: 20px;
+  height: 20px;
+}
 #cart {
   --sidebar-z-index: 3;
   --overlay-z-index: 3;

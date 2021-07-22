@@ -2,7 +2,7 @@
   <div>
     <div class="top-bar">
       <div class="sf-chevron--left sf-chevron icon_back">
-              <span class="sf-search-bar__icon">
+        <span class="sf-search-bar__icon">
         <SfIcon color="var(--c-primary)" size="20px" icon="chevron_left" />
       </span>
       </div>
@@ -192,24 +192,24 @@
       <Card>
         <CardContent class="flex-space-bw">
           <div class="address-text">SubTotal</div>
-          <div class="address-text">SubTotal</div>
+          <div class="address-text">0.00</div>
         </CardContent>
         <CardContent class="flex-space-bw">
           <div class="address-text">Delivery Charges</div>
-          <div class="address-text">Delivery Charges</div>
+          <div class="address-text">0.00</div>
         </CardContent>
         <CardContent class="flex-space-bw">
           <div class="address-text">Taxes (CGST)</div>
-          <div class="address-text">Taxes (CGST)</div>
+          <div class="address-text">0.00</div>
         </CardContent>
         <CardContent class="flex-space-bw">
           <div class="address-text">Taxes(SGST)</div>
-          <div class="address-text">Taxes(SGST)</div>
+          <div class="address-text">0.00</div>
         </CardContent>
         <div><hr class="sf-divider divider" /></div>
         <CardContent class="flex-space-bw">
           <div class="address-text bold">Total</div>
-          <div class="address-text bold">Total</div>
+          <div class="address-text bold">0.00</div>
         </CardContent>
       </Card>
 
@@ -383,6 +383,18 @@ export default {
   font-weight: 600;
 }
 
+.sf-checkbox__checkmark:hover{
+  --checkbox-border-color: transparent !important;
+    border: 0;
+}
+.sf-input{
+  input{
+    font-size: 14px;
+    &:placeholder{
+      font-size: 14px;
+    }
+  }
+}
 .flex-space-bw {
   justify-content: space-between;
 }

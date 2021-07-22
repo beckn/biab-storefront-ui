@@ -520,7 +520,7 @@ body{
     .f-price-container{
         display: flex;
         justify-content: center;
-        width: 100%;
+        width: 50%;
         background-color: #fff;
         .holder{
             display: flex;
@@ -546,7 +546,9 @@ body{
         }
         
     }
-
+    .sf-button{
+        width: 50% !important;
+    }
     .f-button{
         width: 100%;
         .f-btn-text{

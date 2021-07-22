@@ -286,7 +286,7 @@ export default {
   --mega-menu-column-header-margin: var(--spacer-sm) 0 var(--spacer-xl);
   --mega-menu-content-padding: 0;
   --mega-menu-height: auto;
-  padding-bottom: 70px;
+  padding-bottom: 50px;
   height: 70%;
   background: #FBFCFF;
   @include for-desktop {
