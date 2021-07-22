@@ -61,8 +61,8 @@ const useUiState = () => {
   };
 
   const IsSearchVisible = computed(() => state.IsSearchVisible);
-  const toggleSearchVisible = () => {
-    state.IsSearchVisible = !state.IsSearchVisible;
+  const toggleSearchVisible = (value = !state.IsSearchVisible) => {
+    state.IsSearchVisible = value;
   };
 
   const selectedLocation = computed(() => state.selectedLocation);
