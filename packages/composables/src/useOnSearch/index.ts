@@ -29,11 +29,10 @@ const factoryParams = {
     }
     if (catalogs) {
       const oldCodes = oldResults.map((obj) => {
-        return obj.bpp_descriptor.code;
+        return obj.bpp_descriptor.name;
       });
-      console.log('oldcodes ', oldCodes);
       const data = catalogs.filter((bpp) => {
-        return !(oldCodes.includes(bpp.bpp_descriptor.code));
+        return !(oldCodes.includes(bpp.bpp_descriptor.name));
       });
       return [...oldResults, ...data];
     }
