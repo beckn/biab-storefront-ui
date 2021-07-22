@@ -13,7 +13,12 @@ import { computed, Ref } from '@vue/composition-api';
 // export default usePoller;
 
 interface UsePollerFactoryParams extends FactoryParams {
-  poll: (context: Context, params?: any, oldResults?: Array<any>) => Promise<any>;
+  poll: (context: Context, params?: any) => Promise<any>;
+  dataHandler: (context: Context, currentResult, newResult) => any;
+  continuePolling: (context: Context, currentResult, newResult) => boolean;
+  pollTime:()=> number,
+  intervalTime:()=> number,
+  init:(context: Context, params?: any)=>Promise<any>
 }
 
 const usePollerFactory = (factoryParams: UsePollerFactoryParams) => {
@@ -22,7 +27,7 @@ const usePollerFactory = (factoryParams: UsePollerFactoryParams) => {
     const ssrKey = id || 'usePoller';
     const polling: Ref<boolean> = vsfRef(false, `${ssrKey}-loading`);
     const pollFunction = vsfRef({ interval: null, timeout: null }, `${ssrKey}-func`);
-    const pollResults = vsfRef([], `${ssrKey}-Pollers`);
+    const pollResults = vsfRef(null, `${ssrKey}-Pollers`);
     const _factoryParams = configureFactoryParams(factoryParams);
     const error = sharedRef({
       poll: null
@@ -30,42 +35,55 @@ const usePollerFactory = (factoryParams: UsePollerFactoryParams) => {
 
     const poll = async (params?) => {
       Logger.debug(`usePoller/${ssrKey}/search`, params);
-
+      // debugger;
       // clear old polls on subsequent calls
-      pollResults.value = [];
+      pollResults.value = null;
       clearInterval(pollFunction.value.interval);
       clearTimeout(pollFunction.value.interval);
-      const data = await _factoryParams.poll({params, pollResults});
-      pollResults.value = [...pollResults.value, ...data];
-      // pollResults.value = data;
-      // const data = await _factoryParams.poll(params,pollResults.value);
-      // console.log('pollloll', data, pollResults);
+      const data = await _factoryParams.poll({ params });
+      pollResults.value = _factoryParams.dataHandler({oldResults: pollResults.value, newResults: data});
       polling.value = true;
-
+      const intervalTime = _factoryParams.intervalTime();
+      const pollTime = _factoryParams.pollTime();
       pollFunction.value.interval = setInterval(async () => {
         try {
-          const data = await _factoryParams.poll({params, pollResults});
-          pollResults.value = [...pollResults.value, ...data];
-          // pollResults.value = data;
-          // const data = await _factoryParams.poll(params);
+          const data = await _factoryParams.poll({ params});
+          pollResults.value = _factoryParams.dataHandler({oldResults: pollResults.value, newResults: data});
+          if (!_factoryParams.continuePolling(pollResults.value, data)) {
+            clearInterval(pollFunction.value.interval);
+            clearTimeout(pollFunction.value.interval);
+          }
         } catch (err) {
+          console.error(err);
+
           clearInterval(pollFunction.value.interval);
           error.value.poll = err;
           Logger.error(`usePoller/${ssrKey}/search`, err);
         }
-      }, 2000);
+      }, intervalTime);
 
       pollFunction.value.timeout = setTimeout(() => {
         clearInterval(pollFunction.value.interval);
         polling.value = false;
-      }, 60000);
+      }, pollTime);
+    };
+
+    const init = async (params)=>{
+      return await _factoryParams.init({params});
+    };
+
+    const stopPolling = async () => {
+      clearInterval(pollFunction.value.interval);
+      clearTimeout(pollFunction.value.interval);
     };
 
     return {
       pollResults: computed(() => pollResults.value),
       polling: computed(() => polling.value),
       error: computed(() => error.value),
-      poll
+      poll,
+      stopPolling,
+      init
     };
   };
 
