@@ -18,6 +18,7 @@ interface UsePollerFactoryParams extends FactoryParams {
   continuePolling: (context: Context, currentResult, newResult) => boolean;
   pollTime:()=> number,
   intervalTime:()=> number,
+  init:()=>any
 }
 
 const usePollerFactory = (factoryParams: UsePollerFactoryParams) => {
@@ -67,6 +68,10 @@ const usePollerFactory = (factoryParams: UsePollerFactoryParams) => {
       }, pollTime);
     };
 
+    const init = async (params)=>{
+      return await _factoryParams.init({params});
+    };
+
     const stopPolling = async () => {
       clearInterval(pollFunction.value.interval);
       clearTimeout(pollFunction.value.interval);
@@ -77,7 +82,8 @@ const usePollerFactory = (factoryParams: UsePollerFactoryParams) => {
       polling: computed(() => polling.value),
       error: computed(() => error.value),
       poll,
-      stopPolling
+      stopPolling,
+      init
     };
   };
 

@@ -1,8 +1,8 @@
 <template>
   <div>
     <div class="top-bar">
-      <div class="sf-chevron--left sf-chevron icon_back">
-        <span class="sf-search-bar__icon">
+      <div @click="goBack" class="sf-chevron--left sf-chevron icon_back">
+              <span class="sf-search-bar__icon">
         <SfIcon color="var(--c-primary)" size="20px" icon="chevron_left" />
       </span>
       </div>
@@ -21,9 +21,9 @@
             :width="35"
             :height="35"
           /> -->
-          <div class="provide-img"><img /></div>
-          <div class="p-name"> ABC </div>
-          <div class="text-padding"> <span class="p-distance"> by </span> BCA </div>
+          <div class="provide-img"><img :src="cartGetters.getProviderImage(cart.bppProvider)?cartGetters.getProviderImage(cart.bppProvider):require('~/assets/images/store-placeholder.png')" /></div>
+          <div class="p-name"> {{ cart.bppProvider.descriptor.name }} </div>
+          <div class="text-padding"> <span class="p-distance"> by </span> {{ cart.bpp.descriptor.name }} </div>
 
           <!-- <div class="text-padding">
             <div class="flexy-center">
@@ -299,7 +299,7 @@ export default {
     AddressInputs,
     SfIcon
   },
-  setup() {
+  setup(_, context) {
     // const isThankYou = computed(() => currentStep.value === 'thank-you');
 
     const shippingAsBilling = ref(false);
@@ -357,6 +357,8 @@ export default {
       billingAddressModal.value = !billingAddressModal.value;
     };
 
+    const goBack = () => context.root.$router.back();
+
     toggleSearchVisible();
     toggleLocationVisible();
 
@@ -368,6 +370,7 @@ export default {
       toggleShippingModal,
       toggleBillingModal,
       shippingAddress,
+      goBack,
       billingAddress,
       isShippingAddressFilled,
       cartGetters,

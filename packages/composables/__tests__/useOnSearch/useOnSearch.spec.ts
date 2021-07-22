@@ -38,7 +38,7 @@ const context = {
 describe('[beckn-composables] usePoller', () => {
 
   it('should trigger onSearch for term', async () => {
-    const { poll } = useOnSearch() as any;
+    const { poll} = useOnSearch() as any;
     const data = await poll(context, params);
     expect(context.$beckn.api.onSearch).toBeCalled();
     expect(data).toStrictEqual(respData);
