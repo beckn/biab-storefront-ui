@@ -6,6 +6,14 @@ import providerGetters from './providers.Getters';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getCartItems = (cart): LineItem[] => cart?.items;
 
+export const getBppProvider = (cart)=> {
+  return cart?.bppProvider || null;
+};
+
+export const getBpp = (cart)=> {
+  return cart?.bpp || null;
+};
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getCartItemName = (product: any): string => productGetters.getName(product) || 'Product\'s name';
 
@@ -73,6 +81,8 @@ const cartGetters: CartGetters<Cart, LineItem> = {
   getMeasureUnit: getMeasureUnit,
   getCoupons,
   getDiscounts,
+  getBppProvider,
+  getBpp,
   getProviderImage
 };
 

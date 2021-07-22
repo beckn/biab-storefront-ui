@@ -3,13 +3,13 @@
     <LazyHydrate when-visible>
       <!-- <TopBar class="desktop-only" /> -->
     </LazyHydrate>
-    <LazyHydrate when-idle>
-      <AppHeader />
-    </LazyHydrate>
+    <!-- <LazyHydrate when-idle> -->
+    <AppHeader />
+    <!-- </LazyHydrate> -->
 
     <div id="layout">
-      <nuxt :key="$route.fullPath"/>
-      <ClearCartPopup/>
+      <nuxt :key="$route.fullPath" />
+      <ClearCartPopup />
       <LazyHydrate when-visible>
         <!-- <BottomNavigation /> -->
       </LazyHydrate>
@@ -34,6 +34,7 @@ import LoginModal from '~/components/LoginModal.vue';
 import LazyHydrate from 'vue-lazy-hydration';
 import Notification from '~/components/Notification';
 import ClearCartPopup from '~/components/ClearCartPopup.vue';
+// import { useCart } from '@vue-storefront/beckn';
 
 export default {
   name: 'DefaultLayout',
@@ -48,12 +49,15 @@ export default {
     LoginModal,
     Notification,
     ClearCartPopup
+  },
+  setup() {
+    // const { load } = useCart();
   }
 };
 </script>
 
 <style lang="scss">
-@import "~@storefront-ui/vue/styles";
+@import '~@storefront-ui/vue/styles';
 
 #layout {
   box-sizing: border-box;

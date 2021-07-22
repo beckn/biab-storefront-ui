@@ -225,7 +225,7 @@ export default {
       pollResults.value = null;
     };
 
-    onBeforeUnmount(() => {
+    onBeforeUnmount(async () => {
       unMapMobileObserver();
     });
 
