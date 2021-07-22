@@ -13,12 +13,12 @@ import { computed, Ref } from '@vue/composition-api';
 // export default usePoller;
 
 interface UsePollerFactoryParams extends FactoryParams {
-  poll: (context: Context, params?: any, oldResults?: Array<any>) => Promise<any>;
+  poll: (context: Context, params?: any) => Promise<any>;
   dataHandler: (context: Context, currentResult, newResult) => any;
   continuePolling: (context: Context, currentResult, newResult) => boolean;
   pollTime:()=> number,
   intervalTime:()=> number,
-  init:()=>any
+  init:(context: Context, params?: any)=>Promise<any>
 }
 
 const usePollerFactory = (factoryParams: UsePollerFactoryParams) => {

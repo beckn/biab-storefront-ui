@@ -43,6 +43,7 @@ const factoryParams = {
   continuePolling: () => {
     return true;
   },
+  init: async ()=>{},
   pollTime: ()=> 60000,
   intervalTime: ()=> 2000
 
