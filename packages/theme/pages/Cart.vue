@@ -118,7 +118,7 @@ import { useCart, cartGetters } from '@vue-storefront/beckn';
 import ProductCard from '~/components/ProductCard';
 import Footer from '~/components/Footer';
 import ModalSlide from '~/components/ModalSlide';
-import { ref, onBeforeMount, onUnmounted } from '@vue/composition-api';
+import { ref, onBeforeMount } from '@vue/composition-api';
 import { useUiState } from '~/composables';
 
 export default {
@@ -143,7 +143,7 @@ export default {
     const modelOpenIndex = ref(-1);
     const itemNumber = ref(null);
     const { toggleSearchVisible } = useUiState();
-    toggleSearchVisible();
+    toggleSearchVisible(false);
 
     const updateItemCount = (data, index) => {
       console.log(data, index);
@@ -171,14 +171,13 @@ export default {
       toggleModal();
     };
 
-    const goBack = () => root.$router.back();
+    const goBack = () => {
+      root.$router.back();
+      toggleSearchVisible(true);
+    };
 
     onBeforeMount(async () => {
       await load();
-    });
-
-    onUnmounted(async () => {
-      toggleSearchVisible();
     });
 
     return {

@@ -292,7 +292,6 @@ import {
 import ModalSlide from '~/components/ModalSlide.vue';
 import AddressInputs from '~/components/AddressInputs.vue';
 import Footer from '~/components/Footer.vue';
-import { useUiState } from '~/composables';
 import { useCart, cartGetters, providerGetters } from '@vue-storefront/beckn';
 
 import { computed, ref, onBeforeMount } from '@vue/composition-api';
@@ -325,7 +324,6 @@ export default {
     const shippingAsBilling = ref(false);
     const shippingAddressModal = ref(false);
     const billingAddressModal = ref(false);
-    const { toggleSearchVisible } = useUiState();
 
     // const billingAddressModal = ref(false);
 
@@ -378,8 +376,6 @@ export default {
     };
 
     const goBack = () => context.root.$router.back();
-
-    toggleSearchVisible();
 
     onBeforeMount(() => {
       load();
