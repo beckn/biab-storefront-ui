@@ -11,7 +11,7 @@
       <SfIcon icon="more" color="green-primary" />
     </div>
     <LoadingBar :enable='enableLoadindBar'/>
-    <div v-if="isLocationVisible" class="location-btn h-padding flexy">
+    <div v-if="['home'].includes($route.name)" class="location-btn h-padding flexy">
       <div v-if="isSearchOpen" class="icon-padding center-pos" @click="closeSearch">
         <SfIcon color="var(--c-text)" size="20px" icon="chevron_left" />
       </div>

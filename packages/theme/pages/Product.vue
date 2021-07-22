@@ -133,11 +133,9 @@ export default {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   setup(props, context) {
-    const { toggleSearchVisible, toggleLocationVisible } =
-      useUiState();
+    const { toggleSearchVisible } = useUiState();
 
     toggleSearchVisible();
-    toggleLocationVisible();
 
     const data = context.root.$route.query.data;
     const { product, bpp, bppProvider} = JSON.parse(
@@ -162,7 +160,6 @@ export default {
 
     onUnmounted(async () => {
       toggleSearchVisible();
-      toggleLocationVisible();
     });
 
     const footerClick = () => {
@@ -176,7 +173,6 @@ export default {
       product,
       toggleSearchVisible,
       productGetters,
-      toggleLocationVisible,
       isInCart,
       cartGetters,
       footerClick
