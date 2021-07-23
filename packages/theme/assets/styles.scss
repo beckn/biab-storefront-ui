@@ -1,14 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-// @import './fonts/stylesheet.scss';
+@import '~/assets/fonts/stylesheet.css';
 
 
 $Primary-text:#37474F;
 $secondary-text: #43464E;
 $secondary-text-opacity: rgba(67, 70, 78, 0.4);
 $primary-color: #F37A20;
-$primary-font:  "Poppins",sans-serif!important;
+$primary-font: 'SFProText' !important;
 
-$secondary-font:  "Poppins",sans-serif!important;
+$secondary-font:  'SFProText' !important;
 $icon-bg: rgba(243, 122, 32, .1);
 $white: #fff;
 
@@ -20,14 +20,14 @@ $s-p-add-cart-bg:#F37A20;
 $s-p-add-cart-color: #fff;
 
 :root{
---font-family--primary: "Poppins",sans-serif!important;
---font-family--secondary:  "Poppins",sans-serif!important;
+--font-family--primary: 'SFProText' !important;
+--font-family--secondary:  'SFProText' !important;
 --_c-green-primary: #F37A20 !important;
 --c-primary-variant: #f5af79 !important ;
 }
 body{
     color: $Primary-text;
-    font-family:  "Poppins",sans-serif!important;
+    font-family:  'SFProText' !important;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     height: 100%;
