@@ -10,7 +10,7 @@
       </nuxt-link>
       <SfIcon icon="more" color="green-primary" />
     </div>
-    <LoadingBar :enable='enableLoadindBar'/>
+    <LoadingBar :enable="enableLoadindBar && ['home','Product','cart'].includes($route.name)"/>
     <div v-if="['home'].includes($route.name)" class="location-btn h-padding flexy">
       <div v-if="isSearchOpen" class="icon-padding center-pos" @click="closeSearch">
         <SfIcon color="var(--c-text)" size="20px" icon="chevron_left" />
@@ -129,7 +129,7 @@ export default {
     const { setTermForUrl} = useUiHelpers();
     const { isAuthenticated, load: loadUser } = useUser();
     const { search, result } = useFacet();
-    const { pollResults, poll, polling } = useOnSearch();
+    const { pollResults, poll, polling, stopPolling } = useOnSearch();
     const { load: loadWishlist } = useWishlist();
     const searchBarRef = ref(null);
     const enableLoadindBar = ref(false);
@@ -166,6 +166,7 @@ export default {
       if (enableloadingCircle.value) enableloadingCircle.value = false;
       if (enableLoadindBar.value) enableLoadindBar.value = false;
       toggleSearch();
+      stopPolling();
     };
 
     const handleSearch = debounce(async (paramValue) => {
@@ -173,11 +174,12 @@ export default {
         changeSearchString(paramValue.target.value);
         return;
       }
-      enableloadingCircle.value = true;
+      if (polling.value) stopPolling();
+      if (!enableloadingCircle.value) enableloadingCircle.value = true;
+      if (enableLoadindBar.value) enableLoadindBar.value = false;
       await search({ term: paramValue, locationIs: selectedLocation?.value?.latitude + ',' + selectedLocation?.value?.longitude });
-
-      watch(()=>pollResults.value?.length, (newValue)=>{
-        if (newValue > 0 && enableloadingCircle.value && !enableLoadindBar.value) {
+      watch(()=>pollResults.value, (newValue)=>{
+        if (newValue?.length > 0 && enableloadingCircle.value && !enableLoadindBar.value) {
           enableloadingCircle.value = false;
           enableLoadindBar.value = true;
         }
