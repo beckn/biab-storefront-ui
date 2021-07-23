@@ -53,7 +53,7 @@
             @close="toggleLocationDrop"
             class="sidebar sf-sidebar--right"
           >
-            <transition name="fade" mode="in-in">
+            <transition name="fade" >
               <client-only>
                 <LocationSearchBar @locationSelected="locationSelected" @toggleLocationDrop="toggleLocationDrop" v-e2e="'app-location-sidebar'" />
               </client-only>

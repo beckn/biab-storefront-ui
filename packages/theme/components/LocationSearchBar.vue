@@ -56,6 +56,9 @@ export default {
     this.service = new window.google.maps.places.AutocompleteService();
     this.geocodeService = new window.google.maps.Geocoder();
   },
+  mounted() {
+    this.$refs.locationAutocomplete.focus();
+  },
   methods: {
     displaySuggestions (predictions, status) {
       if (status !== window.google.maps.places.PlacesServiceStatus.OK) {
