@@ -16,6 +16,7 @@ export { default as useUserOrder } from './useUserOrder';
 export { default as useUserShipping } from './useUserShipping';
 export { default as useWishlist } from './useWishlist';
 export { default as useOnSearch } from './useOnSearch';
+export { default as useAddress } from './useAddress';
 
 export { default as userOrder } from './useOrder';
 export * from './getters';

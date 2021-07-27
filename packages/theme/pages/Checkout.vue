@@ -82,7 +82,12 @@
           <div class="color-def">Change</div>
         </SfButton>
       </div>
-      <AddressCard v-if="isShippingAddressFilled" :name="shippingAddress.name" :address="shippingAddress.address" :mobile="shippingAddress.mobile"/>
+      <AddressCard
+        v-if="isShippingAddressFilled"
+        :name="shippingAddress.name"
+        :address="shippingAddress.address"
+        :mobile="shippingAddress.mobile"
+      />
       <Card v-if="!isShippingAddressFilled">
         <CardContent>
           <div class="address-bar-icon">
@@ -115,7 +120,7 @@
           <div class="color-def">Change</div>
         </SfButton>
       </div>
-      <Card v-if="!isBillingAddressFilled">
+      <Card class="card-checkbox">
         <CardContent>
           <div class="address-bar-icon">
             <SfCheckbox
@@ -128,7 +133,12 @@
         </CardContent>
       </Card>
 
-      <AddressCard v-if="isBillingAddressFilled" :name="billingAddress.name" :address="billingAddress.address" :mobile="billingAddress.mobile"/>
+      <AddressCard
+        v-if="isBillingAddressFilled && !shippingAsBilling"
+        :name="billingAddress.name"
+        :address="billingAddress.address"
+        :mobile="billingAddress.mobile"
+      />
 
       <div class="sub-heading">
         <div class="p-name">Payment</div>
@@ -221,7 +231,12 @@ import {
 import ModalSlide from '~/components/ModalSlide.vue';
 import AddressInputs from '~/components/AddressInputs.vue';
 import Footer from '~/components/Footer.vue';
-import { useCart, cartGetters, providerGetters } from '@vue-storefront/beckn';
+import {
+  useCart,
+  cartGetters,
+  providerGetters,
+  useAddress
+} from '@vue-storefront/beckn';
 
 import { computed, ref, onBeforeMount } from '@vue/composition-api';
 import Card from '~/components/Card.vue';
@@ -260,21 +275,16 @@ export default {
 
     const { cart, load } = useCart();
 
-    const shippingAddress = ref({
-      name: '',
-      mobile: '',
-      building: '',
-      landmark: '',
-      address: ''
-    });
+    const {
+      getBillngAddress,
+      getShippingAddress,
+      setBillingAddress,
+      setShippingAddress
+    } = useAddress();
 
-    const billingAddress = ref({
-      name: '',
-      mobile: '',
-      building: '',
-      landmark: '',
-      address: ''
-    });
+    const shippingAddress = ref(getShippingAddress());
+
+    const billingAddress = ref(getBillngAddress());
 
     const isShippingAddressFilled = computed(() => {
       // debugger;
@@ -295,6 +305,7 @@ export default {
     });
 
     const toggleShippingModal = () => {
+      setShippingAddress(shippingAddress.value);
       shippingAddressModal.value = !shippingAddressModal.value;
     };
 
@@ -303,6 +314,7 @@ export default {
     };
 
     const toggleBillingModal = () => {
+      setBillingAddress(billingAddress.value);
       billingAddressModal.value = !billingAddressModal.value;
     };
 
@@ -335,6 +347,10 @@ export default {
 <style lang="scss" scoped>
 .bold {
   font-weight: 600;
+}
+
+.card-checkbox {
+  margin-bottom: 20px;
 }
 
 .sf-checkbox__checkmark:hover {
