@@ -1,5 +1,7 @@
 import getProduct from '../../src/api/getProduct';
-import { SearchItemsWhere, SearchType } from './../../src/types/Search';
+import { SearchItemsWhere } from './../../src/types/Search';
+
+/* eslint  camelcase: 0 */
 
 describe('[beckn-api-client] getProduct', () => {
 
@@ -20,10 +22,9 @@ describe('[beckn-api-client] getProduct', () => {
     }
   };
   const queryHandler = {
-    query: ({ searchString, searchType, location }) => {
-      expect(searchString).toEqual(searchItemsWhere.itemContains);
-      expect(searchType).toEqual(SearchType.ITEM);
-      expect(location).toEqual(searchItemsWhere.locationIs);
+    send: ({message: {criteria: { search_string, delivery_location }}}) => {
+      expect(search_string).toEqual(searchItemsWhere.itemContains);
+      expect(delivery_location).toEqual(searchItemsWhere.locationIs);
       return thenHandler;
     }
   };
@@ -37,7 +38,7 @@ describe('[beckn-api-client] getProduct', () => {
       }
     },
     client: {
-      get: (url: string) => {
+      post: (url: string) => {
         expect(url).toEqual('http://localhost:3000/v0/search');
         return queryHandler;
       }

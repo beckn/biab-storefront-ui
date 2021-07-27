@@ -1,7 +1,8 @@
 import onSearch from '../../src/api/onSearch';
 
+/* eslint  camelcase: 0 */
+
 const params = {
-  // eslint-disable-next-line camelcase
   message_id: 'testid'
 };
 
