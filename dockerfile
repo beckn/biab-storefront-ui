@@ -1,5 +1,5 @@
 # build environment
-FROM node:14.16.1-alpine as build
+FROM node:14.17.3-alpine as build
 RUN apk update
 RUN apk add nginx
 WORKDIR /app
@@ -11,7 +11,7 @@ RUN yarn build
 # production environment
 FROM nginx:stable-alpine
 RUN apk update && apk upgrade
-RUN apk add --no-cache nodejs=14.16.1-r1 npm=14.16.1-r1
+RUN apk add --no-cache nodejs=14.17.3-r0 npm=14.17.3-r0
 RUN npm install -g yarn
 COPY --from=build /app /usr/share/nginx/html
 WORKDIR /usr/share/nginx/html
