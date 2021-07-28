@@ -8,11 +8,11 @@ jobs:
     if: github.ref == 'refs/heads/main'
     runs-on: [self-hosted, linux]
     steps:
-      - name: Running a git level clean
-        run: git clean -fdX
-
       - name: Checkout code
         uses: actions/checkout@v2
+
+      - name: Running a git level clean
+        run: git clean -fdX
 
       - name: Setup node
         uses: actions/setup-node@v1
