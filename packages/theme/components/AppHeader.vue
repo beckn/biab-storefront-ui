@@ -178,6 +178,7 @@ export default {
       if (!enableloadingCircle.value) enableloadingCircle.value = true;
       if (enableLoadindBar.value) enableLoadindBar.value = false;
       await search({ term: paramValue, locationIs: selectedLocation?.value?.latitude + ',' + selectedLocation?.value?.longitude });
+      localStorage.setItem('transactionId', result.value.data.ackResponse.context.transaction_id);
       watch(()=>pollResults.value, (newValue)=>{
         if (newValue?.length > 0 && enableloadingCircle.value && !enableLoadindBar.value) {
           enableloadingCircle.value = false;

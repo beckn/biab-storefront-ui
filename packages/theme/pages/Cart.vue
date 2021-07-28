@@ -7,6 +7,9 @@
       class="sf-sidebar--right"
       @close="goBack"
     >
+      <div v-if="enableLoader" key="loadingCircle" class="loader-circle">
+        <LoadingCircle   :enable="enableLoader"/>
+      </div>
       <template #content-top>
         <div v-if="cartGetters.getTotalItems(cart)" class="provider-head">
           <div class="provide-img"><img :src="cartGetters.getProviderImage(cart.bppProvider)?cartGetters.getProviderImage(cart.bppProvider):require('~/assets/images/store-placeholder.png')"/></div>
@@ -15,9 +18,9 @@
         </div>
       </template>
       <div>
-        <div v-if="false" class="cart-error-msg"><img src="../assets/images/bx_bx-error.png" alt="" /><p>Some items are currently available. Please remove these items and proceed to checkout.</p> </div>
-        <div v-if="false" class="cart-warning-msg"><img src="../assets/images/bx_bx-error-circle.png" alt="" /><p>Oops, required quantity not available! Update items with available quantity and proceed? <br /><span><a>Yes, update all</a></span></p></div>
-        <div v-if="false" class="cart-warning-msg"><img src="../assets/images/bx_bx-error-circle.png" alt="" /><p>Prices of some of the items in your cart have changed.Please verify and proceed.</p>
+        <div v-if="errOutOfStock" class="cart-error-msg"><img src="../assets/images/bx_bx-error.png" alt="" /><p>Some items are currently available. Please remove these items and proceed to checkout.</p> </div>
+        <div v-if="errUpdateCount" class="cart-warning-msg"><img src="../assets/images/bx_bx-error-circle.png" alt="" /><p>Oops, required quantity not available! Update items with available quantity and proceed? <br /><span @click="updateAll"><a>Yes, update all</a></span></p></div>
+        <div v-if="errPricechange" class="cart-warning-msg"><img src="../assets/images/bx_bx-error-circle.png" alt="" /><p>Prices of some of the items in your cart have changed.Please verify and proceed.</p>
       </div>
       </div>
       <transition name="sf-fade" mode="out-in">
@@ -114,12 +117,13 @@ import {
   SfImage,
   SfInput
 } from '@storefront-ui/vue';
-import { useCart, cartGetters } from '@vue-storefront/beckn';
+import { useCart, cartGetters, useQuote } from '@vue-storefront/beckn';
 import ProductCard from '~/components/ProductCard';
 import Footer from '~/components/Footer';
 import ModalSlide from '~/components/ModalSlide';
-import { ref, onBeforeMount } from '@vue/composition-api';
+import { ref, onBeforeMount, watch } from '@vue/composition-api';
 import { useUiState } from '~/composables';
+import LoadingCircle from '~/components/LoadingCircle';
 
 export default {
   name: 'Cart',
@@ -135,26 +139,88 @@ export default {
     ProductCard,
     Footer,
     ModalSlide,
-    SfInput
+    SfInput,
+    LoadingCircle
   },
   setup(_, { root }) {
     const { cart, addItem, load } = useCart();
+    const { init, poll, pollResults, stopPolling } = useQuote();
     const openModal = ref(false);
     const modelOpenIndex = ref(-1);
     const itemNumber = ref(null);
     const { toggleSearchVisible } = useUiState();
+
+    const errOutOfStock = ref(false);
+    const errUpdateCount = ref(false);
+    const errPricechange = ref(false);
+    const enableLoader = ref(false);
+
     toggleSearchVisible(false);
 
-    const updateItemCount = (data, index) => {
+    const matchQuote = async () => {
+      if (cart.value.totalItems > 0) {
+        enableLoader.value = true;
+        const transactionId = localStorage.getItem('transactionId');
+        const cartItems = await cart.value.items.map((item)=>{
+          return {
+            id: item.id,
+            quantity: {count: item.quantity},
+            // eslint-disable-next-line camelcase
+            bpp_id: cart.value.bpp.id,
+            provider: {
+              id: cart.value.bppProvider.id,
+              locations: ['./retail.kirana/ind.blr/36@mandi.succinct.in.provider_location']
+            }
+          };
+        });
+
+        const cartData = await init({
+          // eslint-disable-next-line camelcase
+          context: { transaction_id: transactionId },
+          message: { cart: { items: cartItems }}
+        });
+
+        watch(()=>pollResults.value, (newValue)=>{
+          stopPolling();
+          if (newValue?.message) {
+            const updatedCartData = cart.value.items.map(cartItem => {
+              const quoteItem = newValue.message.quote?.items.filter(quoteItem => quoteItem.id === cartItem.id)[0];
+              const singleItemValue = quoteItem.price.value / quoteItem.quantity.selected.count;
+              console.log('price', parseFloat(cartItem.price.value), parseFloat(singleItemValue));
+              if (parseFloat(cartItem.price.value) !== parseFloat(singleItemValue)) {
+                cartItem.updatedPrice = singleItemValue;
+                errPricechange.value = true;
+              }
+              if (cartItem.quantity !== quoteItem.quantity.selected.count) {
+                cartItem.updatedCount = quoteItem.quantity.selected.count;
+                if (quoteItem.quantity.selected.count === 0) errOutOfStock.value = true;
+                else errUpdateCount.value = true;
+              }
+              return cartItem;
+            });
+            cart.value.items = updatedCartData;
+            enableLoader.value = false;
+            console.log('cart', cart);
+          }
+        });
+        if (cartData?.context?.message_id) {
+          await poll({messageId: cartData.context.message_id});
+        }
+      }
+    };
+
+    const updateItemCount = (data, index, matchQ = true) => {
       console.log(data, index);
       addItem({
         product: cart.value.items[index],
         quantity: data,
         customQuery: {
           bpp: cart.value.bpp,
-          bppProvider: cart.value.bppProvider
+          bppProvider: cart.value.bppProvider,
+          locations: cart.value.locations
         }
       });
+      if (matchQ) matchQuote();
     };
 
     const footerClick = () => {
@@ -176,8 +242,20 @@ export default {
       toggleSearchVisible(true);
     };
 
+    const updateAll = () => {
+      for (let i = 0; i < cart.value.items.length; i++) {
+        console.log(cart.value.items[i].quantity);
+        if (cart.value.items[i]?.updatedCount !== 0 && cart.value.items[i].updatedCount !== cart.value.items[i].quantity) {
+          updateItemCount(cart.value.items[i].updatedCount, i, false);
+        }
+      }
+      errUpdateCount.value = false;
+      matchQuote();
+    };
+
     onBeforeMount(async () => {
       await load();
+      await matchQuote();
     });
 
     return {
@@ -189,7 +267,12 @@ export default {
       footerClick,
       toggleModal,
       addQuantity,
-      goBack
+      goBack,
+      errOutOfStock,
+      errUpdateCount,
+      errPricechange,
+      enableLoader,
+      updateAll
     };
   }
 };
@@ -212,6 +295,15 @@ export default {
       --sidebar-content-padding: var(--spacer-base);
     }
   }
+}
+
+.loader-circle{
+    width: 100%;
+    position: fixed;
+    z-index: 1;
+    top: 130px;
+    left: 0;
+    height: 65vh;
 }
 
 .modal-heading {

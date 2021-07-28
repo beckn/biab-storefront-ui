@@ -170,7 +170,8 @@ export default {
         bppProvider: {
           id: provider.id,
           descriptor: provider.descriptor
-        }
+        },
+        locations: provider.locations
       }));
       root.$router.push({
         path: root.$route.path + 'product',
@@ -193,7 +194,8 @@ export default {
           bppProvider: {
             id: provider.id,
             descriptor: provider.descriptor
-          }
+          },
+          locations: provider.locations
         }
       });
     };

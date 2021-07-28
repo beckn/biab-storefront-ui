@@ -22,6 +22,7 @@ type Cart = {
   newBpp: string;
   newProvider: string;
   newProduct: Product;
+  locations: string[];
 };
 
 const params = {
@@ -37,7 +38,8 @@ const params = {
       totalItems: 0,
       newBpp: null,
       newProvider: null,
-      newProduct: null
+      newProduct: null,
+      locations: []
     };
     if (localStorage.getItem('cartData')) {
       cartData = JSON.parse(localStorage.getItem('cartData'));
@@ -58,7 +60,8 @@ const params = {
         totalItems: 0,
         newBpp: null,
         newProvider: null,
-        newProduct: null
+        newProduct: null,
+        locations: []
       };
     }
     const price = productGetters.getPrice(product).regular;
@@ -86,6 +89,7 @@ const params = {
           currentCart.newBpp = null;
           currentCart.bppProvider = null;
           currentCart.newProvider = null;
+          currentCart.locations = [];
         }
       }
     } else {
@@ -99,6 +103,7 @@ const params = {
       currentCart.newBpp = customQuery.bpp;
       currentCart.bppProvider = customQuery.bppProvider;
       currentCart.newProvider = customQuery.bppProvider;
+      currentCart.locations = customQuery.locations;
     }
 
     localStorage.setItem('cartData', JSON.stringify(currentCart));

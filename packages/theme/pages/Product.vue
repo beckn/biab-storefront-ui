@@ -125,7 +125,7 @@ import { useUiState } from '~/composables';
 import { useCart, cartGetters, productGetters } from '@vue-storefront/beckn';
 import MobileStoreBanner from '~/components/MobileStoreBanner.vue';
 import LazyHydrate from 'vue-lazy-hydration';
-import { onUnmounted, onBeforeMount} from '@vue/composition-api';
+import { onBeforeMount} from '@vue/composition-api';
 
 export default {
   name: 'Product',
@@ -135,31 +135,30 @@ export default {
   setup(props, context) {
     const { toggleSearchVisible } = useUiState();
 
-    toggleSearchVisible();
+    toggleSearchVisible(false);
 
     const data = context.root.$route.query.data;
-    const { product, bpp, bppProvider} = JSON.parse(
+    const { product, bpp, bppProvider, locations} = JSON.parse(
       Buffer.from(data, 'base64').toString()
     );
     const { addItem, cart, load, isInCart } = useCart();
     console.log('product', product);
     const images = productGetters.getImages(product);
-    const goBack = () => context.root.$router.back();
+    const goBack = () => {
+      toggleSearchVisible(true);
+      context.root.$router.back();
+    };
 
     const updateCart = async (value) => {
       addItem({
         product: product,
         quantity: value,
-        customQuery: { bpp: bpp, bppProvider: bppProvider}
+        customQuery: { bpp: bpp, bppProvider: bppProvider, locations: locations}
       });
     };
 
     onBeforeMount(async () => {
       await load();
-    });
-
-    onUnmounted(async () => {
-      toggleSearchVisible();
     });
 
     const footerClick = () => {
