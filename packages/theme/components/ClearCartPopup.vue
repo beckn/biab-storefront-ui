@@ -34,6 +34,7 @@
 import { SfIcon, SfOverlay, SfImage } from '@storefront-ui/vue';
 import { ref, watch } from '@vue/composition-api';
 import { useCart } from '@vue-storefront/beckn';
+import { useUiState } from '~/composables';
 
 export default {
   name: 'ClearCartPopup',
@@ -45,29 +46,31 @@ export default {
   setup() {
     const { cart, addItem } = useCart();
     const show = ref(false);
+    const { changeClearCart } = useUiState();
     watch(
       () => cart?.value?.newProvider,
-      (newval) => {
-        console.log(newval, 'popup');
+      () => {
         if (cart.value.bppProvider?.id !== cart.value.newProvider?.id) {
           show.value = true;
+          changeClearCart(true);
         }
       }
     );
 
     const onClickYes = () => {
-      console.log(cart.value);
       addItem({
         product: cart.value.newProduct,
         quantity: cart.value.newProduct.quantity,
         customQuery: { bpp: cart.value.newBpp, bppProvider: cart.value.newProvider, clearCart: true, locations: cart.value.locations }
       });
+      changeClearCart(false);
       show.value = false;
     };
 
     const onClickNo = () => {
       cart.value.newBpp = cart.value.bpp;
-      cart.value.newProviderName = cart.value.bppProvider;
+      cart.value.newProvider = cart.value.bppProvider;
+      changeClearCart(false);
       show.value = false;
     };
 

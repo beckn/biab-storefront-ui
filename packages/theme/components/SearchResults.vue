@@ -13,8 +13,8 @@
           <div class="h-padding result-num">
             <span><span v-e2e="'total-result'">{{ totalResults(catalogs) }}</span> results found</span>
           </div>
-          <div  v-for="(bpp, index) in catalogs" :key="index" >
-            <div v-for="(provider, index) in bpp.bpp_providers" :key="index" >
+          <div  v-for="(bpp, bppIndex) in catalogs" :key="bppIndex" >
+            <div v-for="(provider, prIndex) in bpp.bpp_providers" :key="prIndex" >
               <div class="provider-head flexy-center h-padding">
                 <div class="flexy">
                   <img
@@ -36,15 +36,15 @@
               </div>
               <div class="results--mobile">
                 <ProductCard
-                  v-for="(product, index) in provider.items"
+                  v-for="(product, pIndex) in provider.items"
                   @goToProduct="goToProduct(product,provider,bpp)"
-                  :key="index"
+                  :key="bppIndex+'-'+prIndex+'-'+pIndex+'-'+keyVal+'product'"
                   :pName="productGetters.getName(product)"
                   :pPrice="productGetters.getPrice(product).regular"
                   :pImage="productGetters.getGallery(product)[0].small[0]"
                   :pWieght="productGetters.getProductWeight(product)+' kg'"
                   :pCount="cartGetters.getItemQty(isInCart({product}))"
-                  @updateItemCount="(item)=>updateItemCount(item, provider, bpp, index)"
+                  @updateItemCount="(item)=>updateItemCount(item, provider, bpp, pIndex)"
                 />
               </div>
               <div><hr class="sf-divider" /></div>
@@ -136,7 +136,8 @@ export default {
     const { addItem, cart, isInCart } = useCart();
     const isSearchOpen = ref(props.visible);
     const catalogs = computed(() => props.result);
-    const { toggleCartSidebar } = useUiState();
+    const { toggleCartSidebar, clearCartPopup} = useUiState();
+    const keyVal = ref(0);
 
     watch(() => props.visible, (newVal) => {
       isSearchOpen.value = newVal;
@@ -145,6 +146,11 @@ export default {
       } else {
         document.body.classList.remove('no-scroll');
         emit('removeSearchResults');
+      }
+    });
+    watch(() => clearCartPopup.value, (newVal) => {
+      if (!newVal) {
+        keyVal.value++;
       }
     });
 
@@ -182,7 +188,6 @@ export default {
     };
 
     const updateItemCount = (data, provider, bpp, index) => {
-      console.log(bpp.bpp_descriptor.name);
       addItem({
         product: provider.items[index],
         quantity: data,
@@ -217,7 +222,8 @@ export default {
       isInCart,
       totalResults,
       cartGetters,
-      footerClick
+      footerClick,
+      keyVal
     };
   }
 };
