@@ -60,7 +60,7 @@ export default {
       addItem({
         product: cart.value.newProduct,
         quantity: cart.value.newProduct.quantity,
-        customQuery: { bpp: cart.value.newBpp, bppProvider: cart.value.newProvider, clearCart: true }
+        customQuery: { bpp: cart.value.newBpp, bppProvider: cart.value.newProvider, clearCart: true, locations: cart.value.locations }
       });
       show.value = false;
     };
