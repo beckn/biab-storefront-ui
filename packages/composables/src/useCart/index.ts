@@ -66,8 +66,6 @@ const params = {
     }
     const price = productGetters.getPrice(product).regular;
     if (Boolean(currentCart.bpp) && (currentCart.bppProvider?.id !== customQuery.bppProvider.id || customQuery.bpp.id !== currentCart.bpp?.id)) {
-      console.log('check');
-
       currentCart.newBpp = customQuery.bpp;
       currentCart.newProvider = customQuery.bppProvider;
       currentCart.newProduct = { quantity, ...product };

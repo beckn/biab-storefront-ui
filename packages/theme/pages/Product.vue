@@ -38,7 +38,7 @@
           <div class="s-p-price">
             ₹ {{ productGetters.getPrice(product).regular }}
           </div>
-          <AddToCart :value="cartGetters.getItemQty(isInCart({product}))" @updateItemCount="updateCart" />
+          <AddToCart :key="keyVal+'product-page'" :value="cartGetters.getItemQty(isInCart({product}))" @updateItemCount="updateCart" />
         </div>
         <div><hr class="sf-divider divider" /></div>
 
@@ -125,7 +125,7 @@ import { useUiState } from '~/composables';
 import { useCart, cartGetters, productGetters } from '@vue-storefront/beckn';
 import MobileStoreBanner from '~/components/MobileStoreBanner.vue';
 import LazyHydrate from 'vue-lazy-hydration';
-import { onBeforeMount} from '@vue/composition-api';
+import { onBeforeMount, ref, watch} from '@vue/composition-api';
 
 export default {
   name: 'Product',
@@ -133,9 +133,16 @@ export default {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   setup(props, context) {
-    const { toggleSearchVisible } = useUiState();
+    const { toggleSearchVisible, clearCartPopup } = useUiState();
+    const keyVal = ref(0);
 
     toggleSearchVisible(false);
+
+    watch(() => clearCartPopup.value, (newVal) => {
+      if (!newVal) {
+        keyVal.value++;
+      }
+    });
 
     const data = context.root.$route.query.data;
     const { product, bpp, bppProvider, locations} = JSON.parse(
@@ -174,7 +181,8 @@ export default {
       productGetters,
       isInCart,
       cartGetters,
-      footerClick
+      footerClick,
+      keyVal
     };
   },
   components: {
