@@ -1,4 +1,4 @@
-import { CustomQuery } from '@vue-storefront/core';
+import { CustomQuery, Logger } from '@vue-storefront/core';
 import { Config } from './../../types/Setup';
 import * as sa from 'superagent';
 import { SearchItemsWhere } from '../../types/Search';
@@ -26,6 +26,7 @@ export default async function getProduct(context: Context, params: SearchItemsWh
   };
   const config = (context.config as Config);
   const client = (context.client as sa.SuperAgent<sa.SuperAgentRequest>);
+  Logger.error(qParams);
   return client.post(config.api.url + config.api.endpoints.search)
     .send(qParams)
     .then(res => {
