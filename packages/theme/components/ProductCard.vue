@@ -2,23 +2,29 @@
   <div class="s-product">
     <div :class="{'horizontal':horizontalView, 'vertical': !horizontalView}">
       <div @click="$emit('goToProduct')" class="s-p-image">
-        <SfImage :src="_pImage" alt="product img" :width="85" :height="90" />
+        <SfImage :src="_pImage" alt="product img" :width="horizontalView ? 85 : 75" :height="90" />
       </div>
       <div @click="$emit('goToProduct')" class="s-p-details">
         <div class="s-p-name">{{ _pName }}</div>
         <!-- <div class="s-p-weight">{{ _pWieght }}</div> -->
-        <div class="s-p-price">₹ {{ _pPrice }}</div>
+        <div class="price-increase"  v-if="false">Price increased by <span>₹20</span></div>
+        <div class="s-p-price" >₹ {{ _pPrice }}
+          <span class="out-stock"  v-if="false">Out of Stock</span>
+          </div>
       </div>
       <div class="s-p-add-cart">
         <SfImage v-if="deleteCard" src="/icons/delete.svg" alt="delete-icon" @click="$emit('deleteItem')"/>
         <AddToCart v-if="!dropdownCouner" :value="_pCount" @updateItemCount="(data)=>$emit('updateItemCount',data)" />
-        <div v-if="dropdownCouner" class="dropdown-container">
+        <div v-if="dropdownCouner" class="dropdown-container d-flex ">
+          <span class="avail-unit" v-if="false">2 units are available</span>
+          <div class="position-relative">
           <div class="dropdown-button" @click="openDropdown=!openDropdown">
             <div>{{_pCount}}</div>
             <SfIcon icon="chevron_down" size="xxs" />
           </div>
           <div class="dowpdown" v-if="openDropdown">
             <div class="dowpdown-item" :class="{'border':index !== count.length-1,'color-text':count==='More'}" v-for="(count, index) in dpList" :key="index" @click="dropdownClick(count)">{{count}}</div>
+          </div>
           </div>
         </div>
       </div>
@@ -123,6 +129,7 @@ export default {
     }
     .color-text{
       color: #F37A20;
+      cursor: pointer;
     }
   }
 }
