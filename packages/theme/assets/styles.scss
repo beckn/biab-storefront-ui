@@ -449,7 +449,7 @@ body{
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            padding-left: 15px;
+            padding-left: 10px;
         }
         .s-p-add-cart{
             margin-left: auto;
@@ -465,8 +465,11 @@ body{
                 padding: 2px 5px;
                 border-radius: 5px;
                 height: 15px;
-                margin-right: 0px;
+                 margin-right: 0px;
                 margin-top: 5px;
+                position: absolute;
+                right: 70px;
+                width: 90px;
             }          
         }
     }
