@@ -181,8 +181,8 @@ export default {
         });
 
         watch(()=>pollResults.value, (newValue)=>{
-          stopPolling();
-          if (newValue?.message) {
+          if (newValue?.message?.quote) {
+            stopPolling();
             const updatedCartData = cart.value.items.map(cartItem => {
               const quoteItem = newValue.message.quote?.items.filter(quoteItem => quoteItem.id === cartItem.id)[0];
               const singleItemValue = quoteItem.price.value / quoteItem.quantity.selected.count;
