@@ -169,7 +169,7 @@ export default {
             bpp_id: cart.value.bpp.id,
             provider: {
               id: cart.value.bppProvider.id,
-              locations: ['./retail.kirana/ind.blr/36@mandi.succinct.in.provider_location']
+              locations: [item.location_id]
             }
           };
         });
