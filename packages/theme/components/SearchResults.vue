@@ -18,7 +18,7 @@
               <div class="provider-head flexy-center h-padding">
                 <div class="flexy">
                   <img
-                    class="back"
+                    class="provide-img"
                     :src="providerGetters.getProviderImages(provider)[0]?providerGetters.getProviderImages(provider)[0]:require('~/assets/images/store-placeholder.png')"
                     alt="Vila stripe maxi shirt dress"
                     :width="35"
