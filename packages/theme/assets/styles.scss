@@ -69,7 +69,10 @@ body{
       --icon-color: #F37A20;
   }
 :focus-visible {
-    outline: -webkit-focus-ring-color auto 0px;
+    outline: -webkit-focus-ring-color auto 0px !important;
+}
+.sf-checkbox__checkmark:hover {
+    --checkbox-border-color: var(--c-primary);
 }
 @media (min-width: 1024px){
     #layout{
@@ -620,7 +623,7 @@ body{
     .p-name{
       font-size: 19px;
       font-weight: 600;
-      margin-right: 10px;
+      margin-right: 5px;
       color: #37474F;
     }
     .provide-img{
