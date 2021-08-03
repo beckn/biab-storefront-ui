@@ -35,6 +35,28 @@ body{
     overflow-x: hidden;
     background: #FBFCFF;
 }
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 2px grey; 
+    border-radius: 10px;
+  }
+   
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: $primary-color; 
+    border-radius: 7px;
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #b30000; 
+  }
+
 .d-flex {
     display: flex;
 }
@@ -699,6 +721,7 @@ body{
     .search__wrapper-results{
         padding: 25px 0px 10px;
         font-size: 12px;
+        flex-direction: column;
         color: $secondary-text;    
         .provider-head {
             padding-top: 8px;
@@ -734,6 +757,7 @@ body{
     }
     .results--mobile{
         background: transparent !important;
+        overflow-y: hidden;
     }
  
 }
