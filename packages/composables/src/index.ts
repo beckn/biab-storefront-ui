@@ -18,6 +18,6 @@ export { default as useWishlist } from './useWishlist';
 export { default as useOnSearch } from './useOnSearch';
 export { default as useAddress } from './useAddress';
 
-export { default as userOrder } from './useOrder';
+export { default as useInitOrder } from './useInitOrder';
 export { default as useQuote } from './useQuote';
 export * from './getters';

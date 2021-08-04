@@ -10,7 +10,7 @@ module.exports = {
             onSearch: '/v1/on_search',
             getQuote: '/v1/get_quote',
             onGetQuote: '/v1/on_get_quote',
-            initiatizeOrder: '/v1/initiatize_order',
+            initializeOrder: '/v1/initialize_order',
             onInitializeOrder: '/v1/on_initialize_order'
           }
         }

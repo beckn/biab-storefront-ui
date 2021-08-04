@@ -3,7 +3,7 @@ export interface ApiEndpoints {
   onSearch: string
   getQuote: string,
   onGetQuote: string,
-  initiatizeOrder: string,
+  initializeOrder: string,
   onInitializeOrder: string,
 }
 

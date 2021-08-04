@@ -176,9 +176,11 @@
       </div>
     </div>
     <Footer
+      @buttonClick="initOrder"
       :totalPrice="cartGetters.getTotals(cart).total"
       :totalItem="cartGetters.getTotalItems(cart)"
-      buttonText="Proceed To Pay"
+      :buttonText="'Proceed To Pay'"
+      :buttonEnable="proceedToPay"
     >
       <template v-slot:buttonIcon>
         <svg
@@ -235,8 +237,11 @@ import {
   useCart,
   cartGetters,
   providerGetters,
-  useAddress
+  useAddress,
+  useInitOrder
 } from '@vue-storefront/beckn';
+
+import { useUiState } from '~/composables';
 
 import { computed, ref, onBeforeMount } from '@vue/composition-api';
 import Card from '~/components/Card.vue';
@@ -273,7 +278,15 @@ export default {
 
     // const billingAddressModal = ref(false);
 
-    const { cart, load } = useCart();
+    const {
+      cart
+      //  load
+    } = useCart();
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { selectedLocation } = useUiState();
+
+    const { poll: onInitOrder, init } = useInitOrder();
 
     const {
       getBillngAddress,
@@ -320,8 +333,97 @@ export default {
 
     const goBack = () => context.root.$router.back();
 
+    const proceedToPay = computed(() => {
+      console.log(
+        isShippingAddressFilled.value &&
+          (isBillingAddressFilled.value || shippingAsBilling.value)
+      );
+      return (
+        isShippingAddressFilled.value &&
+        (isBillingAddressFilled.value || shippingAsBilling.value)
+      );
+    });
+
+    const initOrder = async () => {
+      const bAddress = shippingAsBilling.value ? shippingAddress : billingAddress;
+
+      const items = cart.value.items.map((item) => {
+        return {
+          id: item.id,
+          quantity: { count: item.quantity },
+          // eslint-disable-next-line camelcase
+          bpp_id: cart.value.bpp.id,
+          provider: {
+            id: cart.value.bppProvider.id,
+            locations: [
+              './retail.kirana/ind.blr/36@mandi.succinct.in.provider_location'
+            ]
+          }
+        };
+      });
+
+      // TODO REMOVE hardcoded values
+      const params = {
+        context: {
+          // eslint-disable-next-line camelcase
+          transaction_id: localStorage.getItem('transactionId')
+        },
+        message: {
+          items: items,
+
+          // eslint-disable-next-line camelcase
+          billing_info: {
+            address: {
+              door: bAddress.value.landmark,
+              country: 'IND',
+              city: '',
+              street: bAddress.value.address,
+
+              // eslint-disable-next-line camelcase
+              area_code: '560078',
+              state: '',
+              building: selectedLocation.value.address
+            },
+            phone: bAddress.value.mobile,
+            name: bAddress.value.name,
+            email: ''
+          },
+
+          // eslint-disable-next-line camelcase
+          delivery_info: {
+            type: 'home_delivery',
+            name: shippingAddress.value.name,
+            phone: shippingAddress.value.mobile,
+            email: '',
+            location: {
+              address: {
+                door: shippingAddress.value.landmark,
+                country: 'IND',
+                city: '',
+                street: shippingAddress.value.address,
+
+                // eslint-disable-next-line camelcase
+                area_code: '560078',
+                state: '',
+                building: ''
+              },
+              gps: '12.9063433,77.5856825'
+            }
+          }
+        }
+      };
+      // debugger;
+      const response = await init(params);
+      console.log(response);
+      const onInitResp = await onInitOrder({
+        // eslint-disable-next-line camelcase
+        messageId: response.context.message_id
+      });
+      console.log(onInitResp);
+    };
+
     onBeforeMount(() => {
-      load();
+      // load();
     });
 
     return {
@@ -338,7 +440,9 @@ export default {
       cartGetters,
       providerGetters,
       isBillingAddressFilled,
-      cart
+      cart,
+      proceedToPay,
+      initOrder
     };
   }
 };
@@ -367,6 +471,7 @@ export default {
 }
 
 .s-p-weight {
+  margin-top: 6px;
   font-size: 14px;
   color: #8a8d8e;
 }

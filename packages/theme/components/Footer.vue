@@ -17,6 +17,7 @@
       @click="$emit('buttonClick')"
     >
       <!-- button icon template  -->
+      <slot name="buttonIcon"/>
       <div class="f-btn-text">{{buttonText}}</div>
       <SfIcon icon="chevron_right" color="white" :coverage="1" size="xxs"/>
     </button>
@@ -43,4 +44,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.color-def{
+  background: #cacaca;
+}
 </style>
