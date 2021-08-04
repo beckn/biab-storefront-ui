@@ -7,18 +7,17 @@
       <div @click="$emit('goToProduct')" class="s-p-details">
         <div class="s-p-name">{{ _pName }}</div>
         <!-- <div class="s-p-weight">{{ _pWieght }}</div> -->
-        <div class="price-increase"  v-if="false">Price increased by <span>₹20</span></div>
-        <div class="s-p-price" >₹ {{ _pPrice }}
-          <span class="out-stock"  v-if="false">Out of Stock</span>
-          </div>
+        <div class="price-increase"  v-if="!!_updatedPrice && _updatedPrice !== _pPrice">Price increased by <span>₹{{_pPrice-_updatedPrice}}</span></div>
+        <div class="s-p-price" v-if="_updatedCount !== 0">₹ {{ _pPrice }}</div>
+        <span class="out-stock"  v-if="_updatedCount === 0">Out of Stock</span>
       </div>
       <div class="s-p-add-cart">
         <SfImage v-if="deleteCard" src="/icons/delete.svg" alt="delete-icon" @click="$emit('deleteItem')"/>
         <AddToCart v-if="!dropdownCouner" :value="_pCount" @updateItemCount="(data)=>$emit('updateItemCount',data)" />
         <div v-if="dropdownCouner" class="dropdown-container d-flex ">
-          <span class="avail-unit" v-if="false">2 units are available</span>
+          <span class="avail-unit" v-if="!!_updatedCount && _updatedCount !== _pCount ">{{_updatedCount}} units are available</span>
           <div class="position-relative">
-          <div class="dropdown-button" @click="openDropdown=!openDropdown">
+          <div class="dropdown-button" v-if="_updatedCount !== 0" @click="openDropdown=!openDropdown">
             <div>{{_pCount}}</div>
             <SfIcon icon="chevron_down" size="xxs" />
           </div>
@@ -51,6 +50,8 @@ export default {
     pPrice: { type: Number, default: '' },
     pImage: { type: String, default: '' },
     pCount: { type: Number, default: 0 },
+    updatedPrice: { type: Number, default: null },
+    updatedCount: { type: Number, default: null },
     horizontalView: { type: Boolean, default: true },
     deleteCard: { type: Boolean, default: false},
     dropdownCouner: {type: Boolean, default: false}
@@ -61,6 +62,8 @@ export default {
     const _pPrice = computed(() => props.pPrice);
     const _pImage = computed(() => props.pImage);
     const _pCount = computed(() => props.pCount);
+    const _updatedPrice = computed(() => props.updatedPrice);
+    const _updatedCount = computed(() => props.updatedCount);
     const dpList = [1, 2, 3, 4, 'More'];
     const openDropdown = ref(false);
 
@@ -84,6 +87,8 @@ export default {
       _pCount,
       dpList,
       openDropdown,
+      _updatedPrice,
+      _updatedCount,
       dropdownClick
     };
   },
