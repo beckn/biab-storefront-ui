@@ -11,7 +11,7 @@
     </div>
     <button
       class="sf-button f-button"
-      :class="{'color-primary ':buttonEnable}"
+      :class="{'color-primary ':buttonEnable,'is-disabled--button':!buttonEnable}"
       :disabled="!buttonEnable"
       link=""
       @click="$emit('buttonClick')"

@@ -51,7 +51,7 @@ const usePollerFactory = (factoryParams: UsePollerFactoryParams) => {
         try {
           const data = await _factoryParams.poll({ params});
           pollResults.value = _factoryParams.dataHandler({oldResults: pollResults.value, newResults: data});
-          if (!_factoryParams.continuePolling(pollResults.value, data)) {
+          if (!_factoryParams.continuePolling({oldResults: pollResults.value, newResults: data})) {
             clearInterval(pollFunction.value.interval);
             clearTimeout(pollFunction.value.interval);
             clearInterval(pollFunction.value.timeout);

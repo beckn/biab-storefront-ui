@@ -72,6 +72,7 @@
           @buttonClick="footerClick"
           :totalPrice="cartGetters.getTotals(cart).total"
           :totalItem="cartGetters.getTotalItems(cart)"
+          :buttonEnable="!errOutOfStock && !errUpdateCount && !enableLoader"
           buttonText="checkout"
         >
           <template v-slot:buttonIcon>
@@ -153,7 +154,7 @@ export default {
     const errOutOfStock = ref(false);
     const errUpdateCount = ref(false);
     const errPricechange = ref(false);
-    const enableLoader = ref(false);
+    const enableLoader = ref(true);
 
     toggleSearchVisible(false);
 
