@@ -366,7 +366,7 @@ export default {
       const params = {
         context: {
           // eslint-disable-next-line camelcase
-          transaction_id: 'c5f41458-6c67-4fda-a703-9ac9737df959'
+          transaction_id: localStorage.getItem('transactionId')
         },
         message: {
           items: items,
@@ -382,7 +382,7 @@ export default {
               // eslint-disable-next-line camelcase
               area_code: '560078',
               state: '',
-              building: selectedLocation.value
+              building: selectedLocation.value.address
             },
             phone: bAddress.value.mobile,
             name: bAddress.value.name,
@@ -412,11 +412,12 @@ export default {
           }
         }
       };
+      // debugger;
       const response = await init(params);
       console.log(response);
       const onInitResp = await onInitOrder({
         // eslint-disable-next-line camelcase
-        message_id: response.context.message_id
+        messageId: response.context.message_id
       });
       console.log(onInitResp);
     };
