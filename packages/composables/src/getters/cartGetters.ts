@@ -65,6 +65,10 @@ export const getCoupons = (cart: Cart): AgnosticCoupon[] => [];
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getDiscounts = (cart: Cart): AgnosticDiscount[] => [];
 
+export const getUpdatedPrice = (product: any): string => product.updatedPrice ?? null;
+
+export const getUpdatedCount = (product: any): number => product.updatedCount ?? null;
+
 const cartGetters: CartGetters<Cart, LineItem> = {
   getTotals: getCartTotals,
   getShippingPrice: getCartShippingPrice,
@@ -83,7 +87,9 @@ const cartGetters: CartGetters<Cart, LineItem> = {
   getDiscounts,
   getBppProvider,
   getBpp,
-  getProviderImage
+  getProviderImage,
+  getUpdatedPrice,
+  getUpdatedCount
 };
 
 export default cartGetters;

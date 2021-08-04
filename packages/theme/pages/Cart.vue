@@ -40,6 +40,8 @@
                 :pPrice="cartGetters.getItemPrice(product).regular"
                 :pImage="cartGetters.getItemImage(product)"
                 :pCount="cartGetters.getItemQty(product)"
+                :updatedPrice="cartGetters.getUpdatedPrice(product)"
+                :updatedCount="cartGetters.getUpdatedCount(product)"
                 :horizontalView="false"
                 :deleteCard="true"
                 :dropdownCouner="true"
@@ -185,6 +187,8 @@ export default {
           if (newValue?.message?.quote) {
             stopPolling();
             const updatedCartData = cart.value.items.map(cartItem => {
+              if (cartItem.updatedCount) cartItem.updatedCount = null;
+              if (cartItem.updatedPrice) cartItem.updatedPrice = null;
               const quoteItem = newValue.message.quote?.items.filter(quoteItem => quoteItem.id === cartItem.id)[0];
               const singleItemValue = quoteItem.price.value / quoteItem.quantity.selected.count;
               console.log('price', parseFloat(cartItem.price.value), parseFloat(singleItemValue));
@@ -246,7 +250,7 @@ export default {
     const updateAll = () => {
       for (let i = 0; i < cart.value.items.length; i++) {
         console.log(cart.value.items[i].quantity);
-        if (cart.value.items[i]?.updatedCount !== 0 && cart.value.items[i].updatedCount !== cart.value.items[i].quantity) {
+        if (Boolean(cart.value.items[i]?.updatedCount) && cart.value.items[i].updatedCount !== cart.value.items[i].quantity) {
           updateItemCount(cart.value.items[i].updatedCount, i, false);
         }
       }

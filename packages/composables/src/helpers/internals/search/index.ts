@@ -4,21 +4,14 @@ export const buildSearchItemsWhere = (params: AgnosticFacetSearchParams): Search
   if (params.term) {
     if (params.locationIs) {
       return {
-        // itemContains: params.term,
-        // locationIs: params.locationIs,
-        itemContains: 'orange',
-        // locationIs: "12.903517,77.5920295",
-        locationIs: '12.9063433,77.5856825',
-        // itemContains: params.term,
+        itemContains: params.term,
+        locationIs: params.locationIs,
         limit: params.itemsPerPage,
         offset: params.page * params.itemsPerPage
       };
     }
     return {
-      itemContains: 'orange',
-      // locationIs: "12.903517,77.5920295",
-      locationIs: '12.9063433,77.5856825',
-      // itemContains: params.term,
+      itemContains: params.term,
       limit: params.itemsPerPage,
       offset: params.page * params.itemsPerPage
     };
