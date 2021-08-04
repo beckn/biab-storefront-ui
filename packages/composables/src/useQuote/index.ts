@@ -16,6 +16,7 @@ const factoryParams = {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   continuePolling: (_, { oldResults, newResults }) => {
     // TODO Have to Write this logic
+    if (newResults?.error) return false;
     return true;
   },
   init: async (context: Context, { params }) => {
