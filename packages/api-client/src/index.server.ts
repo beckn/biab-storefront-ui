@@ -4,7 +4,7 @@ import getCategory from './api/getCategory';
 import onSearch from './api/onSearch';
 import getQuote from './api/getQuote';
 import onGetQuote from './api/onGetQuote';
-import initiatizeOrder from './api/initiatizeOrder';
+import initializeOrder from './api/initializeOrder';
 import onInitializeOrder from './api/onInitializeOrder';
 
 const defaultSettings = {};
@@ -26,7 +26,7 @@ const { createApiClient } = apiClientFactory<any, any>({
     onSearch,
     getQuote,
     onGetQuote,
-    initiatizeOrder,
+    initializeOrder,
     onInitializeOrder
   }
 });

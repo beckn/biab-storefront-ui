@@ -1,11 +1,11 @@
-export interface initiatizeOrderParam {
+export interface initializeOrderParam {
     context: {
         // eslint-disable-next-line camelcase
         transaction_id: string
     }
 }
 
-export interface onInitiatizeOrderParam {
+export interface onInitializeOrderParam {
     // eslint-disable-next-line camelcase
     messageId: string
 }
