@@ -7,6 +7,9 @@ import onGetQuote from './api/onGetQuote';
 import initializeOrder from './api/initializeOrder';
 import onInitializeOrder from './api/onInitializeOrder';
 
+import confirmOrder from './api/confirmOrder';
+import onConfirmOrder from './api/onConfirmOrder';
+
 const defaultSettings = {};
 import * as request from 'superagent';
 
@@ -27,7 +30,9 @@ const { createApiClient } = apiClientFactory<any, any>({
     getQuote,
     onGetQuote,
     initializeOrder,
-    onInitializeOrder
+    onInitializeOrder,
+    confirmOrder,
+    onConfirmOrder
   }
 });
 

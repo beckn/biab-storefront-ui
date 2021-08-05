@@ -13,6 +13,7 @@ import { useCart } from '@vue-storefront/beckn';
 
 const { toggleCartSidebar } = useUiState();
 export default {
+  name: 'Home',
   components: {
     OpenSearch
   },
