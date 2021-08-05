@@ -5,13 +5,15 @@ export interface ApiEndpoints {
   onGetQuote: string,
   initializeOrder: string,
   onInitializeOrder: string,
+  confirmOrder: string,
+  onConfirmOrder: string,
 }
 
 export interface ApiConfig {
-    url: string;
-    endpoints: ApiEndpoints
-  }
+  url: string;
+  endpoints: ApiEndpoints
+}
 
 export interface Config {
-    api: ApiConfig;
-  }
+  api: ApiConfig;
+}

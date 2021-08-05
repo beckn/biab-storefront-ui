@@ -11,7 +11,9 @@ module.exports = {
             getQuote: '/v1/get_quote',
             onGetQuote: '/v1/on_get_quote',
             initializeOrder: '/v1/initialize_order',
-            onInitializeOrder: '/v1/on_initialize_order'
+            onInitializeOrder: '/v1/on_initialize_order',
+            confirmOrder: '/v1/confirm_order',
+            onConfirmOrder: '/v1/on_confirm_order'
           }
         }
       }

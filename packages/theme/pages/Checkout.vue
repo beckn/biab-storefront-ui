@@ -286,11 +286,7 @@ export default {
 
     // const billingAddressModal = ref(false);
 
-    const {
-      cart,
-      clear: clearCart
-      //  load
-    } = useCart();
+    const { cart } = useCart();
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     // const { selectedLocation } = useUiState();
@@ -312,6 +308,7 @@ export default {
     const shippingAddress = ref(getShippingAddress());
 
     const billingAddress = ref(getBillngAddress());
+    const transactionId = ref('');
 
     const isShippingAddressFilled = computed(() => {
       // debugger;
@@ -360,7 +357,14 @@ export default {
 
     const initOrder = async () => {
       enableLoader.value = true;
-      const params = createOrderRequest(cart.value, shippingAddress.value, billingAddress.value, shippingAsBilling.value, '12.9063433,77.5856825');
+      const params = createOrderRequest(
+        transactionId.value,
+        cart.value,
+        shippingAddress.value,
+        billingAddress.value,
+        shippingAsBilling.value,
+        '12.9063433,77.5856825'
+      );
       const response = await init(params);
       console.log(response);
       await onInitOrder({
@@ -372,12 +376,13 @@ export default {
 
     watch(
       () => onInitResult.value,
-      async (newValue) => {
+      (newValue) => {
         if (newValue?.message?.initialized) {
           localStorage.setItem(
             'orderProgress',
             JSON.stringify({
               cart: cart.value,
+              status: 0,
               shippingAddress: shippingAddress.value,
               billingAddress: billingAddress.value,
               shippingAsBilling: shippingAsBilling.value,
@@ -385,15 +390,21 @@ export default {
               transactionId: onInitResult.value.context.transaction_id
             })
           );
-          await clearCart();
-          enableLoader.value = false;
-          context.root.$router.push('/payment');
+          localStorage.removeItem('transactionId');
+          // enableLoader.value = false;
+          context.root.$router.push({
+            path: '/payment',
+            query: {
+              id: onInitResult.value.context.transaction_id
+            }
+          });
         }
       }
     );
 
     onBeforeMount(() => {
       // load();
+      transactionId.value = localStorage.getItem('transactionId');
     });
 
     return {
@@ -557,12 +568,12 @@ export default {
   }
 }
 
-.loader-circle{
-    width: 100%;
-    position: fixed;
-    z-index: 1;
-    // top: 130px;
-    left: 0;
-    height: 95vh;
+.loader-circle {
+  width: 100%;
+  position: fixed;
+  z-index: 1;
+  // top: 130px;
+  left: 0;
+  height: 95vh;
 }
 </style>

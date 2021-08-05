@@ -196,7 +196,7 @@ import ProductCard from '~/components/ProductCard';
 import AddressCard from '~/components/AddressCard';
 
 export default {
-  name: 'Checkout',
+  name: 'OrderDetails',
   components: {
     SfButton,
     SfSteps,

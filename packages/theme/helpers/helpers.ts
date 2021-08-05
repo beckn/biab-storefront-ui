@@ -11,12 +11,12 @@ const helpers = {
   calculateDays
 };
 
-export const createOrderRequest = (cart, shippingAddress, billingAddress, shippingAsBilling, gps) => {
+export const createOrderRequest = (transactionId, cart, shippingAddress, billingAddress, shippingAsBilling, gps) => {
   const bAddress = shippingAsBilling
     ? shippingAddress
     : billingAddress;
 
-  const items = cart.items.map((item) => {
+  const items: any[] = cart.items.map((item) => {
     return {
       id: item.id,
       quantity: { count: item.quantity },
@@ -25,7 +25,7 @@ export const createOrderRequest = (cart, shippingAddress, billingAddress, shippi
       provider: {
         id: cart.bppProvider.id,
         locations: [
-          './retail.kirana/ind.blr/36@mandi.succinct.in.provider_location'
+          item.location_id
         ]
       }
     };
@@ -34,7 +34,7 @@ export const createOrderRequest = (cart, shippingAddress, billingAddress, shippi
   const params = {
     context: {
       // eslint-disable-next-line camelcase
-      transaction_id: localStorage.getItem('transactionId')
+      transaction_id: transactionId
     },
     message: {
       items: items,
@@ -59,7 +59,7 @@ export const createOrderRequest = (cart, shippingAddress, billingAddress, shippi
 
       // eslint-disable-next-line camelcase
       delivery_info: {
-        type: 'home_delivery',
+        type: 'HOME-DELIVERY',
         name: shippingAddress.name,
         phone: shippingAddress.mobile,
         email: '',
@@ -79,6 +79,18 @@ export const createOrderRequest = (cart, shippingAddress, billingAddress, shippi
         }
       }
     }
+  };
+  return params;
+};
+
+export const createConfirmOrderRequest = (transactionId, cart, shippingAddress, billingAddress, shippingAsBilling, gps, paymentInfo) => {
+  const params: any = createOrderRequest(transactionId, cart, shippingAddress, billingAddress, shippingAsBilling, gps);
+  params.message.payment = {
+    // eslint-disable-next-line camelcase
+    paid_amount: paymentInfo.amount,
+    status: paymentInfo.status,
+    // eslint-disable-next-line camelcase
+    transaction_id: paymentInfo.transactionId
   };
   return params;
 };
