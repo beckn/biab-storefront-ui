@@ -28,9 +28,10 @@
       </Card>
     </div>
     <Footer
+      class="footer-fixed"
       :buttonText="'Pay & Confirm'"
       :buttonEnable="isPayConfirmActive"
-      @buttonClick="initOrder"
+      @buttonClick="proceedToConfirm"
     >
       <template v-slot:buttonIcon>
         <svg
@@ -53,15 +54,10 @@
   </div>
 </template>
 <script>
-import {
-  SfButton,
-  SfRadio,
-  SfIcon
-} from '@storefront-ui/vue';
+import { SfButton, SfRadio, SfIcon } from '@storefront-ui/vue';
 import { useUiState } from '~/composables';
 
-import { ref, computed } from '@vue/composition-api';
-// import { onMounted } from '@vue/composition-api';
+import { ref, computed, onBeforeMount } from '@vue/composition-api';
 // import helpers from '../helpers/helpers';
 // import { useCart } from '@vue-storefront/beckn';
 
@@ -71,6 +67,7 @@ import Footer from '~/components/Footer.vue';
 import CardContent from '~/components/CardContent.vue';
 const { toggleCartSidebar } = useUiState();
 export default {
+  name: 'Payment',
   components: {
     SfButton,
     SfIcon,
@@ -84,8 +81,9 @@ export default {
       toggleCartSidebar();
     }
   },
-  setup() {
+  setup(_, context) {
     const paymentMethod = ref('');
+    const order = ref({});
 
     const changePaymentMethod = (value) => {
       paymentMethod.value = value;
@@ -95,12 +93,20 @@ export default {
       return paymentMethod.value !== '';
     });
 
-    const proceedToConfirm = ()=>{
+    const proceedToConfirm = () => {
+    //   order.paymentMethod = paymentMethod.value;con
+      context.root.$router.push('/ordersuccess');
 
+      localStorage.setItem('orderProgress', JSON.stringify(order));
     };
+
+    onBeforeMount(() => {
+      order.value = JSON.parse(localStorage.getItem('orderProgress'));
+    });
     return {
       paymentMethod,
       changePaymentMethod,
+      order,
       isPayConfirmActive,
       proceedToConfirm
     };

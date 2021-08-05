@@ -26,22 +26,24 @@ type Cart = {
   cartTime: string;
 };
 
+const cartSample = {
+  items: [],
+  bpp: null,
+  bppProvider: null,
+  totalPrice: 0,
+  totalItems: 0,
+  newBpp: null,
+  newProvider: null,
+  newProduct: null,
+  locations: [],
+  cartTime: null
+};
+
 const params = {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   load: async () => {
-    let cartData = {
-      items: [],
-      bpp: null,
-      bppProvider: null,
-      totalPrice: 0,
-      totalItems: 0,
-      newBpp: null,
-      newProvider: null,
-      newProduct: null,
-      locations: [],
-      cartTime: null
-    };
+    let cartData = { ...cartSample };
     if (localStorage.getItem('cartData')) {
       cartData = JSON.parse(localStorage.getItem('cartData'));
     }
@@ -127,7 +129,19 @@ const params = {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   clear: async (context: Context, { currentCart }) => {
-    console.log('Mocked: clearCart');
+    localStorage.removeItem('cartData');
+    currentCart = {
+      items: [],
+      bpp: null,
+      bppProvider: null,
+      totalPrice: 0,
+      totalItems: 0,
+      newBpp: null,
+      newProvider: null,
+      newProduct: null,
+      locations: [],
+      cartTime: null
+    };
     return currentCart;
   },
 

@@ -143,6 +143,11 @@ body{
     }
 }
 
+.footer-fixed {
+    position: fixed;
+    bottom: 0;
+  }
+
 .location-content {
     @media (max-width:1024px){
         width: calc(100% - 35px);

@@ -8,6 +8,9 @@
       </div>
       <div>Checkout</div>
     </div>
+    <div v-if="enableLoader" key="loadingCircle" class="loader-circle">
+      <LoadingCircle :enable="enableLoader" />
+    </div>
     <div class="details">
       <div class="sub-heading">
         <div class="p-name">Items in Cart</div>
@@ -176,6 +179,7 @@
       </div>
     </div>
     <Footer
+      class="footer-fixed"
       @buttonClick="initOrder"
       :totalPrice="cartGetters.getTotals(cart).total"
       :totalItem="cartGetters.getTotalItems(cart)"
@@ -232,6 +236,7 @@ import {
 } from '@storefront-ui/vue';
 import ModalSlide from '~/components/ModalSlide.vue';
 import AddressInputs from '~/components/AddressInputs.vue';
+import LoadingCircle from '~/components/LoadingCircle';
 import Footer from '~/components/Footer.vue';
 import {
   useCart,
@@ -241,14 +246,15 @@ import {
   useInitOrder
 } from '@vue-storefront/beckn';
 
-import { useUiState } from '~/composables';
+// import { useUiState } from '~/composables';
 
-import { computed, ref, onBeforeMount } from '@vue/composition-api';
+import { computed, ref, watch, onBeforeMount } from '@vue/composition-api';
 import Card from '~/components/Card.vue';
 import CardContent from '~/components/CardContent.vue';
 
 import ProductCard from '~/components/ProductCard';
 import AddressCard from '~/components/AddressCard';
+import { createOrderRequest } from '../helpers/helpers';
 
 export default {
   name: 'Checkout',
@@ -259,6 +265,7 @@ export default {
     SfModal,
     SfCheckbox,
     Footer,
+    LoadingCircle,
     ModalSlide,
     SfInput,
     Card,
@@ -275,16 +282,18 @@ export default {
     const shippingAsBilling = ref(false);
     const shippingAddressModal = ref(false);
     const billingAddressModal = ref(false);
+    const enableLoader = ref(false);
 
     // const billingAddressModal = ref(false);
 
     const {
-      cart
+      cart,
+      clear: clearCart
       //  load
     } = useCart();
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { selectedLocation } = useUiState();
+    // const { selectedLocation } = useUiState();
 
     const {
       // polling ,
@@ -350,76 +359,8 @@ export default {
     });
 
     const initOrder = async () => {
-      const bAddress = shippingAsBilling.value
-        ? shippingAddress
-        : billingAddress;
-
-      const items = cart.value.items.map((item) => {
-        return {
-          id: item.id,
-          quantity: { count: item.quantity },
-          // eslint-disable-next-line camelcase
-          bpp_id: cart.value.bpp.id,
-          provider: {
-            id: cart.value.bppProvider.id,
-            locations: [
-              './retail.kirana/ind.blr/36@mandi.succinct.in.provider_location'
-            ]
-          }
-        };
-      });
-
-      // TODO REMOVE hardcoded values
-      const params = {
-        context: {
-          // eslint-disable-next-line camelcase
-          transaction_id: localStorage.getItem('transactionId')
-        },
-        message: {
-          items: items,
-
-          // eslint-disable-next-line camelcase
-          billing_info: {
-            address: {
-              door: bAddress.value.landmark,
-              country: 'IND',
-              city: '',
-              street: bAddress.value.address,
-
-              // eslint-disable-next-line camelcase
-              area_code: '560078',
-              state: '',
-              building: selectedLocation.value.address
-            },
-            phone: bAddress.value.mobile,
-            name: bAddress.value.name,
-            email: ''
-          },
-
-          // eslint-disable-next-line camelcase
-          delivery_info: {
-            type: 'home_delivery',
-            name: shippingAddress.value.name,
-            phone: shippingAddress.value.mobile,
-            email: '',
-            location: {
-              address: {
-                door: shippingAddress.value.landmark,
-                country: 'IND',
-                city: '',
-                street: shippingAddress.value.address,
-
-                // eslint-disable-next-line camelcase
-                area_code: '560078',
-                state: '',
-                building: ''
-              },
-              gps: '12.9063433,77.5856825'
-            }
-          }
-        }
-      };
-      // debugger;
+      enableLoader.value = true;
+      const params = createOrderRequest(cart.value, shippingAddress.value, billingAddress.value, shippingAsBilling.value, '12.9063433,77.5856825');
       const response = await init(params);
       console.log(response);
       await onInitOrder({
@@ -428,6 +369,28 @@ export default {
       });
       console.log(onInitResult);
     };
+
+    watch(
+      () => onInitResult.value,
+      async (newValue) => {
+        if (newValue?.message?.initialized) {
+          localStorage.setItem(
+            'orderProgress',
+            JSON.stringify({
+              cart: cart.value,
+              shippingAddress: shippingAddress.value,
+              billingAddress: billingAddress.value,
+              shippingAsBilling: shippingAsBilling.value,
+              initOrder: onInitResult.value.message.initialized,
+              transactionId: onInitResult.value.context.transaction_id
+            })
+          );
+          await clearCart();
+          enableLoader.value = false;
+          context.root.$router.push('/payment');
+        }
+      }
+    );
 
     onBeforeMount(() => {
       // load();
@@ -449,6 +412,7 @@ export default {
       isBillingAddressFilled,
       cart,
       proceedToPay,
+      enableLoader,
       initOrder
     };
   }
@@ -489,6 +453,7 @@ export default {
 
 .details {
   margin: 2px 20px;
+  margin-bottom: 60px;
 }
 
 .address-bar-icon {
@@ -590,5 +555,14 @@ export default {
       --steps-step-color: #e8e4e4;
     }
   }
+}
+
+.loader-circle{
+    width: 100%;
+    position: fixed;
+    z-index: 1;
+    // top: 130px;
+    left: 0;
+    height: 95vh;
 }
 </style>
