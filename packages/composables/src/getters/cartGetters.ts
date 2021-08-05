@@ -49,6 +49,10 @@ export const getCartTotals = (cart): AgnosticTotals => {
   };
 };
 
+// export const getQuoteBreakup = (cart): AgnosticTotals => {
+//   cart
+// };
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getCartShippingPrice = (cart: Cart): number => 0;
 

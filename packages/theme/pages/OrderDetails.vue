@@ -1,5 +1,5 @@
 <template>
-  <div v-if="cart">
+  <div v-if="order">
     <div class="top-bar">
       <div @click="goBack" class="sf-chevron--left sf-chevron icon_back">
         <span class="sf-search-bar__icon">
@@ -15,19 +15,19 @@
         <div class="provide-img">
           <img
             :src="
-              cartGetters.getProviderImage(cartGetters.getBppProvider(cart))
-                ? cartGetters.getProviderImage(cartGetters.getBppProvider(cart))
+              cartGetters.getProviderImage(cartGetters.getBppProvider(order.cart))
+                ? cartGetters.getProviderImage(cartGetters.getBppProvider(order.cart))
                 : require('~/assets/images/store-placeholder.png')
             "
           />
         </div>
         <div class="p-name">
           {{
-            providerGetters.getProviderName(cartGetters.getBppProvider(cart))
+            providerGetters.getProviderName(cartGetters.getBppProvider(order.cart))
           }}
         </div>
         <div class="text-padding">
-          <span class="p-distance"> by </span> {{ cart.bpp.descriptor.name }}
+          <!-- <span class="p-distance"> by </span> {{ order.cart.bpp.descriptor.name }} -->
         </div>
 
         <!-- <div class="text-padding">
@@ -47,7 +47,7 @@
 
       <div
         :key="index + 'new'"
-        v-for="(product, index) in cartGetters.getItems(cart)"
+        v-for="(product, index) in cartGetters.getItems(order.cart)"
         class="checkout-product"
       >
         <div class="s-p-image">
@@ -73,10 +73,9 @@
         <SfAccordion>
           <SfAccordionItem :header="'Shipping'">
             <AddressCard
-              v-if="isShippingAddressFilled"
-              :name="shippingAddress.name"
-              :address="shippingAddress.address"
-              :mobile="shippingAddress.mobile"
+              :name="order.shippingAddress.name"
+              :address="order.shippingAddress.address"
+              :mobile="order.shippingAddress.mobile"
             />
           </SfAccordionItem>
         </SfAccordion>
@@ -90,7 +89,7 @@
             <CardContent class="flex-space-bw">
               <div class="address-text">SubTotal</div>
               <div class="address-text">
-                ₹{{ cartGetters.getTotals(cart).total }}
+                ₹{{ cartGetters.getTotals(order.cart).total }}
               </div>
             </CardContent>
             <CardContent class="flex-space-bw">
@@ -109,7 +108,7 @@
             <CardContent class="flex-space-bw">
               <div class="address-text bold">Total</div>
               <div class="address-text bold">
-                ₹{{ cartGetters.getTotals(cart).total }}
+                ₹{{ cartGetters.getTotals(order.cart).total }}
               </div>
             </CardContent>
           </SfAccordionItem>
@@ -179,16 +178,11 @@ import SfAccordionItem from '~/components/Accordion.vue';
 import AddressInputs from '~/components/AddressInputs.vue';
 import Footer from '~/components/Footer.vue';
 import {
-  useCart,
   cartGetters,
-  providerGetters,
-  useAddress,
-  useInitOrder
+  providerGetters
 } from '@vue-storefront/beckn';
 
-import { useUiState } from '~/composables';
-
-import { computed, ref, onBeforeMount } from '@vue/composition-api';
+import { ref, onBeforeMount } from '@vue/composition-api';
 import Card from '~/components/Card.vue';
 import CardContent from '~/components/CardContent.vue';
 
@@ -219,180 +213,25 @@ export default {
   setup(_, context) {
     // const isThankYou = computed(() => currentStep.value === 'thank-you');
 
-    const shippingAsBilling = ref(false);
-    const shippingAddressModal = ref(false);
-    const billingAddressModal = ref(false);
-
-    // const billingAddressModal = ref(false);
-
-    const { cart, load } = useCart();
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { selectedLocation } = useUiState();
-
-    const {
-      // polling ,
-      pollResults: onInitResult,
-      poll: onInitOrder,
-      init
-    } = useInitOrder();
-
-    const {
-      getBillngAddress,
-      getShippingAddress,
-      setBillingAddress,
-      setShippingAddress
-    } = useAddress();
-
-    const shippingAddress = ref(getShippingAddress());
-
-    const billingAddress = ref(getBillngAddress());
-
-    const isShippingAddressFilled = computed(() => {
-      // debugger;
-      return (
-        shippingAddress.value.name !== '' &&
-        shippingAddress.value.mobile !== '' &&
-        shippingAddress.value.building !== '' &&
-        shippingAddress.value.address !== ''
-      );
-    });
-    const isBillingAddressFilled = computed(() => {
-      return (
-        billingAddress.value.name !== '' &&
-        billingAddress.value.mobile !== '' &&
-        billingAddress.value.building !== '' &&
-        billingAddress.value.address !== ''
-      );
-    });
-
-    const toggleShippingModal = () => {
-      setShippingAddress(shippingAddress.value);
-      shippingAddressModal.value = !shippingAddressModal.value;
-    };
-
-    const changeShippingAsBilling = () => {
-      shippingAsBilling.value = !shippingAsBilling.value;
-    };
-
-    const toggleBillingModal = () => {
-      setBillingAddress(billingAddress.value);
-      billingAddressModal.value = !billingAddressModal.value;
-    };
+    const order = ref(null);
+    const transactionId = context.root.$route.query.id;
 
     const goBack = () => context.root.$router.back();
 
-    const proceedToPay = computed(() => {
-      console.log(
-        isShippingAddressFilled.value &&
-          (isBillingAddressFilled.value || shippingAsBilling.value)
-      );
-      return (
-        isShippingAddressFilled.value &&
-        (isBillingAddressFilled.value || shippingAsBilling.value)
-      );
-    });
-
-    const initOrder = async () => {
-      const bAddress = shippingAsBilling.value
-        ? shippingAddress
-        : billingAddress;
-
-      const items = cart.value.items.map((item) => {
-        return {
-          id: item.id,
-          quantity: { count: item.quantity },
-          // eslint-disable-next-line camelcase
-          bpp_id: cart.value.bpp.id,
-          provider: {
-            id: cart.value.bppProvider.id,
-            locations: [
-              './retail.kirana/ind.blr/36@mandi.succinct.in.provider_location'
-            ]
-          }
-        };
-      });
-
-      // TODO REMOVE hardcoded values
-      const params = {
-        context: {
-          // eslint-disable-next-line camelcase
-          transaction_id: localStorage.getItem('transactionId')
-        },
-        message: {
-          items: items,
-
-          // eslint-disable-next-line camelcase
-          billing_info: {
-            address: {
-              door: bAddress.value.landmark,
-              country: 'IND',
-              city: '',
-              street: bAddress.value.address,
-
-              // eslint-disable-next-line camelcase
-              area_code: '560078',
-              state: '',
-              building: selectedLocation.value.address
-            },
-            phone: bAddress.value.mobile,
-            name: bAddress.value.name,
-            email: ''
-          },
-
-          // eslint-disable-next-line camelcase
-          delivery_info: {
-            type: 'home_delivery',
-            name: shippingAddress.value.name,
-            phone: shippingAddress.value.mobile,
-            email: '',
-            location: {
-              address: {
-                door: shippingAddress.value.landmark,
-                country: 'IND',
-                city: '',
-                street: shippingAddress.value.address,
-
-                // eslint-disable-next-line camelcase
-                area_code: '560078',
-                state: '',
-                building: ''
-              },
-              gps: '12.9063433,77.5856825'
-            }
-          }
-        }
-      };
-      // debugger;
-      const response = await init(params);
-      console.log(response);
-      await onInitOrder({
-        // eslint-disable-next-line camelcase
-        messageId: response.context.message_id
-      });
-      console.log(onInitResult);
-    };
-
     onBeforeMount(async () => {
-      await load();
+      const orders = JSON.parse(localStorage.getItem('orderHistory')) ?? [];
+
+      order.value = orders.find((ord) => {
+        return ord.transactionId === transactionId;
+      });
+      // debugger
     });
 
     return {
-      shippingAsBilling,
-      changeShippingAsBilling,
-      shippingAddressModal,
-      billingAddressModal,
-      toggleShippingModal,
-      toggleBillingModal,
-      shippingAddress,
       goBack,
-      billingAddress,
-      isShippingAddressFilled,
+      order,
       cartGetters,
-      providerGetters,
-      isBillingAddressFilled,
-      cart,
-      proceedToPay,
-      initOrder
+      providerGetters
     };
   }
 };

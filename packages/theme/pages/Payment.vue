@@ -72,9 +72,7 @@ import Card from '~/components/Card.vue';
 
 import Footer from '~/components/Footer.vue';
 import CardContent from '~/components/CardContent.vue';
-import {
-  createConfirmOrderRequest
-} from '../helpers/helpers';
+import { createConfirmOrderRequest } from '../helpers/helpers';
 const { toggleCartSidebar } = useUiState();
 export default {
   name: 'Payment',
@@ -86,7 +84,6 @@ export default {
     SfRadio,
     Footer,
     LoadingCircle
-
   },
   methods: {
     openCart() {
@@ -145,7 +142,12 @@ export default {
           localStorage.removeItem('orderProgress');
           localStorage.removeItem('transactionId');
 
-          context.root.$router.push('/ordersuccess');
+          context.root.$router.push({
+            path: '/ordersuccess',
+            query: {
+              id: order.value.transactionId
+            }
+          });
         }
       }
     );

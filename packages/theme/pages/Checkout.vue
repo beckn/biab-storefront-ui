@@ -1,5 +1,5 @@
 <template>
-  <div v-if="cart">
+  <div v-if="cartGetters.getTotalItems(cart)">
     <div class="top-bar">
       <div @click="goBack" class="sf-chevron--left sf-chevron icon_back">
         <span class="sf-search-bar__icon">
@@ -147,29 +147,17 @@
         <div class="p-name">Payment</div>
       </div>
       <Card>
-        <CardContent class="flex-space-bw">
-          <div class="address-text">SubTotal</div>
+        <CardContent v-for="breakup in cart.quote.breakup" :key="breakup.title" class="flex-space-bw">
+          <div class="address-text">{{breakup.title}}</div>
           <div class="address-text">
-            ₹{{ cartGetters.getTotals(cart).total }}
+            ₹{{ breakup.price.value }}
           </div>
-        </CardContent>
-        <CardContent class="flex-space-bw">
-          <div class="address-text">Delivery Charges</div>
-          <div class="address-text">₹0.00</div>
-        </CardContent>
-        <CardContent class="flex-space-bw">
-          <div class="address-text">Taxes (CGST)</div>
-          <div class="address-text">₹0.00</div>
-        </CardContent>
-        <CardContent class="flex-space-bw">
-          <div class="address-text">Taxes(SGST)</div>
-          <div class="address-text">₹0.00</div>
         </CardContent>
         <div><hr class="sf-divider divider" /></div>
         <CardContent class="flex-space-bw">
           <div class="address-text bold">Total</div>
           <div class="address-text bold">
-            ₹{{ cartGetters.getTotals(cart).total }}
+            ₹{{ cart.quote.price.value }}
           </div>
         </CardContent>
       </Card>
@@ -286,8 +274,8 @@ export default {
 
     // const billingAddressModal = ref(false);
 
-    const { cart } = useCart();
-
+    const { cart, load } = useCart();
+    console.log('cart', cart.value?.quote);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     // const { selectedLocation } = useUiState();
 
@@ -387,7 +375,7 @@ export default {
               billingAddress: billingAddress.value,
               shippingAsBilling: shippingAsBilling.value,
               initOrder: onInitResult.value.message.initialized,
-              transactionId: onInitResult.value.context.transaction_id
+              transactionId: transactionId.value
             })
           );
           localStorage.removeItem('transactionId');
@@ -395,7 +383,7 @@ export default {
           context.root.$router.push({
             path: '/payment',
             query: {
-              id: onInitResult.value.context.transaction_id
+              id: transactionId.value
             }
           });
         }
@@ -403,7 +391,7 @@ export default {
     );
 
     onBeforeMount(() => {
-      // load();
+      load();
       transactionId.value = localStorage.getItem('transactionId');
     });
 

@@ -8,20 +8,49 @@
       @close="goBack"
     >
       <div v-if="enableLoader" key="loadingCircle" class="loader-circle">
-        <LoadingCircle   :enable="enableLoader"/>
+        <LoadingCircle :enable="enableLoader" />
       </div>
       <template #content-top>
         <div v-if="cartGetters.getTotalItems(cart)" class="provider-head">
-          <div class="provide-img"><img :src="cartGetters.getProviderImage(cart.bppProvider)?cartGetters.getProviderImage(cart.bppProvider):require('~/assets/images/store-placeholder.png')"/></div>
-          <div class="p-name"> {{ cart.bppProvider.descriptor.name }} </div>
-          <div class="text-padding"> <span class="p-distance"> by </span> {{ cart.bpp.descriptor.name }}</div>
+          <div class="provide-img">
+            <img
+              :src="
+                cartGetters.getProviderImage(cart.bppProvider)
+                  ? cartGetters.getProviderImage(cart.bppProvider)
+                  : require('~/assets/images/store-placeholder.png')
+              "
+            />
+          </div>
+          <div class="p-name">{{ cart.bppProvider.descriptor.name }}</div>
+          <div class="text-padding">
+            <span class="p-distance"> by </span> {{ cart.bpp.descriptor.name }}
+          </div>
         </div>
       </template>
       <div>
-        <div v-if="errOutOfStock" class="cart-error-msg"><img src="../assets/images/bx_bx-error.png" alt="" /><p>Some items are currently available. Please remove these items and proceed to checkout.</p> </div>
-        <div v-if="errUpdateCount" class="cart-warning-msg"><img src="../assets/images/bx_bx-error-circle.png" alt="" /><p>Oops, required quantity not available! Update items with available quantity and proceed? <br /><span @click="updateAll"><a>Yes, update all</a></span></p></div>
-        <div v-if="errPricechange" class="cart-warning-msg"><img src="../assets/images/bx_bx-error-circle.png" alt="" /><p>Prices of some of the items in your cart have changed.Please verify and proceed.</p>
-      </div>
+        <div v-if="errOutOfStock" class="cart-error-msg">
+          <img src="../assets/images/bx_bx-error.png" alt="" />
+          <p>
+            Some items are currently available. Please remove these items and
+            proceed to checkout.
+          </p>
+        </div>
+        <div v-if="errUpdateCount" class="cart-warning-msg">
+          <img src="../assets/images/bx_bx-error-circle.png" alt="" />
+          <p>
+            Oops, required quantity not available! Update items with available
+            quantity and proceed? <br /><span @click="updateAll"
+              ><a>Yes, update all</a></span
+            >
+          </p>
+        </div>
+        <div v-if="errPricechange" class="cart-warning-msg">
+          <img src="../assets/images/bx_bx-error-circle.png" alt="" />
+          <p>
+            Prices of some of the items in your cart have changed.Please verify
+            and proceed.
+          </p>
+        </div>
       </div>
       <transition name="sf-fade" mode="out-in">
         <div
@@ -146,7 +175,7 @@ export default {
     LoadingCircle
   },
   setup(_, { root }) {
-    const { cart, addItem, load } = useCart();
+    const { cart, addItem, load, setCart } = useCart();
     const { init, poll, pollResults, stopPolling } = useQuote();
     const openModal = ref(false);
     const modelOpenIndex = ref(-1);
@@ -164,10 +193,10 @@ export default {
       if (cart.value.totalItems > 0) {
         enableLoader.value = true;
         const transactionId = localStorage.getItem('transactionId');
-        const cartItems = await cart.value.items.map((item)=>{
+        const cartItems = await cart.value.items.map((item) => {
           return {
             id: item.id,
-            quantity: {count: item.quantity},
+            quantity: { count: item.quantity },
             // eslint-disable-next-line camelcase
             bpp_id: cart.value.bpp.id,
             provider: {
@@ -180,36 +209,52 @@ export default {
         const cartData = await init({
           // eslint-disable-next-line camelcase
           context: { transaction_id: transactionId },
-          message: { cart: { items: cartItems }}
+          message: { cart: { items: cartItems } }
         });
 
-        watch(()=>pollResults.value, (newValue)=>{
-          if (newValue?.message?.quote) {
-            stopPolling();
-            const updatedCartData = cart.value.items.map(cartItem => {
-              if (cartItem.updatedCount) cartItem.updatedCount = null;
-              if (cartItem.updatedPrice) cartItem.updatedPrice = null;
-              const quoteItem = newValue.message.quote?.items.filter(quoteItem => quoteItem.id === cartItem.id)[0];
-              const singleItemValue = quoteItem.price.value / quoteItem.quantity.selected.count;
-              console.log('price', parseFloat(cartItem.price.value), parseFloat(singleItemValue));
-              if (parseFloat(cartItem.price.value) !== parseFloat(singleItemValue)) {
-                cartItem.updatedPrice = singleItemValue;
-                errPricechange.value = true;
-              }
-              if (cartItem.quantity !== quoteItem.quantity.selected.count) {
-                cartItem.updatedCount = quoteItem.quantity.selected.count;
-                if (quoteItem.quantity.selected.count === 0) errOutOfStock.value = true;
-                else errUpdateCount.value = true;
-              }
-              return cartItem;
-            });
-            cart.value.items = updatedCartData;
-            enableLoader.value = false;
-            console.log('cart', cart);
+        watch(
+          () => pollResults.value,
+          (newValue) => {
+            if (newValue?.message?.quote) {
+              stopPolling();
+              const updatedCartData = cart.value.items.map((cartItem) => {
+                if (cartItem.updatedCount) cartItem.updatedCount = null;
+                if (cartItem.updatedPrice) cartItem.updatedPrice = null;
+                const quoteItem = newValue.message.quote?.items.filter(
+                  (quoteItem) => quoteItem.id === cartItem.id
+                )[0];
+                const singleItemValue =
+                  quoteItem.price.value / quoteItem.quantity.selected.count;
+                console.log(
+                  'price',
+                  parseFloat(cartItem.price.value),
+                  parseFloat(singleItemValue)
+                );
+                if (
+                  parseFloat(cartItem.price.value) !==
+                  parseFloat(singleItemValue)
+                ) {
+                  cartItem.updatedPrice = singleItemValue;
+                  errPricechange.value = true;
+                }
+                if (cartItem.quantity !== quoteItem.quantity.selected.count) {
+                  cartItem.updatedCount = quoteItem.quantity.selected.count;
+                  if (quoteItem.quantity.selected.count === 0)
+                    errOutOfStock.value = true;
+                  else errUpdateCount.value = true;
+                }
+                return cartItem;
+              });
+              cart.value.items = updatedCartData;
+              cart.value.quote = newValue?.message?.quote.quote;
+              setCart(cart.value);
+              enableLoader.value = false;
+              console.log('cart', cart);
+            }
           }
-        });
+        );
         if (cartData?.context?.message_id) {
-          await poll({messageId: cartData.context.message_id});
+          await poll({ messageId: cartData.context.message_id });
         }
       }
     };
@@ -250,7 +295,10 @@ export default {
     const updateAll = () => {
       for (let i = 0; i < cart.value.items.length; i++) {
         console.log(cart.value.items[i].quantity);
-        if (Boolean(cart.value.items[i]?.updatedCount) && cart.value.items[i].updatedCount !== cart.value.items[i].quantity) {
+        if (
+          Boolean(cart.value.items[i]?.updatedCount) &&
+          cart.value.items[i].updatedCount !== cart.value.items[i].quantity
+        ) {
           updateItemCount(cart.value.items[i].updatedCount, i, false);
         }
       }
@@ -284,10 +332,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.sf-bar{
+.sf-bar {
   padding: 0px 10px;
 }
-.sf-icon{
+.sf-icon {
   width: 20px;
   height: 20px;
 }
@@ -302,13 +350,13 @@ export default {
   }
 }
 
-.loader-circle{
-    width: 100%;
-    position: fixed;
-    z-index: 1;
-    top: 130px;
-    left: 0;
-    height: 65vh;
+.loader-circle {
+  width: 100%;
+  position: fixed;
+  z-index: 1;
+  top: 130px;
+  left: 0;
+  height: 65vh;
 }
 
 .modal-heading {

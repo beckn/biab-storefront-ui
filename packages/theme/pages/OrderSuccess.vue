@@ -72,7 +72,7 @@
         <button
           class="sf-button button color-primary"
           link=""
-          @click="$emit('buttonClick')"
+          @click="goToOrderDetails"
         >
           <!-- button icon template  -->
           <slot name="buttonIcon" />
@@ -88,7 +88,6 @@ import {
   SfRadio,
   SfIcon
 } from '@storefront-ui/vue';
-import { useUiState } from '~/composables';
 
 // import { ref, computed } from '@vue/composition-api';
 // import { onMounted } from '@vue/composition-api';
@@ -99,8 +98,8 @@ import Card from '~/components/Card.vue';
 
 import Footer from '~/components/Footer.vue';
 import CardContent from '~/components/CardContent.vue';
-const { toggleCartSidebar } = useUiState();
 export default {
+  name: 'OrderSuccess',
   components: {
     SfButton,
     SfIcon,
@@ -109,12 +108,21 @@ export default {
     SfRadio,
     Footer
   },
-  methods: {
-    openCart() {
-      toggleCartSidebar();
-    }
-  },
-  setup() {
+  setup(_, context) {
+    const transactionId = context.root.$route.query.id;
+
+    const goToOrderDetails = ()=>{
+
+      context.root.$router.push({
+        path: '/orderdetails',
+        query: {
+          id: transactionId
+        }
+      });
+    };
+    return {
+      goToOrderDetails
+    };
   }
 };
 </script>

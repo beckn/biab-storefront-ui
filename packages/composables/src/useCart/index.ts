@@ -24,6 +24,7 @@ type Cart = {
   newProduct: Product;
   locations: string[];
   cartTime: string;
+  quote: any;
 };
 
 const cartSample = {
@@ -36,7 +37,8 @@ const cartSample = {
   newProvider: null,
   newProduct: null,
   locations: [],
-  cartTime: null
+  cartTime: null,
+  quote: null
 };
 
 const params = {
@@ -65,7 +67,8 @@ const params = {
         newProvider: null,
         newProduct: null,
         locations: [],
-        cartTime: null
+        cartTime: null,
+        quote: null
       };
     }
     const price = productGetters.getPrice(product).regular;
@@ -94,6 +97,7 @@ const params = {
           currentCart.newProvider = null;
           currentCart.locations = [];
           currentCart.cartTime = null;
+          currentCart.quote = null;
         }
       }
     } else {
@@ -140,7 +144,8 @@ const params = {
       newProvider: null,
       newProduct: null,
       locations: [],
-      cartTime: null
+      cartTime: null,
+      quote: null
     };
     return currentCart;
   },

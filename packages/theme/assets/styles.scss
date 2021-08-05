@@ -35,27 +35,27 @@ body{
     overflow-x: hidden;
     background: #FBFCFF;
 }
-::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
-  }
+// ::-webkit-scrollbar {
+//     width: 10px;
+//     height: 10px;
+//   }
   
-  /* Track */
-  ::-webkit-scrollbar-track {
-    box-shadow: inset 0 0 2px grey; 
-    border-radius: 10px;
-  }
+//   /* Track */
+//   ::-webkit-scrollbar-track {
+//     box-shadow: inset 0 0 2px grey; 
+//     border-radius: 10px;
+//   }
    
-  /* Handle */
-  ::-webkit-scrollbar-thumb {
-    background: #D8D8D8; 
-    border-radius: 7px;
-  }
+//   /* Handle */
+//   ::-webkit-scrollbar-thumb {
+//     background: #D8D8D8; 
+//     border-radius: 7px;
+//   }
   
-  /* Handle on hover */
-  ::-webkit-scrollbar-thumb:hover {
-    background: #D8D8D8; 
-  }
+//   /* Handle on hover */
+//   ::-webkit-scrollbar-thumb:hover {
+//     background: #D8D8D8; 
+//   }
 
 .d-flex {
     display: flex;
