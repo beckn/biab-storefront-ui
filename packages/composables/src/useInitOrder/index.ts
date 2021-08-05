@@ -19,7 +19,7 @@ const factoryParams = {
     return true;
   },
   init: async (context: Context, { params }) => {
-    const ackResponse: AckResponse = await context.$beckn.api.initiatizeOrder(params);
+    const ackResponse: AckResponse = await context.$beckn.api.initializeOrder(params);
     return ackResponse;
   },
   pollTime: () => 60000,
