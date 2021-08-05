@@ -30,7 +30,6 @@ const params = {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   load: async () => {
-    console.log('Mocked: loadCart');
     let cartData = {
       items: [],
       bpp: null,

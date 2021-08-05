@@ -1,5 +1,5 @@
 <template>
-  <div class="sf-accordion-item">
+  <div class="sf-accordion-item no-border">
     <!-- @slot -->
     <!-- <slot
       name="header"
@@ -14,7 +14,7 @@
         :aria-pressed="isOpen.toString()"
         :aria-expanded="isOpen.toString()"
         :class="{ 'is-open': isOpen }"
-        class="sf-button--pure sf-accordion-item__header"
+        class="sf-button--pure sf-accordion-item__header no-border padding-head"
         @click="accordionClick"
       >
         {{ header }}
@@ -29,7 +29,7 @@
     <!-- </slot> -->
     <transition class="accordian__transition-content" >
       <div v-if="isOpen">
-        <div class="sf-accordion-item__content">
+        <div class="sf-accordion-item__content no-border">
           <!-- @slot -->
           <slot />
         </div>
@@ -67,4 +67,13 @@ export default {
 </script>
 <style lang="scss">
 @import "~@storefront-ui/shared/styles/components/organisms/SfAccordion.scss";
+
+.no-border{
+  border: 0px;
+  padding: 0px;
+}
+
+.padding-head{
+  padding: 10px 0px;
+}
 </style>

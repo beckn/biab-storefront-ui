@@ -286,7 +286,12 @@ export default {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { selectedLocation } = useUiState();
 
-    const { poll: onInitOrder, init } = useInitOrder();
+    const {
+      // polling ,
+      pollResults: onInitResult,
+      poll: onInitOrder,
+      init
+    } = useInitOrder();
 
     const {
       getBillngAddress,
@@ -345,7 +350,9 @@ export default {
     });
 
     const initOrder = async () => {
-      const bAddress = shippingAsBilling.value ? shippingAddress : billingAddress;
+      const bAddress = shippingAsBilling.value
+        ? shippingAddress
+        : billingAddress;
 
       const items = cart.value.items.map((item) => {
         return {
@@ -415,11 +422,11 @@ export default {
       // debugger;
       const response = await init(params);
       console.log(response);
-      const onInitResp = await onInitOrder({
+      await onInitOrder({
         // eslint-disable-next-line camelcase
         messageId: response.context.message_id
       });
-      console.log(onInitResp);
+      console.log(onInitResult);
     };
 
     onBeforeMount(() => {

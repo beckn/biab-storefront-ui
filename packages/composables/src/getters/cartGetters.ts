@@ -4,7 +4,7 @@ import productGetters from './productGetters';
 import providerGetters from './providers.Getters';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const getCartItems = (cart): LineItem[] => cart?.items;
+export const getCartItems = (cart): LineItem[] => cart?.items || [];
 
 export const getBppProvider = (cart)=> {
   return cart?.bppProvider || null;
