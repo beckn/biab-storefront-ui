@@ -337,7 +337,7 @@ export default {
 }
 
 .product-card {
-  margin-top: 10px;
+  margin-bottom: 10px;
 }
 .cart-summary {
   margin-top: var(--spacer-xl);
