@@ -190,7 +190,7 @@ export default {
     toggleSearchVisible(false);
 
     const matchQuote = async () => {
-      if (cart.value.totalItems > 0) {
+      if (cart.value.totalItems > 0 && localStorage.getItem('transactionId')) {
         enableLoader.value = true;
         const transactionId = localStorage.getItem('transactionId');
         const cartItems = await cart.value.items.map((item) => {
@@ -215,6 +215,9 @@ export default {
         watch(
           () => pollResults.value,
           (newValue) => {
+            if (newValue?.error) {
+              throw 'api fail';
+            }
             if (newValue?.message?.quote) {
               stopPolling();
               const updatedCartData = cart.value.items.map((cartItem) => {
@@ -256,6 +259,8 @@ export default {
         if (cartData?.context?.message_id) {
           await poll({ messageId: cartData.context.message_id });
         }
+      } else {
+        enableLoader.value = false;
       }
     };
 
