@@ -116,7 +116,7 @@
       <div class="sub-heading">
         <div class="p-name">Billing</div>
         <SfButton
-          v-if="isBillingAddressFilled || shippingAsBilling"
+          v-if="isBillingAddressFilled || !shippingAsBilling"
           class="sf-button--pure"
           @click="toggleBillingModal"
         >
