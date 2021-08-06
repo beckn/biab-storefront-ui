@@ -76,4 +76,9 @@ export default {
 .padding-head{
   padding: 10px 0px;
 }
+.sf-accordion-item{
+  .sf-chevron__bar{
+    background: var(--chevron-color,var(--c-primary));
+  }
+}
 </style>

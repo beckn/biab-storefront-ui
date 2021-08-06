@@ -608,6 +608,11 @@ body{
         }
         
     }
+    .is-disabled--button{
+        .sf-icon {
+            --icon-color: #E0E0E1 !important;
+        }
+    }
     .sf-button{
         width: 50% !important;
     }
@@ -617,6 +622,7 @@ body{
             font-size: 14px;
             font-weight: 700;
             margin-left: 10px;
+            padding: 4px 0px;
         }
         .sf-icon {
             top: 0px;
@@ -726,6 +732,7 @@ body{
     background: $white;
     .search__wrapper-results{
         padding: 25px 0px 10px;
+        margin-bottom: 80px;
         font-size: 12px;
         flex-direction: column;
         color: $secondary-text;    
