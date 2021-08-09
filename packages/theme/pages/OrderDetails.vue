@@ -158,6 +158,45 @@
           </SfAccordionItem>
         </SfAccordion>
       </Card>
+      <div class="fulfillment-progress">
+        <div class="head">
+          <span>Fulfillment Progress</span>
+        </div>
+        <div class="sub-head">
+          <img src="/icons/calendar.svg" alt="">
+          <span>ETA</span>
+          <span class="time">Today, 1.30pm</span>
+        </div>
+        <div class="tabs-container">
+          <div class="tab" :class="{'fill':tab}" v-for="(tab, index) in fulfillmentStep" :key="index"></div>
+        </div>
+        <div class="track-details" :class="{'first': index === 0, 'last': index === fulfillmentSteps.length - 1}" v-for="(step, index) in fulfillmentSteps" :key="index">
+          <div class="check-container">
+            <div v-if="index !== 0" class="dot"></div>
+            <div v-if="index !== 0" class="dot"></div>
+            <div class="check"><img src="/icons/check.svg" alt=""></div>
+            <div v-if="index !== fulfillmentSteps.length - 1" class="dot"></div>
+            <div v-if="index !== fulfillmentSteps.length - 1" class="dot"></div>
+          </div>
+          <div class="step-details">
+            <div class="step-name">{{step.status}}</div>
+            <div class="step-time">{{step.time}}</div>
+          </div>
+        </div>
+      </div>
+      <button
+        class="sf-button color-primary support-btn"
+        link=""
+      >
+        <div class="f-btn-text">Contact Support</div>
+        <img class="btn-img" src="/icons/support.svg" />
+      </button>
+      <button
+        class="color-light sf-button cancel-order-btn"
+        link=""
+      >
+        <div class="btn-text">Cancel Order</div>
+      </button>
     </div>
   </div>
 </template>
@@ -215,6 +254,8 @@ export default {
 
     const order = ref(null);
     const transactionId = context.root.$route.query.id;
+    const fulfillmentStep = [{status: 'Items Packed', time: 'May 2021, 2021 12:40 PM'}, {status: 'Delivery agent assigned', time: 'May 2021, 2021 12:40 PM'}, {status: 'Agent enroute to store', time: 'May 2021, 2021 12:40 PM'}, null, null, null, null];
+    const fulfillmentSteps = [{status: 'Items Packed', time: 'May 2021, 2021 12:40 PM'}, {status: 'Delivery agent assigned', time: 'May 2021, 2021 12:40 PM'}, {status: 'Agent enroute to store', time: 'May 2021, 2021 12:40 PM'}];
 
     const goBack = () => context.root.$router.back();
 
@@ -231,7 +272,9 @@ export default {
       goBack,
       order,
       cartGetters,
-      providerGetters
+      providerGetters,
+      fulfillmentStep,
+      fulfillmentSteps
     };
   }
 };
