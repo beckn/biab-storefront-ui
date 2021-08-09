@@ -5,8 +5,8 @@
         <h4>for All</h4>
         <p>A global marketplace to discover and buy anything you need. Just type what you want to buy and we'll take care of the rest.</p>
         <div class="open-search-input">
-        <input v-on:keyup.enter="openSearch" v-model="message" type="text" placeholder="Search for anything" />
-        <SfButton class="sf-search-bar__button sf-button--pure" @click="openSearch">
+        <input v-on:keyup.enter="openSearch" v-model="message" type="text" placeholder="Search for anything" :disabled="!selectedLocation.value.latitude || !selectedLocation.value.longitude"/>
+        <SfButton class="sf-search-bar__button sf-button--pure color-primary" :class="{'is-disabled--button':(!selectedLocation.value.latitude || !selectedLocation.value.longitude)}" @click="openSearch" :disabled="!selectedLocation.value.latitude || !selectedLocation.value.longitude">
             <span class="sf-search-bar__icon">
             <SfIcon color="var(--c-text)" size="18px" icon="search" />
             </span>
@@ -29,7 +29,7 @@ import {
 } from '@storefront-ui/vue';
 import { useUiState } from '~/composables';
 import { SfFooter } from '@storefront-ui/vue';
-const { toggleSearch, changeSearchString } = useUiState();
+const { toggleSearch, changeSearchString, selectedLocation } = useUiState();
 
 export default {
   components: {
@@ -39,7 +39,8 @@ export default {
   },
   data() {
     return {
-      message: ''
+      message: '',
+      selectedLocation
     };
   },
   methods: {
@@ -113,7 +114,7 @@ export default {
         padding: 17px;
         height: 63px;
         top: 0;
-        background: #F37A20;
+        // background: #F37A20;
         border-top-right-radius: 6px;
         border-bottom-right-radius: 6px;
             right: 0;
