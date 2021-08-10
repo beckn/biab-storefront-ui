@@ -187,6 +187,7 @@
       <button
         class="sf-button color-primary support-btn"
         link=""
+        @click="openSupportModal = true"
       >
         <div class="f-btn-text">Contact Support</div>
         <img class="btn-img" src="/icons/support.svg" />
@@ -197,6 +198,20 @@
       >
         <div class="btn-text">Cancel Order</div>
       </button>
+      <ModalSlide :visible="openSupportModal" @close="openSupportModal = false">
+        <div class="modal-heading">Contact Support</div>
+        <div><hr class="sf-divider" /></div>
+        <div class="modal-body">
+          <div class="support-text">
+            You can reach out to one of our customer
+            support executives for any help, queries
+            or feedback to {{providerGetters.getProviderName(cartGetters.getBppProvider(order.cart))}}
+          </div>
+          <SfButton class="support-btns" aria-label="Close modal" type="button">Call us</SfButton>
+          <SfButton class="support-btns" aria-label="Close modal" type="button">Email us</SfButton>
+          <SfButton class="support-btns" aria-label="Close modal" type="button">Chat with us</SfButton>
+        </div>
+      </ModalSlide>
     </div>
   </div>
 </template>
@@ -256,7 +271,7 @@ export default {
     const transactionId = context.root.$route.query.id;
     const fulfillmentStep = [{status: 'Items Packed', time: 'May 2021, 2021 12:40 PM'}, {status: 'Delivery agent assigned', time: 'May 2021, 2021 12:40 PM'}, {status: 'Agent enroute to store', time: 'May 2021, 2021 12:40 PM'}, null, null, null, null];
     const fulfillmentSteps = [{status: 'Items Packed', time: 'May 2021, 2021 12:40 PM'}, {status: 'Delivery agent assigned', time: 'May 2021, 2021 12:40 PM'}, {status: 'Agent enroute to store', time: 'May 2021, 2021 12:40 PM'}];
-
+    const openSupportModal = ref(false);
     const goBack = () => context.root.$router.back();
 
     onBeforeMount(async () => {
@@ -274,7 +289,8 @@ export default {
       cartGetters,
       providerGetters,
       fulfillmentStep,
-      fulfillmentSteps
+      fulfillmentSteps,
+      openSupportModal
     };
   }
 };
@@ -419,6 +435,22 @@ export default {
     &-auth::v-deep .sf-steps__step:first-child {
       --steps-step-color: #e8e4e4;
     }
+  }
+}
+.modal-heading {
+  margin: 20px;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.modal-body {
+  padding: 28px;
+  .support-text{
+    font-size: 15px;
+  }
+  .support-btns{
+    margin-top: 20px;
+    width: 100%;
   }
 }
 </style>
