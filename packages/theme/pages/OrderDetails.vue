@@ -184,18 +184,11 @@
           </div>
         </div>
       </div>
-      <button
-        class="sf-button color-primary support-btn"
-        link=""
-        @click="openSupportModal = true"
-      >
+      <button class="sf-button color-primary support-btn" @click="openSupportModal = true" >
         <div class="f-btn-text">Contact Support</div>
         <img class="btn-img" src="/icons/support.svg" />
       </button>
-      <button
-        class="color-light sf-button cancel-order-btn"
-        link=""
-      >
+      <button class="color-light sf-button cancel-order-btn" @click="onCancel">
         <div class="btn-text">Cancel Order</div>
       </button>
       <ModalSlide :visible="openSupportModal" @close="openSupportModal = false">
@@ -273,6 +266,7 @@ export default {
     const fulfillmentSteps = [{status: 'Items Packed', time: 'May 2021, 2021 12:40 PM'}, {status: 'Delivery agent assigned', time: 'May 2021, 2021 12:40 PM'}, {status: 'Agent enroute to store', time: 'May 2021, 2021 12:40 PM'}];
     const openSupportModal = ref(false);
     const goBack = () => context.root.$router.back();
+    const onCancel = () => context.root.$router.push('/cancelorder');
 
     onBeforeMount(async () => {
       const orders = JSON.parse(localStorage.getItem('orderHistory')) ?? [];
@@ -290,7 +284,8 @@ export default {
       providerGetters,
       fulfillmentStep,
       fulfillmentSteps,
-      openSupportModal
+      openSupportModal,
+      onCancel
     };
   }
 };
