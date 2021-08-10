@@ -55,7 +55,7 @@
         <div class="f-btn-text">Accept Cancellation Policy</div>
       </button>
     </div>
-    <ModalSlide :visible="openCancelModal" @close="openCancelModal = false">
+    <ModalSlide :visible="openCancelModal" @close="closeModal">
       <div class="modal-heading">Cancel Order Reason</div>
       <div><hr class="sf-divider" /></div>
       <div class="modal-body">
@@ -74,7 +74,7 @@
             @change="selectedReason = value"
           />
         </div>
-        <button class="sf-button color-primary" @click="openCancelModal = true">
+        <button class="sf-button color-primary " :class="{'is-disabled--button': !selectedReason}" @click="onConfirm" :disabled="!selectedReason">
           <div class="f-btn-text">Confirm Cancellation Request</div>
         </button>
       </div>
@@ -104,14 +104,20 @@ export default {
     ];
 
     const goBack = () => context.root.$router.back();
-    const changeCancelReason = () => {};
+    const onConfirm = () => context.root.$router.push('/OrderCancelled');
+
+    const closeModal = () => {
+      openCancelModal.value = false;
+      selectedReason.value = '';
+    };
 
     return {
       openCancelModal,
       cancelReasonValues,
       selectedReason,
       goBack,
-      changeCancelReason
+      onConfirm,
+      closeModal
     };
   }
 };
