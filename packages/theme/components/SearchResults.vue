@@ -294,9 +294,9 @@ export default {
   --mega-menu-column-header-margin: var(--spacer-sm) 0 var(--spacer-xl);
   --mega-menu-content-padding: 0;
   --mega-menu-height: auto;
-  padding-bottom: 50px;
-  height: 70%;
-  background: #FBFCFF;
+    padding-bottom: 60px;
+    height: calc(100vh - 26vh);
+    background: #FBFCFF;
   @include for-desktop {
     --mega-menu-content-padding: var(--spacer-xl) 0;
   }

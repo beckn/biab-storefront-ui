@@ -1,7 +1,7 @@
 <template>
   <div id="payment">
-    <div class="top-bar"></div>
-    <div class="content">
+    <div class="top-bar header-top"></div>
+    <div class="content  header-push">
       <div class="sub-heading">
         <img src="~/assets/images/success-order.svg" />
       </div>
@@ -71,6 +71,17 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.header-top{
+    position: fixed;
+    width: 100%;
+    top: 45px;
+    z-index: 9;
+}
+.header-push{
+    top: 107px;
+    position: relative;
+    padding-bottom: 107px;
+}
 .top-bar {
   align-items: center;
   display: flex;

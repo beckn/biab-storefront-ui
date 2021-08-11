@@ -4,6 +4,8 @@
 
 <template>
   <div class="header-container">
+    <div class="fixed-head">
+      <div class="fixed-head-height"></div>
     <div class="header h-padding">
       <nuxt-link :to="localePath('/')" >
         <SfImage src="/icons/beckn.png" :width="63" :height="20" alt="Vue Storefront Next" class=""/>
@@ -17,9 +19,10 @@
       </div>
       <Location :isDisabled="!isSearchOpen" :class="{'disable-location' : isSearchOpen }" class="location-section v-center-pos" v-e2e="'app-header-location'" />
     </div>
+    </div>
     <div
       v-if="isSearchOpen"
-      class="sf-header--has-mobile-search h-padding"
+      class="sf-header--has-mobile-search h-padding header-top-space"
       :class="{'header-on-top': isSearchOpen}"
     >
       <div v-if="IsSearchVisible" class="search-bar">
@@ -317,6 +320,7 @@ export default {
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.07);
     position: relative;
     // z-index: 99;
+    background-color: #FBFCFF;
     .selected-location{
       font-size: 13px;
       font-weight: 500;

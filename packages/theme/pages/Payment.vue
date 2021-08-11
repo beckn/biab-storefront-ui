@@ -1,17 +1,17 @@
 <template>
   <div id="payment">
-    <div class="top-bar">
+    <div class="top-bar header-top">
       <div class="sf-chevron--left sf-chevron icon_back">
         <span class="sf-search-bar__icon">
           <SfIcon color="var(--c-primary)" size="20px" icon="chevron_left" />
         </span>
       </div>
-      <div>Select Payment Method</div>
+      <div class="">Select Payment Method</div>
     </div>
     <div v-if="enableLoader" key="loadingCircle" class="loader-circle">
       <LoadingCircle :enable="enableLoader" />
     </div>
-    <div class="details">
+    <div class="details header-push">
       <div class="sub-heading">
         <div class="p-name">Other</div>
       </div>
@@ -173,6 +173,17 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.header-top{
+    position: fixed;
+    width: 100%;
+    top: 45px;
+    z-index: 9;
+}
+.header-push{
+    top: 107px;
+    position: relative;
+    padding-bottom: 107px;
+}
 .top-bar {
   align-items: center;
   display: flex;

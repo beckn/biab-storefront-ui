@@ -1,12 +1,12 @@
 <template>
   <div v-if="order">
-    <div class="top-bar">
+    <div class="top-bar header-top">
       <div @click="goBack" class="sf-chevron--left sf-chevron icon_back">
         <span class="sf-search-bar__icon">
           <SfIcon color="var(--c-primary)" size="20px" icon="chevron_left" />
         </span>
       </div>
-      <div>Order Details</div>
+      <div class="header-push">Order Details</div>
     </div>
 
     <div class="sub-heading"></div>
@@ -292,6 +292,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.header-top{
+    position: fixed;
+    width: 100%;
+    top: 45px;
+    z-index: 9;
+}
+
 .bold {
   font-weight: 600;
 }

@@ -1,6 +1,6 @@
 <template>
 <div>
-    <div class="open-search">
+    <div class="open-search header-top-space">
         <h3>Open <br /> Commerce</h3>
         <h4>for All</h4>
         <p>A global marketplace to discover and buy anything you need. Just type what you want to buy and we'll take care of the rest.</p>
@@ -53,6 +53,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.header-top-space{
+  top: 107px;
+}
 .open-search{
     @media (min-width: 560px) {
         padding-top: 40px;
