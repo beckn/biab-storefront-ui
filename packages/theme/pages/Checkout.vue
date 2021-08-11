@@ -1,6 +1,6 @@
 <template>
   <div v-if="cartGetters.getTotalItems(cart)">
-    <div class="top-bar">
+    <div class="top-bar header-top">
       <div @click="goBack" class="sf-chevron--left sf-chevron icon_back">
         <span class="sf-search-bar__icon">
           <SfIcon color="var(--c-primary)" size="20px" icon="chevron_left" />
@@ -11,7 +11,7 @@
     <div v-if="enableLoader" key="loadingCircle" class="loader-circle">
       <LoadingCircle :enable="enableLoader" />
     </div>
-    <div class="details">
+    <div class="details header-push">
       <div class="sub-heading">
         <div class="p-name">Items in Cart</div>
       </div>
@@ -419,6 +419,20 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.header-top{
+    position: fixed;
+    width: 100%;
+    margin-top: 29px;
+    z-index: 1;
+}
+.fixed-head {
+    z-index: 1;
+}
+.header-push{
+    top: 107px;
+    position: relative;
+    padding-bottom: 107px;
+}
 .bold {
   font-weight: 600;
 }
@@ -523,7 +537,6 @@ export default {
   }
   .s-p-price {
     font-size: 16px;
-    font-family: 'roboto';
     margin-top: 10px;
     color: #f37a20;
   }

@@ -299,7 +299,6 @@ export default {
 .s-p-price {
   color: #f37a20;
   font-size: 22px;
-  font-family: 'Roboto';
 }
 
 .product {
