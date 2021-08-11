@@ -95,6 +95,7 @@ jobs:
           tags: 795151977897.dkr.ecr.ap-south-1.amazonaws.com/beckn_in_a_box_storefront_ui:${{ github.run_number }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
+          build-args: MAPS_API_KEY=${{ github.run_number }}
       - name: Cache growth workaround
         run: |
           rm -rf /tmp/.buildx-cache
