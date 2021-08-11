@@ -131,7 +131,7 @@ export default {
   text-align: center;
   background: #FBFCFF !important;
   position: fixed;
-    bottom: 10px;
+    bottom: 0px;
     width: 100%;
     padding: 0;
   p{
