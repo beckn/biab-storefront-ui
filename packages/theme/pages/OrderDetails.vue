@@ -158,6 +158,53 @@
           </SfAccordionItem>
         </SfAccordion>
       </Card>
+      <div class="fulfillment-progress">
+        <div class="head">
+          <span>Fulfillment Progress</span>
+        </div>
+        <div class="sub-head">
+          <img src="/icons/calendar.svg" alt="">
+          <span>ETA</span>
+          <span class="time">Today, 1.30pm</span>
+        </div>
+        <div class="tabs-container">
+          <div class="tab" :class="{'fill':tab}" v-for="(tab, index) in fulfillmentStep" :key="index"></div>
+        </div>
+        <div class="track-details" :class="{'first': index === 0, 'last': index === fulfillmentSteps.length - 1}" v-for="(step, index) in fulfillmentSteps" :key="index">
+          <div class="check-container">
+            <div v-if="index !== 0" class="dot"></div>
+            <div v-if="index !== 0" class="dot"></div>
+            <div class="check"><img src="/icons/check.svg" alt=""></div>
+            <div v-if="index !== fulfillmentSteps.length - 1" class="dot"></div>
+            <div v-if="index !== fulfillmentSteps.length - 1" class="dot"></div>
+          </div>
+          <div class="step-details">
+            <div class="step-name">{{step.status}}</div>
+            <div class="step-time">{{step.time}}</div>
+          </div>
+        </div>
+      </div>
+      <button class="sf-button color-primary support-btn" @click="openSupportModal = true" >
+        <div class="f-btn-text">Contact Support</div>
+        <img class="btn-img" src="/icons/support.svg" />
+      </button>
+      <button class="color-light sf-button cancel-order-btn" @click="onCancel">
+        <div class="btn-text">Cancel Order</div>
+      </button>
+      <ModalSlide :visible="openSupportModal" @close="openSupportModal = false">
+        <div class="modal-heading">Contact Support</div>
+        <div><hr class="sf-divider" /></div>
+        <div class="modal-body">
+          <div class="support-text">
+            You can reach out to one of our customer
+            support executives for any help, queries
+            or feedback to {{providerGetters.getProviderName(cartGetters.getBppProvider(order.cart))}}
+          </div>
+          <SfButton class="support-btns" aria-label="Close modal" type="button">Call us</SfButton>
+          <SfButton class="support-btns" aria-label="Close modal" type="button">Email us</SfButton>
+          <SfButton class="support-btns" aria-label="Close modal" type="button">Chat with us</SfButton>
+        </div>
+      </ModalSlide>
     </div>
   </div>
 </template>
@@ -215,8 +262,11 @@ export default {
 
     const order = ref(null);
     const transactionId = context.root.$route.query.id;
-
+    const fulfillmentStep = [{status: 'Items Packed', time: 'May 2021, 2021 12:40 PM'}, {status: 'Delivery agent assigned', time: 'May 2021, 2021 12:40 PM'}, {status: 'Agent enroute to store', time: 'May 2021, 2021 12:40 PM'}, null, null, null, null];
+    const fulfillmentSteps = [{status: 'Items Packed', time: 'May 2021, 2021 12:40 PM'}, {status: 'Delivery agent assigned', time: 'May 2021, 2021 12:40 PM'}, {status: 'Agent enroute to store', time: 'May 2021, 2021 12:40 PM'}];
+    const openSupportModal = ref(false);
     const goBack = () => context.root.$router.back();
+    const onCancel = () => context.root.$router.push('/cancelorder');
 
     onBeforeMount(async () => {
       const orders = JSON.parse(localStorage.getItem('orderHistory')) ?? [];
@@ -231,7 +281,11 @@ export default {
       goBack,
       order,
       cartGetters,
-      providerGetters
+      providerGetters,
+      fulfillmentStep,
+      fulfillmentSteps,
+      openSupportModal,
+      onCancel
     };
   }
 };
@@ -383,6 +437,22 @@ export default {
     &-auth::v-deep .sf-steps__step:first-child {
       --steps-step-color: #e8e4e4;
     }
+  }
+}
+.modal-heading {
+  margin: 20px;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.modal-body {
+  padding: 28px;
+  .support-text{
+    font-size: 15px;
+  }
+  .support-btns{
+    margin-top: 20px;
+    width: 100%;
   }
 }
 </style>

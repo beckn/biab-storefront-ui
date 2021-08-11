@@ -111,4 +111,4 @@ jobs:
           cd ansible
           export ANSIBLE_ROLES_PATH=./roles
           echo beckn_in_a_box_storefront_ui_build_no: ${GITHUB_RUN_NUMBER} >> vars/vars.yml
-          /home/ubuntu/.local/bin/ansible-playbook playbooks/beckn_services.yml -i inventory/qa.ini --extra-vars "@vars/vars.yml"
+          /home/ubuntu/.local/bin/ansible-playbook playbooks/beckn_services.yml -i inventory/qa.ini --extra-vars "@vars/vars.yml" --vault-password-file /home/ubuntu/ansible-vault/.password
