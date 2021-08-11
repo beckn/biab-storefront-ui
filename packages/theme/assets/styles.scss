@@ -435,7 +435,6 @@ body{
     }
 }
 .collected-product-list{
-    padding-bottom: 50px;
     .s-product{
         width: auto;
     }
@@ -803,7 +802,7 @@ body{
 .provider-head{
     display: flex;
     align-items: center;
-    padding-top: 10px;
+    padding: 16px;
 
     .p-name{
       font-size: 19px;
