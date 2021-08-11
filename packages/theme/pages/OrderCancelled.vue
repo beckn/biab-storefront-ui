@@ -39,6 +39,7 @@ export default {
 <style lang="scss" scoped>
 .cancel-page {
   position: relative;
+  margin-top: 45px;
   height: calc(100vh - 45px);
   .sf-button {
     width: -webkit-fill-available;
