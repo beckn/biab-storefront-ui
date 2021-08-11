@@ -337,6 +337,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.sf-sidebar__aside{
+  top: 45px;
+}
 .sf-bar {
   padding: 0px 10px;
 }
