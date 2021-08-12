@@ -161,7 +161,7 @@
             <CardContent class="flex-space-bw">
               <div class="address-text">Transaction Id</div>
               <div class="address-text">
-                {{ order.order.payment.params.transaction_id }}
+                <!-- {{ order.order.payment.params.transaction_id }} -->
               </div>
             </CardContent>
           </SfAccordionItem>
