@@ -1,14 +1,21 @@
 import { CustomQuery, Logger } from '@vue-storefront/core';
 import { Config } from './../../types/Setup';
 import * as sa from 'superagent';
-import { SearchItemsWhere } from '../../types/Search';
+// import { SearchItemsWhere } from '../../types/Search';
 import { AckResponse } from '../../types/BecknClientApi';
 import { Context } from '@vue-storefront/core';
 
 /* eslint  camelcase: 0 */
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export default async function getProduct(context: Context, params: SearchItemsWhere, customQuery?: CustomQuery): Promise<AckResponse> {
+export default async function getProduct(context: Context, params, customQuery?: CustomQuery): Promise<AckResponse> {
+  const criteriaData = {
+    delivery_location: params.locationIs
+  };
+  // provider_id: params.,
+  // category_id: params.
+  if (params.providerId) criteriaData.provider_id = params.providerId;
+  if (params.itemContains) criteriaData.search_string = params.itemContains;
 
   const qParams = {
     context: {
@@ -16,12 +23,7 @@ export default async function getProduct(context: Context, params: SearchItemsWh
       // bpp_id: "string"
     },
     message: {
-      criteria: {
-        search_string: params.itemContains,
-        delivery_location: params.locationIs
-        // provider_id: params.,
-        // category_id: params.
-      }
+      criteria: criteriaData
     }
   };
   const config = (context.config as Config);
