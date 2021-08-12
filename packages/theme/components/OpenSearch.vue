@@ -53,9 +53,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.header-top-space{
-  top: 107px;
-}
+// .header-top-space{
+//   top: 107px;
+// }
 .open-search{
     @media (min-width: 560px) {
         padding-top: 40px;

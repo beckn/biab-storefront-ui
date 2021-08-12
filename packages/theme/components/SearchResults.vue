@@ -295,7 +295,7 @@ export default {
   --mega-menu-content-padding: 0;
   --mega-menu-height: auto;
     padding-bottom: 60px;
-    height: calc(100vh - 26vh);
+    height: 67%;
     background: #FBFCFF;
   @include for-desktop {
     --mega-menu-content-padding: var(--spacer-xl) 0;

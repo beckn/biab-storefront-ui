@@ -346,7 +346,7 @@ export default {
   height: 20px;
 }
 #cart {
-  margin-top: 45px;
+  // margin-top: 45px;
   --sidebar-z-index: 3;
   --overlay-z-index: 3;
   @include for-desktop {

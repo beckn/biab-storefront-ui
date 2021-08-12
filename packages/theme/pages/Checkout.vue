@@ -162,9 +162,9 @@
         </CardContent>
       </Card>
 
-      <div class="sub-heading">
+      <!-- <div class="sub-heading">
         <div class="p-name">Order Policy</div>
-      </div>
+      </div> -->
     </div>
     <Footer
       class="footer-fixed"
@@ -419,20 +419,20 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.header-top{
-    position: fixed;
-    width: 100%;
-    margin-top: 29px;
-    z-index: 1;
-}
-.fixed-head {
-    z-index: 1;
-}
-.header-push{
-    top: 107px;
-    position: relative;
-    padding-bottom: 107px;
-}
+// .header-top{
+//     position: fixed;
+//     width: 100%;
+//     margin-top: 29px;
+//     z-index: 1;
+// }
+// .fixed-head {
+//     z-index: 1;
+// }
+// .header-push{
+//     top: 107px;
+//     position: relative;
+//     padding-bottom: 107px;
+// }
 .bold {
   font-weight: 600;
 }
@@ -466,7 +466,7 @@ export default {
 
 .details {
   margin: 2px 20px;
-  margin-bottom: 60px;
+  margin-bottom: 80px;
 }
 
 .address-bar-icon {

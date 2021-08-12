@@ -173,17 +173,17 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.header-top{
-    position: fixed;
-    width: 100%;
-    top: 45px;
-    z-index: 9;
-}
-.header-push{
-    top: 107px;
-    position: relative;
-    padding-bottom: 107px;
-}
+// .header-top{
+//     position: fixed;
+//     width: 100%;
+//     top: 45px;
+//     z-index: 9;
+// }
+// .header-push{
+//     top: 107px;
+//     position: relative;
+//     padding-bottom: 107px;
+// }
 .top-bar {
   align-items: center;
   display: flex;
