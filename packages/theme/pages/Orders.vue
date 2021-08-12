@@ -48,10 +48,7 @@
             <div class="order-price">
               ₹
               {{
-                order.order.payment.params.amount.toLocaleString('en-US', {
-                  style: 'currency',
-                  currency: 'INR',
-                })
+                0
               }}
             </div>
           </div>
@@ -108,7 +105,7 @@ export default {
 .top-bar {
   align-items: center;
   display: flex;
-  margin-top: 45px;
+  // margin-top: 45px;
   font-size: 18px;
   justify-content: space-around;
   height: 60px;
