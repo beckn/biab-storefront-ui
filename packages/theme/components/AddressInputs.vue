@@ -46,7 +46,7 @@
         pattern="[0-9]{6}"
         :label="'Pincode'"
         :name="'Pincode'"
-        :valid="false"
+        :valid="true"
         :errorMessage="'lolz'"
         @input="() => {
         }"
