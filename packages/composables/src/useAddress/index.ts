@@ -3,6 +3,7 @@ type Address = {
     mobile: string,
     building: string;
     landmark: string;
+    pincode:number | null;
     address: string;
 };
 
@@ -17,6 +18,7 @@ const useAddress = () => {
           mobile: '',
           building: '',
           landmark: '',
+          pincode: null,
           address: ''
         };
       }
@@ -27,6 +29,7 @@ const useAddress = () => {
         mobile: '',
         building: '',
         landmark: '',
+        pincode: null,
         address: ''
       };
     }
@@ -41,6 +44,7 @@ const useAddress = () => {
           mobile: '',
           building: '',
           landmark: '',
+          pincode: null,
           address: ''
         };
       }
@@ -51,6 +55,7 @@ const useAddress = () => {
         mobile: '',
         building: '',
         landmark: '',
+        pincode: null,
         address: ''
       };
     }
