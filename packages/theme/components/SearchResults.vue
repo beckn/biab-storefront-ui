@@ -32,7 +32,7 @@
                     <div class="p-distance">{{providerGetters.getProviderDistance(provider)}} km</div>
                   </div>
                 </div>
-                <div class="exp-provider">Explore All</div>
+                <div class="exp-provider" @click="openProvider(bpp,provider )">Explore All</div>
               </div>
               <div class="results--mobile">
                 <ProductCard
@@ -209,6 +209,22 @@ export default {
       root.$router.push('/cart');
     };
 
+    const openProvider = (bpp, provider) => {
+      console.log('clicked ', bpp, provider);
+      root.$router.push({
+        name: 'ExploreProvider',
+        params: {
+          bpp: {
+            // eslint-disable-next-line camelcase
+            bpp_descriptor: bpp.bpp_descriptor,
+            // eslint-disable-next-line camelcase
+            bpp_id: bpp.bpp_id
+          },
+          provider
+        }
+      });
+    };
+
     return {
       isSearchOpen,
       productGetters,
@@ -223,7 +239,8 @@ export default {
       totalResults,
       cartGetters,
       footerClick,
-      keyVal
+      keyVal,
+      openProvider
     };
   }
 };
