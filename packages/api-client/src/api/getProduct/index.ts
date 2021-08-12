@@ -9,7 +9,7 @@ import { Context } from '@vue-storefront/core';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default async function getProduct(context: Context, params, customQuery?: CustomQuery): Promise<AckResponse> {
-  const criteriaData = {
+  const criteriaData: {[k: string]: any} = {
     delivery_location: params.locationIs
   };
   // provider_id: params.,

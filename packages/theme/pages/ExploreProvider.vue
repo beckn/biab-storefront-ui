@@ -268,7 +268,6 @@ export default {
 
 <style lang="scss" scoped>
 .explore-page {
-  margin-top: 45px;
   .flexy {
     display: flex;
   }
