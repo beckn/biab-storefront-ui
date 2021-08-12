@@ -70,7 +70,9 @@ jobs:
         run: yarn test:theme
 
       - name: Test e2e theme
-        run: |
+        env:
+          MAPS_KEY: ${{ secrets.QA_MAPS_API_KEY }}
+        run: |          
           yarn dev > /dev/null &
           sleep 1m
           export PROCESS_ID=$!
