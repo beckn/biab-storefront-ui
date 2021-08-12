@@ -249,7 +249,7 @@
           </div>
         </div>
       </div>
-      <button class="sf-button color-primary support-btn" @click="openSupportModal = true" >
+      <button class="sf-button color-primary support-btns" @click="openSupportModal = true" >
         <div class="f-btn-text">Contact Support</div>
         <img class="btn-img" src="/icons/support.svg" />
       </button>
@@ -364,6 +364,15 @@ export default {
 //     top: 45px;
 //     z-index: 9;
 // }
+.support-btns {
+    width: 100%;
+    border-radius: 3px;
+}
+
+.cancel-order-btn{
+    width: 100%;
+    border-radius: 3px;
+}
 
 .bold {
   font-weight: 600;
