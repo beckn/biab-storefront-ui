@@ -1,7 +1,7 @@
 // import { AgnosticFacetSearchParams } from '@vue-storefront/core';
 // import { BaseSearchWhere } from '@vue-storefront/beckn-api';
 export const buildSearchItemsWhere = (params) => {
-  const paramsObj = {
+  const paramsObj: {[k: string]: any} = {
     locationIs: params.locationIs,
     offset: params.page * params.itemsPerPage,
     limit: params.itemsPerPage
