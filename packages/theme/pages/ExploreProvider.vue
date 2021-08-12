@@ -268,6 +268,7 @@ export default {
 
 <style lang="scss" scoped>
 .explore-page {
+  height: calc(100vh - 45px);
   .flexy {
     display: flex;
   }
@@ -312,6 +313,7 @@ export default {
   .details {
     height: calc(100vh - 179px);
     padding-top: 20px;
+    overflow: scroll;
     .s-text {
       font-weight: bold;
       font-size: 16px;
@@ -327,9 +329,9 @@ export default {
     .grid {
       display: grid;
       grid-template-columns: auto auto;
-      overflow-y: scroll;
       justify-content: center;
       grid-row-gap: 25px;
+      padding-bottom: 70px;
       .s-product {
         margin-right: unset;
       }
