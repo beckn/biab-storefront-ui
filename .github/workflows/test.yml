@@ -71,7 +71,7 @@ jobs:
 
       - name: Test e2e theme
         env:
-          MAPS_KEY: ${{ secrets.QA_MAPS_API_KEY }}
+          MAPS_KEY: ${{ secrets.TEST_MAPS_API_KEY }}
         run: |          
           yarn dev > /dev/null &
           sleep 1m
