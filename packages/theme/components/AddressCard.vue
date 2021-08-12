@@ -47,7 +47,7 @@
         </svg>
       </div>
       <div class="address-text">
-        {{ address }}
+        {{ building + ' ' + address + ' ' + pincode }}
       </div>
     </CardContent>
     <div><hr class="sf-divider divider" /></div>
@@ -93,6 +93,14 @@ export default {
       default: ''
     },
     mobile: {
+      type: String,
+      default: ''
+    },
+    building: {
+      type: String,
+      default: ''
+    },
+    pincode: {
       type: String,
       default: ''
     }

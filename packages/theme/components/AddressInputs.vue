@@ -12,25 +12,44 @@
       />
       <SfInput
         v-model="address.mobile"
-        :type="'tel'"
+        :type="'number'"
         :label="'Mobile Number'"
         pattern="[0-9]{10}"
+        maxlength="10"
+        autocomplete="tel"
         :name="'mobile'"
-        @change="() => {}"
+        @change="() => {
+          address.mobile.replace(/^(\+\d\d)|\D|\s/g, '')
+        }"
       />
       <SfInput
         v-model="address.address"
         :type="'text'"
         :label="'Complete Address'"
         :name="'address'"
+
         @change="() => {}"
       />
       <SfInput
         v-model="address.building"
         :type="'text'"
         :label="'Building Name Floor'"
-        :name="'bulding'"
+        :name="'building'"
         @change="() => {}"
+      />
+      <SfInput
+        v-model="address.pincode"
+        :type="'number'"
+        :maxlength="6"
+        :max="999999"
+        min="0"
+        pattern="[0-9]{6}"
+        :label="'Pincode'"
+        :name="'Pincode'"
+        :valid="false"
+        :errorMessage="'lolz'"
+        @input="() => {
+        }"
       />
       <SfInput
         v-model="address.landmark"
