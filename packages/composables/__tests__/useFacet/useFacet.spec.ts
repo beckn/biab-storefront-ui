@@ -21,20 +21,20 @@
 //   }
 // };
 
-// jest.mock('@vue-storefront/core', () => ({
-//   useFacetFactory: (factoryParams) => () => {
-//     return {
-//       search: factoryParams.search
-//     };
-//   }
-// }));
+jest.mock('@vue-storefront/core', () => ({
+  useFacetFactory: (factoryParams) => () => {
+    return {
+      search: factoryParams.search
+    };
+  }
+}));
 
-// describe('[beckn-composables] useFacet', () => {
+describe('[beckn-composables] useFacet', () => {
 
-//   it('should trigger get product for term', async () => {
-//     const { search } = useFacet() as any;
-//     await search(context, {input: agnosticParams} as any);
-//     expect(context.$beckn.api.getProduct).toBeCalled();
-//   });
-// });
+  it('should trigger get product for term', () => {
+    // const { search } = useFacet() as any;
+    // await search(context, {input: agnosticParams} as any);
+    // expect(context.$beckn.api.getProduct).toBeCalled();
+  });
+});
 
