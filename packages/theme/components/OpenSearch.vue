@@ -29,7 +29,7 @@ import {
 } from '@storefront-ui/vue';
 import { useUiState } from '~/composables';
 import { SfFooter } from '@storefront-ui/vue';
-const { toggleSearch, changeSearchString, selectedLocation } = useUiState();
+const { toggleSearch, changeSearchString, selectedLocation, toggleSearchVisible } = useUiState();
 
 export default {
   components: {
@@ -46,7 +46,8 @@ export default {
   methods: {
     openSearch() {
       changeSearchString(this.message);
-      toggleSearch();
+      toggleSearch(true);
+      toggleSearchVisible(true);
     }
   }
 };

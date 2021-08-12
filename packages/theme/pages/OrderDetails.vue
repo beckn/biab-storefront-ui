@@ -13,7 +13,6 @@
       <LoadingCircle :enable="enableLoader" />
     </div>
 
-    <div class="sub-heading"></div>
     <div v-if="!enableLoader" class="details">
       <div class="provider-head p-0">
         <div class="provide-img">
@@ -158,7 +157,7 @@
               <div class="address-text">Status</div>
               <div class="address-text">{{ order.order.payment.status }}</div>
             </CardContent>
-            <CardContent class="flex-space-bw">
+            <CardContent v-if="false" class="flex-space-bw">
               <div class="address-text">Transaction Id</div>
               <div class="address-text">
                 <!-- {{ order.order.payment.params.transaction_id }} -->
@@ -398,7 +397,9 @@ export default {
 }
 
 .details {
-  margin: 2px 20px;
+  padding: 20px;
+  height: calc(100vh - 149px);
+  overflow: scroll;
 }
 
 .address-bar-icon {

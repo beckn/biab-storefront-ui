@@ -51,8 +51,8 @@ const useUiState = () => {
   };
 
   const isSearchOpen = computed(() => state.isSearchOpen);
-  const toggleSearch = () => {
-    state.isSearchOpen = !state.isSearchOpen;
+  const toggleSearch = (value = !state.isSearchOpen) => {
+    state.isSearchOpen = value;
   };
 
   const searchString = computed(() => state.searchString);
