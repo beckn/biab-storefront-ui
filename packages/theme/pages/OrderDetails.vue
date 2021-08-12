@@ -359,12 +359,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.header-top{
-    position: fixed;
-    width: 100%;
-    top: 45px;
-    z-index: 9;
-}
+// .header-top{
+//     position: fixed;
+//     width: 100%;
+//     top: 45px;
+//     z-index: 9;
+// }
 
 .bold {
   font-weight: 600;
