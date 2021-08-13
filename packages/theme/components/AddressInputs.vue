@@ -4,13 +4,17 @@
     <div><hr class="sf-divider" /></div>
     <div class="address-inputs-container">
       <SfInput
+        :valid="valid.name"
+        :errorMessage="'Please enter a valid name'"
         v-model="address.name"
         :type="'text'"
         :label="'Name'"
         :name="'Name'"
-        @change="() => {}"
+        @input="validateName"
       />
       <SfInput
+        :valid="valid.mobile"
+        :errorMessage="'Please enter a valid mobile'"
         v-model="address.mobile"
         :type="'number'"
         :label="'Mobile Number'"
@@ -18,24 +22,25 @@
         maxlength="10"
         autocomplete="tel"
         :name="'mobile'"
-        @change="() => {
-          address.mobile.replace(/^(\+\d\d)|\D|\s/g, '')
-        }"
+        @input="validateMobile"
       />
       <SfInput
+        :valid="valid.address"
+        :errorMessage="'Please enter a valid address'"
         v-model="address.address"
         :type="'text'"
         :label="'Complete Address'"
         :name="'address'"
-
-        @change="() => {}"
+        @input="validateAddress"
       />
       <SfInput
+        :valid="valid.building"
+        :errorMessage="'Please enter a valid building'"
         v-model="address.building"
         :type="'text'"
         :label="'Building Name Floor'"
         :name="'building'"
-        @change="() => {}"
+        @input="validateBuilding"
       />
       <SfInput
         v-model="address.pincode"
@@ -46,10 +51,9 @@
         pattern="[0-9]{6}"
         :label="'Pincode'"
         :name="'Pincode'"
-        :valid="true"
-        :errorMessage="'lolz'"
-        @input="() => {
-        }"
+        :valid="valid.pincode"
+        :errorMessage="'Please enter a valid pincode'"
+        @input="validatePincode"
       />
       <SfInput
         v-model="address.landmark"
@@ -72,7 +76,7 @@
 
 <script>
 import { SfButton, SfInput } from '@storefront-ui/vue';
-import { ref } from '@vue/composition-api';
+import { ref, computed } from '@vue/composition-api';
 export default {
   name: 'AddressInputs',
   components: {
@@ -102,13 +106,76 @@ export default {
   setup(props, { emit }) {
     const address = ref(props.addressDetails);
 
-    const saveDetails = () => {
-      emit('getAddress', address.value);
+    const valid = ref({
+      address: false,
+      pincode: false,
+      mobile: false,
+      name: false,
+      building: false
+    });
+
+    const validateName = () => {
+      if (address.value.name.length > 3) {
+        valid.value.name = true;
+      } else {
+        valid.value.name = false;
+      }
+    };
+    const validateMobile = () => {
+      const re = /^[0-9\b]+$/;
+      if (re.test(address.value.mobile) && address.value.mobile.length === 10) {
+        valid.value.mobile = true;
+      } else {
+        valid.value.mobile = false;
+      }
+    };
+    const validateAddress = () => {
+      if (address.value.address.length > 5) {
+        valid.value.address = true;
+      } else {
+        valid.value.address = false;
+      }
+    };
+    const validateBuilding = () => {
+      if (address.value.building.length > 5) {
+        valid.value.building = true;
+      } else {
+        valid.value.building = false;
+      }
+    };
+    const validatePincode = () => {
+      const re = /^[0-9\b]+$/;
+      if (re.test(address.value.pincode) && address.value.pincode.length === 6) {
+        valid.value.pincode = true;
+      } else {
+        valid.value.pincode = false;
+      }
     };
 
+    const isFieldsValid = computed(() =>{
+      address.value.valid = (valid.value.address && valid.value.name && valid.value.mobile && valid.value.pincode && valid.value.building);
+      return (valid.value.address && valid.value.name && valid.value.mobile && valid.value.pincode && valid.value.building);
+    });
+
+    const saveDetails = () => {
+      emit('getAddress', isFieldsValid.value);
+    };
+
+    validateName();
+    validateMobile();
+    validateAddress();
+    validatePincode();
+    validateBuilding();
     return {
       address,
-      saveDetails
+      saveDetails,
+      valid,
+      validateName,
+      validateMobile,
+      isFieldsValid,
+      validateAddress,
+      validatePincode,
+      validateBuilding
     };
   }
 };

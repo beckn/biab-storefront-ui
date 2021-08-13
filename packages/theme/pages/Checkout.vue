@@ -90,6 +90,8 @@
         :name="shippingAddress.name"
         :address="shippingAddress.address"
         :mobile="shippingAddress.mobile"
+        :pincode="shippingAddress.pincode"
+        :building="shippingAddress.building"
       />
       <Card v-if="!isShippingAddressFilled">
         <CardContent>
@@ -141,24 +143,26 @@
         :name="billingAddress.name"
         :address="billingAddress.address"
         :mobile="billingAddress.mobile"
+        :pincode="billingAddress.pincode"
+        :building="billingAddress.building"
       />
 
       <div class="sub-heading">
         <div class="p-name">Payment</div>
       </div>
       <Card>
-        <CardContent v-for="breakup in cart.quote.breakup" :key="breakup.title" class="flex-space-bw">
-          <div class="address-text">{{breakup.title}}</div>
-          <div class="address-text">
-            ₹{{ breakup.price.value }}
-          </div>
+        <CardContent
+          v-for="breakup in cart.quote.breakup"
+          :key="breakup.title"
+          class="flex-space-bw"
+        >
+          <div class="address-text">{{ breakup.title }}</div>
+          <div class="address-text">₹{{ breakup.price.value }}</div>
         </CardContent>
         <div><hr class="sf-divider divider" /></div>
         <CardContent class="flex-space-bw">
           <div class="address-text bold">Total</div>
-          <div class="address-text bold">
-            ₹{{ cart.quote.price.value }}
-          </div>
+          <div class="address-text bold">₹{{ cart.quote.price.value }}</div>
         </CardContent>
       </Card>
 
@@ -304,7 +308,8 @@ export default {
         shippingAddress.value.name !== '' &&
         shippingAddress.value.mobile !== '' &&
         shippingAddress.value.building !== '' &&
-        shippingAddress.value.address !== ''
+        shippingAddress.value.address !== '' &&
+        shippingAddress.value.valid
       );
     });
     const isBillingAddressFilled = computed(() => {
@@ -312,7 +317,8 @@ export default {
         billingAddress.value.name !== '' &&
         billingAddress.value.mobile !== '' &&
         billingAddress.value.building !== '' &&
-        billingAddress.value.address !== ''
+        billingAddress.value.address !== '' &&
+        billingAddress.value.valid
       );
     });
 
