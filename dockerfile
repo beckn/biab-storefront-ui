@@ -2,7 +2,7 @@
 #syntax=docker/dockerfile:1.2
 FROM node:14.17.4-alpine as build
 RUN --mount=type=secret,id=MAPS_API_KEY
-ENV MAPS_KEY = $MAPS_API_KEY
+ENV MAPS_KEY=$MAPS_API_KEY
 RUN apk update
 RUN apk add nginx
 WORKDIR /app
