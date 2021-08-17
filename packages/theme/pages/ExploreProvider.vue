@@ -101,11 +101,11 @@
         <LoadingCircle :enable="enableLoader" key="loding-cir" />
       </transition-group>
     </div>
-    <div v-if="cart.totalItems" class="sr-footer">
+    <div v-if="cartGetters.getTotalItems(cart)" class="sr-footer">
       <Footer
         @buttonClick="footerClick"
         :totalPrice="cart.totalPrice"
-        :totalItem="cart.totalItems"
+        :totalItem="cartGetters.getTotalItems(cart)"
         buttonText="View Cart"
       >
         <template v-slot:buttonIcon>
@@ -142,13 +142,10 @@ export default {
     Footer
   },
   setup(_, context) {
-    const { toggleSearchVisible, searchString, selectedLocation } =
+    const { searchString, selectedLocation } =
       useUiState();
     const enableLoader = ref(false);
-    const goBack = () => {
-      toggleSearchVisible(true);
-      context.root.$router.push('/');
-    };
+    const goBack = () => context.root.$router.back();
 
     const { addItem, cart, isInCart, load } = useCart();
     const { bpp, provider } = context.root.$route.params;
@@ -160,8 +157,6 @@ export default {
     const { search, result } = useFacet();
     const { pollResults, poll, polling, stopPolling } = useOnSearch();
     console.log(bpp, provider);
-
-    toggleSearchVisible(false);
 
     onBeforeMount(async () => {
       await load();

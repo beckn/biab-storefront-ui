@@ -6,59 +6,18 @@
   <div class="header-container">
     <div class="fixed-head">
       <div class="fixed-head-height"></div>
-    <div class="header h-padding">
-      <nuxt-link :to="localePath('/')" >
-        <SfImage src="/icons/beckn.png" :width="63" :height="20" alt="Vue Storefront Next" class=""/>
-      </nuxt-link>
-      <SfIcon icon="more" color="green-primary" />
-    </div>
-    <LoadingBar :enable="enableLoadindBar && ['home','Product','cart'].includes($route.name)"/>
-    <div v-if="['home'].includes($route.name)" class="location-btn h-padding flexy">
-      <div v-if="isSearchOpen" class="icon-padding center-pos" @click="closeSearch">
-        <SfIcon color="var(--c-text)" size="20px" icon="chevron_left" />
+      <div class="header h-padding">
+        <nuxt-link :to="localePath('/')">
+          <SfImage src="/icons/beckn.png" :width="63" :height="20" alt="Vue Storefront Next" class="" />
+        </nuxt-link>
+        <SfIcon icon="more" color="green-primary" />
       </div>
-      <Location :isDisabled="!isSearchOpen" :class="{'disable-location' : isSearchOpen }" class="location-section v-center-pos" v-e2e="'app-header-location'" />
-    </div>
-    </div>
-    <div
-      v-if="isSearchOpen"
-      class="sf-header--has-mobile-search h-padding header-top-space"
-      :class="{'header-on-top': isSearchOpen}"
-    >
-      <div v-if="IsSearchVisible" class="search-bar">
-        <SfSearchBar
-          ref="searchBarRef"
-          :placeholder="$t('Search for items E.g. atta, milk')"
-          aria-label="Search"
-          class="sf-header__search be-search-location"
-          :value="term"
-          @input="onSearchChange"
-          @keydown.enter="handleSearch($event)"
-          @keydown.esc="closeSearch"
-          v-e2e="'app-header-search-box'"
-        >
-          <template #icon>
-            <SfButton
-              v-if="!!term"
-              class="sf-search-bar__button sf-button--pure"
-              @click="clearSearch"
-            >
-              <span class="sf-search-bar__icon">
-                <SfIcon color="var(--c-text)" size="20px" icon="cross" />
-              </span>
-            </SfButton>
-            <SfButton
-              v-else
-              class="sf-search-bar__button sf-button--pure"
-              @click="isSearchOpen ? isSearchOpen = false : isSearchOpen = true"
-            >
-              <span class="sf-search-bar__icon">
-                <SfIcon color="var(--c-text)" size="20px" icon="search" />
-              </span>
-            </SfButton>
-          </template>
-        </SfSearchBar>
-        <SearchResults :visible="isSearchOpen" :result="pollResults" :noSearchFound="noSearchFound" :enableLoader="enableloadingCircle" @removeSearchResults="removeSearchResults" />
+      <LoadingBar :enable="enableLoadindBar && ['Product','cart','Search'].includes($route.name)" />
+      <div v-if="['home','Search'].includes($route.name)" class="location-btn h-padding flexy">
+        <div v-if="['Search'].includes($route.name)" class="icon-padding circle-centre" @click="goBack">
+          <SfIcon color="var(--c-text)" size="20px" icon="chevron_left" />
+        </div>
+        <Location :isDisabled="false" :class="{'disable-location' : false }" class="location-section aline-center" v-e2e="'app-header-location'" />
       </div>
     </div>
   </div>
@@ -66,88 +25,46 @@
 
 <script>
 import {
-  SfHeader,
   SfImage,
   SfIcon,
-  SfButton,
-  SfBadge,
-  SfSearchBar,
-  SfOverlay,
-  SfMenuItem,
-  SfLink,
-  SfBottomModal,
-  SfCircleIcon
+  SfBottomModal
 } from '@storefront-ui/vue';
 import { useUiState } from '~/composables';
-import { useWishlist, useUser, useFacet, useOnSearch } from '@vue-storefront/beckn';
-import { computed, ref, onBeforeUnmount, watch } from '@vue/composition-api';
+import { useWishlist, useUser } from '@vue-storefront/beckn';
+import { computed, onBeforeUnmount } from '@vue/composition-api';
 import { onSSR } from '@vue-storefront/core';
 import { useUiHelpers } from '~/composables';
-import LocaleSelector from './LocaleSelector';
 import Location from './Location';
-import SearchResults from '~/components/SearchResults';
 import { clickOutside } from '@storefront-ui/vue/src/utilities/directives/click-outside/click-outside-directive.js';
-import {
-  mapMobileObserver,
-  unMapMobileObserver
-} from '@storefront-ui/vue/src/utilities/mobile-observer.js';
-import debounce from 'lodash.debounce';
+import { unMapMobileObserver } from '@storefront-ui/vue/src/utilities/mobile-observer.js';
 import LoadingBar from './LoadingBar';
 
 export default {
   components: {
-    SfHeader,
     SfImage,
-    LocaleSelector,
     SfIcon,
-    SfButton,
-    SfBadge,
-    SfSearchBar,
-    SearchResults,
-    SfOverlay,
-    SfMenuItem,
-    SfLink,
     SfBottomModal,
-    SfCircleIcon,
     Location,
     LoadingBar
-    // Product
   },
   directives: { clickOutside },
   setup(props, { root }) {
     const {
-      toggleCartSidebar,
-      toggleWishlistSidebar,
       toggleLoginModal,
-      searchString,
-      isSearchOpen,
-      toggleSearch,
-      changeSearchString,
-      IsSearchVisible, toggleSearchVisible,
-      toggleLocationVisible, isLocationVisible,
-      selectedLocation
+      enableLoadindBar
     } = useUiState();
-    // const { setTermForUrl } = useUiHelpers();
-    const { setTermForUrl} = useUiHelpers();
+    const { setTermForUrl } = useUiHelpers();
     const { isAuthenticated, load: loadUser } = useUser();
-    const { search, result } = useFacet();
-    const { pollResults, poll, polling, stopPolling } = useOnSearch();
     const { load: loadWishlist } = useWishlist();
-    const searchBarRef = ref(null);
-    const enableLoadindBar = ref(false);
-    const enableloadingCircle = ref(false);
-    const term = ref('');
-    const noSearchFound = ref(false);
 
     const accountIcon = computed(
       () => (isAuthenticated.value ? 'profile_fill' : 'profile')
     );
 
-    const onSearchChange = (data) => {
-      term.value = data;
+    const goBack = () => {
+      root.$router.back();
     };
 
-    // TODO: https://github.com/DivanteLtd/vue-storefront/issues/4927
     const handleAccountClick = async () => {
       if (isAuthenticated.value) {
         return root.$router.push('/my-account');
@@ -161,70 +78,6 @@ export default {
       await loadWishlist();
     });
 
-    const closeSearch = () => {
-      if (!isSearchOpen) return;
-
-      changeSearchString('');
-      if (enableloadingCircle.value) enableloadingCircle.value = false;
-      if (enableLoadindBar.value) enableLoadindBar.value = false;
-      toggleSearch();
-      stopPolling();
-    };
-
-    const handleSearch = debounce(async (paramValue) => {
-      if (paramValue?.target?.value) {
-        changeSearchString(paramValue.target.value);
-        return;
-      }
-      if (polling.value) stopPolling();
-      if (!enableloadingCircle.value) enableloadingCircle.value = true;
-      if (enableLoadindBar.value) enableLoadindBar.value = false;
-      await search({ term: paramValue, locationIs: selectedLocation?.value?.latitude + ',' + selectedLocation?.value?.longitude });
-      localStorage.setItem('transactionId', result.value.data.ackResponse.context.transaction_id);
-      watch(()=>pollResults.value, (newValue)=>{
-        if (newValue?.length > 0 && enableloadingCircle.value && !enableLoadindBar.value) {
-          enableloadingCircle.value = false;
-          enableLoadindBar.value = true;
-        }
-      });
-      // eslint-disable-next-line camelcase
-      await poll({message_id: result.value.data.ackResponse.context.message_id});
-      console.log('POLL', pollResults.value.length);
-
-      watch(()=>polling.value, (newValue)=>{
-        if (!newValue) {
-          enableloadingCircle.value = false;
-          enableLoadindBar.value = false;
-          if (pollResults?.value.length === 0) {
-            noSearchFound.value = true;
-          }
-        }
-      });
-
-      console.log('result value', pollResults.value);
-    }, 1000);
-
-    watch(searchString, (newVal)=>{
-      if (newVal !== '') {
-        term.value = newVal;
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        handleSearch(newVal);
-      }
-    });
-
-    const isMobile = computed(() => mapMobileObserver().isMobile.get());
-
-    const clearSearch = () => {
-      term.value = '';
-      changeSearchString('');
-      if (enableloadingCircle.value) enableloadingCircle.value = false;
-      if (noSearchFound.value) noSearchFound.value = false;
-    };
-
-    const removeSearchResults = () => {
-      pollResults.value = null;
-    };
-
     onBeforeUnmount(async () => {
       unMapMobileObserver();
     });
@@ -232,62 +85,20 @@ export default {
     return {
       accountIcon,
       handleAccountClick,
-      toggleCartSidebar,
-      toggleWishlistSidebar,
       setTermForUrl,
-      closeSearch,
-      handleSearch,
-      pollResults,
-      searchBarRef,
-      isMobile,
-      removeSearchResults,
-      clearSearch,
       LoadingBar,
       enableLoadindBar,
-      enableloadingCircle,
-      noSearchFound,
-      isSearchOpen,
-      searchString,
-      onSearchChange,
-      term,
-      IsSearchVisible,
-      toggleSearchVisible,
-      toggleLocationVisible,
-      isLocationVisible
+      goBack
     };
   }
 };
 </script>
 
 <style lang="scss" scoped>
-.sf-header {
-  --header-padding: var(--spacer-sm);
-  @include for-desktop {
-    --header-padding: 0;
-  }
-  &__logo-image {
-    height: 100%;
-  }
-}
 
-.center-pos{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.flexy{
-  display: flex;
-}
-
-.v-center-pos{
-  display: flex;
-  align-items: center;
-}
-
-.header-container{
+.header-container {
   background-color: #ffffff;
-  .header{
+  .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -295,43 +106,43 @@ export default {
     padding: 10px 0;
     border-bottom: 0.5px solid #f1f1f1;
   }
-  .h-padding{
+  .h-padding {
     padding-left: var(--spacer-sm);
     padding-right: var(--spacer-sm);
   }
-  .search-bar{
+  .search-bar {
     width: 100%;
     margin-top: 15px;
   }
 
-  .icon-padding{
+  .icon-padding {
     padding-right: 10px;
     cursor: pointer;
     .sf-icon {
-            --icon-color: #F37A20 !important;
-            width: 20px;
-            height: 20px;
-          }
+      --icon-color: #f37a20 !important;
+      width: 20px;
+      height: 20px;
+    }
   }
 
-  .location-btn{
-    color: #37474F;
+  .location-btn {
+    color: #37474f;
     padding: 13px 15px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.07);
     position: relative;
     // z-index: 99;
-    background-color: #FBFCFF;
-    .selected-location{
+    background-color: #fbfcff;
+    .selected-location {
       font-size: 13px;
       font-weight: 500;
     }
-    .location-text{
+    .location-text {
       font-size: 11px;
     }
   }
 }
 
-.sf-overlay{
+.sf-overlay {
   background: unset;
 }
 

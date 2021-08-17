@@ -5,8 +5,8 @@
         <h4>for All</h4>
         <p>A global marketplace to discover and buy anything you need. Just type what you want to buy and we'll take care of the rest.</p>
         <div class="open-search-input">
-        <input v-on:keyup.enter="openSearch" v-model="message" type="text" placeholder="Search for anything" :disabled="!selectedLocation.value.latitude || !selectedLocation.value.longitude"/>
-        <SfButton class="sf-search-bar__button sf-button--pure color-primary" :class="{'is-disabled--button':(!selectedLocation.value.latitude || !selectedLocation.value.longitude)}" @click="openSearch" :disabled="!selectedLocation.value.latitude || !selectedLocation.value.longitude">
+        <input v-on:keyup.enter="openSearch" v-model="message" type="text" placeholder="Search for anything" :disabled="!selectedLocation.latitude || !selectedLocation.longitude"/>
+        <SfButton class="sf-search-bar__button sf-button--pure color-primary" :class="{'is-disabled--button':(!selectedLocation.latitude || !selectedLocation.longitude)}" @click="openSearch" :disabled="!selectedLocation.latitude || !selectedLocation.longitude">
             <span class="sf-search-bar__icon">
             <SfIcon color="var(--c-text)" size="18px" icon="search" />
             </span>
@@ -29,7 +29,9 @@ import {
 } from '@storefront-ui/vue';
 import { useUiState } from '~/composables';
 import { SfFooter } from '@storefront-ui/vue';
-const { toggleSearch, changeSearchString, selectedLocation, toggleSearchVisible } = useUiState();
+import { ref } from '@vue/composition-api';
+
+const { changeSearchString, selectedLocation } = useUiState();
 
 export default {
   components: {
@@ -37,18 +39,22 @@ export default {
     SfIcon,
     SfFooter
   },
-  data() {
-    return {
-      message: '',
-      selectedLocation
+
+  setup(_, context) {
+    const message = ref('');
+
+    console.log(selectedLocation);
+
+    const openSearch = () => {
+      changeSearchString(message.value);
+      context.root.$router.push('/search');
     };
-  },
-  methods: {
-    openSearch() {
-      changeSearchString(this.message);
-      toggleSearch(true);
-      toggleSearchVisible(true);
-    }
+
+    return {
+      selectedLocation,
+      message,
+      openSearch
+    };
   }
 };
 </script>

@@ -18,7 +18,8 @@ const state = reactive({
     longitude: '',
     address: ''
   },
-  clearCartPopup: false
+  clearCartPopup: false,
+  enableLoadindBar: false
 });
 
 const useUiState = () => {
@@ -76,6 +77,11 @@ const useUiState = () => {
     state.clearCartPopup = value;
   };
 
+  const enableLoadindBar = computed(() => state.enableLoadindBar);
+  const toggleLoadindBar = (value = !state.enableLoadindBar) => {
+    state.enableLoadindBar = value;
+  };
+
   return {
     isCartSidebarOpen,
     isWishlistSidebarOpen,
@@ -87,6 +93,7 @@ const useUiState = () => {
     IsSearchVisible,
     selectedLocation,
     clearCartPopup,
+    enableLoadindBar,
     toggleCartSidebar,
     toggleWishlistSidebar,
     toggleLoginModal,
@@ -97,7 +104,8 @@ const useUiState = () => {
     changeSearchString,
     toggleSearchVisible,
     updateLocation,
-    changeClearCart
+    changeClearCart,
+    toggleLoadindBar
   };
 };
 
