@@ -72,6 +72,12 @@ body{
     align-items: center;
 }
 
+.sf-search-bar__button {
+    position: absolute;
+    bottom: var(--spacer-xs);
+    right: var(--search-bar-button-right, 0);
+}
+
 .just-center{
     display: flex;
     justify-content: center;
