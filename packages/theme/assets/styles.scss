@@ -81,11 +81,6 @@ body{
     display: flex;
 }
 
-.button-pos {
-    position: absolute;
-    bottom: var(--spacer-xs);
-    right: var(--search-bar-button-right, 0);
-}
 
 .w-100 {
     width: 100%;
