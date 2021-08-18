@@ -95,6 +95,7 @@ export default {
 <style lang="scss" scoped>
 .button-pos {
   position: absolute;
-
+  right: 0;
+  top: 0;
 }
 </style>
