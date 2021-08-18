@@ -18,7 +18,7 @@
           v-e2e="'app-location-sidebar-input'"
         />
          <SfButton
-                  class="sf-search-bar__button button-pos sf-button--pure"
+                  class="button-pos sf-button--pure"
                   >
                   <span class="sf-search-bar__icon">
                     <SfIcon color="var(--c-text)" size="18px" icon="search" />
@@ -28,7 +28,7 @@
         <ul class="location-list">
           <li v-for="(result, i) in searchResults" :key="i" @click="getLocationDetails(result)" v-e2e="'app-location-sidebar-input-options-'+i" >
             <SfButton
-              class="sf-search-bar__button button-pos sf-button--pure pos-left"
+              class="button-pos sf-button--pure pos-left"
             >
               <span class="sf-search-bar__icon">
                 <SfIcon color="var(--c-text)" size="10px" icon="marker" />
@@ -92,3 +92,9 @@ export default {
   }
 };
 </script>
+<style lang="scss" scoped>
+.button-pos {
+  position: absolute;
+
+}
+</style>
