@@ -23,7 +23,6 @@
                 aria-label="Select Location"
                 class="
                   sf-header__search
-                  be-search-location
                   sf-search-bar
                   sf-header__search
                   be-search-location

@@ -224,6 +224,7 @@ body{
         margin-right: 6px;
     }
     input{
+        box-sizing:border-box;
         //border-bottom: 2px solid $primary-color;
         font-size: 12px;
         font-weight: 500;
