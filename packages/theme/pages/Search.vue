@@ -3,12 +3,12 @@
     <div class="search-bar side-padding">
       <SfSearchBar placeholder="Search for items" aria-label="Search" :icon="null" :value="searchKey" @input="(value) => (searchKey = value)" @keydown.enter="searchHit($event)">
         <template #icon>
-          <SfButton v-if="searchKey" class="button-pos sf-button--pure" @click="clearSearch">
+          <SfButton v-if="searchKey" class="sf-search-bar__button sf-button--pure" @click="clearSearch">
             <span class="sf-search-bar__icon">
               <SfIcon color="var(--c-text)" size="20px" icon="cross" />
             </span>
           </SfButton>
-          <SfButton v-else class="button-pos sf-button--pure" @click="
+          <SfButton v-else class="sf-search-bar__button sf-button--pure" @click="
               isSearchOpen ? (isSearchOpen = false) : (isSearchOpen = true)
             ">
             <span class="sf-search-bar__icon">
@@ -317,8 +317,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.button-pos{
-  position: absolute;
-}
 
 </style>

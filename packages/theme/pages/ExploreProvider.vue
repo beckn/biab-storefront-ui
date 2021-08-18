@@ -47,7 +47,7 @@
         <template #icon>
           <SfButton
             v-if="searchKey"
-            class="button-pos sf-button--pure"
+            class="sf-search-bar__button sf-button--pure"
             @click="clearSearch"
           >
             <span class="sf-search-bar__icon">
@@ -56,7 +56,7 @@
           </SfButton>
           <SfButton
             v-else
-            class="button-pos sf-button--pure"
+            class="sf-search-bar__button sf-button--pure"
             @click="
               isSearchOpen ? (isSearchOpen = false) : (isSearchOpen = true)
             "
@@ -264,9 +264,6 @@ export default {
 <style lang="scss" scoped>
 .explore-page {
   height: calc(100vh - 45px);
-  .button-pos{
-    position: absolute;
-  }
   .flexy {
     display: flex;
   }
