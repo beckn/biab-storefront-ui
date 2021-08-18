@@ -33,7 +33,7 @@
               />
               <template>
                 <SfButton
-                  class="sf-search-bar__button button-pos sf-button--pure"
+                  class="button-pos sf-button--pure"
                   >
                   <span class="sf-search-bar__icon">
                     <SfIcon color="var(--c-text)" size="18px" icon="chevron_down" />
@@ -142,5 +142,9 @@ export default {
 .notShown {
   visibility: hidden !important;
   position: absolute;
+}
+.button-pos{
+  position: absolute;
+  right: 0;
 }
 </style>
