@@ -1,26 +1,27 @@
 <template>
-<div>
+  <div>
     <div class="open-search header-top-space">
-        <h3>Open <br /> Commerce</h3>
-        <h4>for All</h4>
-        <p>A global marketplace to discover and buy anything you need. Just type what you want to buy and we'll take care of the rest.</p>
-        <div class="open-search-input">
-        <input v-on:keyup.enter="openSearch" v-model="message" type="text" placeholder="Search for anything" :disabled="!selectedLocation.latitude || !selectedLocation.longitude"/>
+      <h3>Open <br /> Commerce</h3>
+      <h4>for All</h4>
+      <p>A global marketplace to discover and buy anything you need. Just type what you want to buy and we'll take care of the rest.</p>
+      <div class="open-search-input">
+        <input v-on:keyup.enter="openSearch" v-model="message" :valid="false" errorMessage="errer" type="text" placeholder="Search for anything" :disabled="!selectedLocation.latitude || !selectedLocation.longitude" />
         <SfButton class="button-pos sf-button--pure color-primary" :class="{'is-disabled--button':(!selectedLocation.latitude || !selectedLocation.longitude)}" @click="openSearch" :disabled="!selectedLocation.latitude || !selectedLocation.longitude">
-            <span class="sf-search-bar__icon">
+          <span class="sf-search-bar__icon">
             <SfIcon color="var(--c-text)" size="18px" icon="search" />
-            </span>
+          </span>
         </SfButton>
-        </div>
+      </div>
+      <div v-if="errorMsg" class="error-msg">Please fill out this field.</div>
     </div>
 
     <div class="sf-footer">
       <SfFooter class="footer">
-    <!-- <p><span>By</span> <img src="../assets/images/p-b-phonepe.png" alt="" /> </p> -->
-    <p><span class="powered-by">Powered by</span> <img src="../assets/images/beckn-logo.png" alt="" /> </p>
-  </SfFooter>
+        <!-- <p><span>By</span> <img src="../assets/images/p-b-phonepe.png" alt="" /> </p> -->
+        <p><span class="powered-by">Powered by</span> <img src="../assets/images/beckn-logo.png" alt="" /> </p>
+      </SfFooter>
     </div>
-    </div>
+  </div>
 </template>
 <script>
 import {
@@ -42,17 +43,24 @@ export default {
 
   setup(_, context) {
     const message = ref('');
+    const errorMsg = ref(false);
 
     console.log(selectedLocation);
 
     const openSearch = () => {
-      changeSearchString(message.value);
-      context.root.$router.push('/search');
+      if (message.value) {
+        if (errorMsg.value) errorMsg.value = false;
+        changeSearchString(message.value);
+        context.root.$router.push('/search');
+      } else {
+        errorMsg.value = true;
+      }
     };
 
     return {
       selectedLocation,
       message,
+      errorMsg,
       openSearch
     };
   }
@@ -63,95 +71,99 @@ export default {
 // .header-top-space{
 //   top: 107px;
 // }
-.open-search{
-    @media (min-width: 560px) {
-        padding-top: 40px;
-        width: 50%;
-        margin: auto;
-    }
-        padding: 40px 20px;
-    h3{
-        font-size: 40px;
-        font-weight: 800;
-        color: #F37A20;
-        line-height: 45px;
-    }
-    h4{
-      font-size: 27px;
-      font-weight: 800;
-      line-height: 30px;
-    }
-    p{
-      font-size: 15px;
-      font-weight: 400;
-      line-height: 20px;
-      color: #7C7C7C;
-      margin-bottom: 30px;
-    }
-    .open-search-input{
-          display: flex;
-      margin-bottom: 40px;
-      position: relative;
-      &.disable{
-        input{
-          border: 1px solid #fff;
-        }
-        button{
-          background: #bfbfbf;
-          .sf-icon{
-            --icon-color: #fff !important;
-          }
-        }
+.open-search {
+  @media (min-width: 560px) {
+    padding-top: 40px;
+    width: 50%;
+    margin: auto;
+  }
+  padding: 40px 20px;
+  h3 {
+    font-size: 40px;
+    font-weight: 800;
+    color: #f37a20;
+    line-height: 45px;
+  }
+  h4 {
+    font-size: 27px;
+    font-weight: 800;
+    line-height: 30px;
+  }
+  p {
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 20px;
+    color: #7c7c7c;
+    margin-bottom: 30px;
+  }
+  .open-search-input {
+    display: flex;
+    margin-bottom: 8px;
+    position: relative;
+    &.disable {
+      input {
+        border: 1px solid #fff;
       }
-      input{
-        box-shadow: 0px 10px 24px rgba(0, 0, 0, 0.1);
-        border-radius: 6px;
-        border: 1px solid transparent;
-        padding: 22px 10px;
-        width: calc(100% - 22px);
-        font-size: 15px;
-        font-weight: 700;
-        &::placeholder{
-          font-size: 14px;
-          line-height: 17px;
-          color: #DBDBDC;
-        }
-        &:focus{
-          border: 1px solid #F37A20 !important;
-        }
-      }
-      button{
-        position: absolute;
-        padding: 17px;
-        height: 63px;
-        top: 0;
-        // background: #F37A20;
-        border-top-right-radius: 6px;
-        border-bottom-right-radius: 6px;
-        right: 0;
-        .sf-icon{
+      button {
+        background: #bfbfbf;
+        .sf-icon {
           --icon-color: #fff !important;
         }
       }
     }
+    input {
+      box-shadow: 0px 10px 24px rgba(0, 0, 0, 0.1);
+      border-radius: 6px;
+      border: 1px solid transparent;
+      padding: 22px 10px;
+      width: calc(100% - 22px);
+      font-size: 15px;
+      font-weight: 700;
+      &::placeholder {
+        font-size: 14px;
+        line-height: 17px;
+        color: #dbdbdc;
+      }
+      &:focus {
+        border: 1px solid #f37a20 !important;
+      }
+    }
+    button {
+      position: absolute;
+      padding: 17px;
+      height: 63px;
+      top: 0;
+      // background: #F37A20;
+      border-top-right-radius: 6px;
+      border-bottom-right-radius: 6px;
+      right: 0;
+      .sf-icon {
+        --icon-color: #fff !important;
+      }
+    }
+  }
+  .error-msg {
+    font-size: 14px;
+    color: #d12727;
+  }
 }
 .sf-footer {
   text-align: center;
-  background: #FBFCFF !important;
+  background: #fbfcff !important;
   position: fixed;
-    bottom: 0px;
-    width: 100%;
-    padding: 0;
-  p{
+  bottom: 0px;
+  width: 100%;
+  padding: 0;
+  p {
     margin: 0;
-    span{
+    span {
       font-size: 17px;
       position: relative;
       top: -6px;
-        &.powered-by{
-          font-size: 10px;
-          top: -1px !important;
-        }
+      &.powered-by {
+        font-size: 10px;
+        top: -1px !important;
+      }
     }
   }
 }
