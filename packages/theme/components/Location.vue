@@ -33,7 +33,7 @@
               />
               <template>
                 <SfButton
-                  class="sf-search-bar__button sf-button--pure"
+                  class="sf-search-bar__button button-pos sf-button--pure"
                   >
                   <span class="sf-search-bar__icon">
                     <SfIcon color="var(--c-text)" size="18px" icon="chevron_down" />

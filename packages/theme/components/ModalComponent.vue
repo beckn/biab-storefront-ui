@@ -26,14 +26,14 @@
               />
               <template class="position-relative">
                 <SfButton
-                  class="sf-search-bar__button sf-button--pure"
+                  class="sf-search-bar__button button-pos sf-button--pure"
                 >
                   <span class="sf-search-bar__icon">
                     <SfIcon color="var(--c-text)" size="18px" icon="search" />
                   </span>
                 </SfButton>
                 <SfButton
-                  class="sf-search-bar__button sf-button--pure pos-left"
+                  class="sf-search-bar__button button-pos sf-button--pure pos-left"
                 >
                   <span class="sf-search-bar__icon">
                     <SfIcon color="var(--c-text)" size="20px" icon="marker" />
