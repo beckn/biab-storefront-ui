@@ -119,12 +119,4 @@ h4 {
   margin: 0;
 }
 
-.sf-search-bar {
-    &__button{
-        position: absolute;
-        bottom: var(--spacer-xs);
-        right: var(--search-bar-button-right, 0);
-    }
-}
-
 </style>

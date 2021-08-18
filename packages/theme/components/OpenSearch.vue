@@ -6,7 +6,7 @@
         <p>A global marketplace to discover and buy anything you need. Just type what you want to buy and we'll take care of the rest.</p>
         <div class="open-search-input">
         <input v-on:keyup.enter="openSearch" v-model="message" type="text" placeholder="Search for anything" :disabled="!selectedLocation.latitude || !selectedLocation.longitude"/>
-        <SfButton class="sf-search-bar__button sf-button--pure color-primary" :class="{'is-disabled--button':(!selectedLocation.latitude || !selectedLocation.longitude)}" @click="openSearch" :disabled="!selectedLocation.latitude || !selectedLocation.longitude">
+        <SfButton class="sf-search-bar__button button-pos sf-button--pure color-primary" :class="{'is-disabled--button':(!selectedLocation.latitude || !selectedLocation.longitude)}" @click="openSearch" :disabled="!selectedLocation.latitude || !selectedLocation.longitude">
             <span class="sf-search-bar__icon">
             <SfIcon color="var(--c-text)" size="18px" icon="search" />
             </span>
