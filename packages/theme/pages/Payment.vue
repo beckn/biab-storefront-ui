@@ -99,7 +99,7 @@ export default {
     });
 
     const { clear } = useCart();
-    const { init, poll, pollResults } = useConfirmOrder();
+    const { init, poll, pollResults } = useConfirmOrder('confirm-order');
 
     const changePaymentMethod = (value) => {
       paymentMethod.value = value;

@@ -1,4 +1,4 @@
-import { vsfRef, Context, Logger, configureFactoryParams, sharedRef, FactoryParams } from '@vue-storefront/core';
+import { Context, Logger, configureFactoryParams, sharedRef, FactoryParams } from '@vue-storefront/core';
 import { computed, Ref } from '@vue/composition-api';
 
 // const usePoller = () => {
@@ -25,9 +25,9 @@ const usePollerFactory = (factoryParams: UsePollerFactoryParams) => {
 
   const usePoller = (id?: string) => {
     const ssrKey = id || 'usePoller';
-    const polling: Ref<boolean> = vsfRef(false, `${ssrKey}-loading`);
-    const pollFunction = vsfRef({ interval: null, timeout: null }, `${ssrKey}-func`);
-    const pollResults = vsfRef(null, `${ssrKey}-Pollers`);
+    const polling: Ref<boolean> = sharedRef(false, `${ssrKey}-loading`);
+    const pollFunction = sharedRef({ interval: null, timeout: null }, `${ssrKey}-func`);
+    const pollResults = sharedRef(null, `${ssrKey}-Pollers`);
     const _factoryParams = configureFactoryParams(factoryParams);
     const error = sharedRef({
       poll: null

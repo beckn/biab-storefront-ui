@@ -178,7 +178,7 @@ export default {
   },
   setup(_, { root }) {
     const { cart, addItem, load, setCart } = useCart();
-    const { init, poll, pollResults, stopPolling } = useQuote();
+    const { init, poll, pollResults, stopPolling } = useQuote('cart');
     const openModal = ref(false);
     const modelOpenIndex = ref(-1);
     const itemNumber = ref(null);

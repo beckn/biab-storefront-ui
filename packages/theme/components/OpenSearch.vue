@@ -32,7 +32,7 @@ import { useUiState } from '~/composables';
 import { SfFooter } from '@storefront-ui/vue';
 import { ref } from '@vue/composition-api';
 
-const { changeSearchString, selectedLocation } = useUiState();
+const { selectedLocation } = useUiState();
 
 export default {
   components: {
@@ -50,8 +50,12 @@ export default {
     const openSearch = () => {
       if (message.value) {
         if (errorMsg.value) errorMsg.value = false;
-        changeSearchString(message.value);
-        context.root.$router.push('/search');
+        context.root.$router.push({
+          name: 'Search',
+          params: {
+            searchKey: message.value
+          }
+        });
       } else {
         errorMsg.value = true;
       }

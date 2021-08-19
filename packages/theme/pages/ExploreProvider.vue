@@ -142,20 +142,20 @@ export default {
     Footer
   },
   setup(_, context) {
-    const { searchString, selectedLocation } =
+    const { selectedLocation } =
       useUiState();
     const enableLoader = ref(false);
     const goBack = () => context.root.$router.back();
 
     const { addItem, cart, isInCart, load } = useCart();
-    const { bpp, provider } = context.root.$route.params;
-    const searchKey = ref(searchString.value);
-    const setSearchKey = ref(searchString.value);
+    const { bpp, provider, searchValue } = context.root.$route.params;
+    const searchKey = ref(searchValue);
+    const setSearchKey = ref(searchValue);
     const itemList = ref(provider.items);
     const keyVal = ref(0);
     const expAll = ref(false);
     const { search, result } = useFacet();
-    const { pollResults, poll, polling, stopPolling } = useOnSearch();
+    const { pollResults, poll, polling, stopPolling } = useOnSearch('search-by-provider');
     console.log(bpp, provider);
 
     onBeforeMount(async () => {
