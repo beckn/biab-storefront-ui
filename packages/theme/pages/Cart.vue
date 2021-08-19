@@ -118,16 +118,20 @@
           <SfInput
             v-model="itemNumber"
             type="number"
+            :valid="validInput"
             label="Enter Quantity"
             name="locality"
-            @change="() => {}"
+            errorMessage="Maximum limit on cart quantity is 10."
+           @input="onChangeInput"
           />
         </div>
         <SfButton
           class="add-quantity"
+          :class="{'is-disabled--button':!validInput}"
           aria-label="Close modal"
           type="button"
           @click="addQuantity"
+          :disabled="!validInput"
           style="width: 100%"
           >Add quantity</SfButton
         >
@@ -184,6 +188,7 @@ export default {
     const errUpdateCount = ref(false);
     const errPricechange = ref(false);
     const enableLoader = ref(true);
+    const validInput = ref(true);
 
     toggleSearchVisible(false);
 
@@ -286,8 +291,10 @@ export default {
     };
 
     const addQuantity = () => {
-      updateItemCount(Number(itemNumber.value), modelOpenIndex.value);
-      toggleModal();
+      if (validInput.value) {
+        updateItemCount(Number(itemNumber.value), modelOpenIndex.value);
+        toggleModal();
+      }
     };
 
     const goBack = () => {
@@ -314,6 +321,11 @@ export default {
       await matchQuote();
     });
 
+    const onChangeInput = (value) => {
+      if (value < 10) validInput.value = true;
+      else validInput.value = false;
+    };
+
     return {
       cartGetters,
       cart,
@@ -328,7 +340,9 @@ export default {
       errUpdateCount,
       errPricechange,
       enableLoader,
-      updateAll
+      updateAll,
+      validInput,
+      onChangeInput
     };
   }
 };

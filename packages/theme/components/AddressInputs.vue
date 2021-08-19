@@ -4,17 +4,16 @@
     <div><hr class="sf-divider" /></div>
     <div class="address-inputs-container">
       <SfInput
-        :valid="valid.name"
-        :errorMessage="'Please enter a valid name'"
+        :valid="!validateInput('Name')"
+        :errorMessage="validateInput('Name')"
         v-model="address.name"
         :type="'text'"
         :label="'Name'"
         :name="'Name'"
-        @input="validateName"
       />
       <SfInput
-        :valid="valid.mobile"
-        :errorMessage="'Please enter a valid mobile'"
+        :valid="!validateInput('mobile')"
+        :errorMessage="validateInput('mobile')"
         v-model="address.mobile"
         :type="'number'"
         :label="'Mobile Number'"
@@ -22,25 +21,18 @@
         maxlength="10"
         autocomplete="tel"
         :name="'mobile'"
-        @input="validateMobile"
       />
       <SfInput
-        :valid="valid.address"
-        :errorMessage="'Please enter a valid address'"
         v-model="address.address"
         :type="'text'"
         :label="'Complete Address'"
         :name="'address'"
-        @input="validateAddress"
       />
       <SfInput
-        :valid="valid.building"
-        :errorMessage="'Please enter a valid building'"
         v-model="address.building"
         :type="'text'"
         :label="'Building Name Floor'"
         :name="'building'"
-        @input="validateBuilding"
       />
       <SfInput
         v-model="address.pincode"
@@ -51,9 +43,8 @@
         pattern="[0-9]{6}"
         :label="'Pincode'"
         :name="'Pincode'"
-        :valid="valid.pincode"
-        :errorMessage="'Please enter a valid pincode'"
-        @input="validatePincode"
+        :valid="!validateInput('Pincode')"
+        :errorMessage="validateInput('Pincode')"
       />
       <SfInput
         v-model="address.landmark"
@@ -114,42 +105,66 @@ export default {
       building: false
     });
 
-    const validateName = () => {
-      if (address.value.name.length > 3) {
-        valid.value.name = true;
-      } else {
-        valid.value.name = false;
-      }
-    };
-    const validateMobile = () => {
+    // const validateName = () => {
+    //   if (address.value.name.length > 3) {
+    //     valid.value.name = true;
+    //   } else {
+    //     valid.value.name = false;
+    //   }
+    // };
+    // const validateMobile = () => {
+    //   const re = /^[0-9\b]+$/;
+    //   if (re.test(address.value.mobile) && address.value.mobile.length === 10) {
+    //     valid.value.mobile = true;
+    //   } else {
+    //     valid.value.mobile = false;
+    //   }
+    // };
+    // const validateAddress = () => {
+    //   if (address.value.address.length > 5) {
+    //     valid.value.address = true;
+    //   } else {
+    //     valid.value.address = false;
+    //   }
+    // };
+    // const validateBuilding = () => {
+    //   if (address.value.building.length > 5) {
+    //     valid.value.building = true;
+    //   } else {
+    //     valid.value.building = false;
+    //   }
+    // };
+    // const validatePincode = () => {
+    //   const re = /^[0-9\b]+$/;
+    //   if (re.test(address.value.pincode) && address.value.pincode.length === 6) {
+    //     valid.value.pincode = true;
+    //   } else {
+    //     valid.value.pincode = false;
+    //   }
+    // };
+
+    const validateInput = (field) => {
       const re = /^[0-9\b]+$/;
-      if (re.test(address.value.mobile) && address.value.mobile.length === 10) {
-        valid.value.mobile = true;
-      } else {
-        valid.value.mobile = false;
+      switch (field) {
+        case 'Name':
+          if (address.value.name && address.value.name.length < 4) {
+            return 'Please enter a valid name';
+          }
+          break;
+        case 'mobile':
+          if (address.value.mobile && (!re.test(address.value.mobile) || address.value.mobile.length !== 10)) {
+            return 'Please enter a valid mobile';
+          }
+          break;
+        case 'Pincode':
+          if (address.value.pincode && (!re.test(address.value.pincode) || address.value.pincode.length !== 6)) {
+            return 'Please enter a valid pincode';
+          }
+          break;
+        default:
+          break;
       }
-    };
-    const validateAddress = () => {
-      if (address.value.address.length > 5) {
-        valid.value.address = true;
-      } else {
-        valid.value.address = false;
-      }
-    };
-    const validateBuilding = () => {
-      if (address.value.building.length > 5) {
-        valid.value.building = true;
-      } else {
-        valid.value.building = false;
-      }
-    };
-    const validatePincode = () => {
-      const re = /^[0-9\b]+$/;
-      if (re.test(address.value.pincode) && address.value.pincode.length === 6) {
-        valid.value.pincode = true;
-      } else {
-        valid.value.pincode = false;
-      }
+      return '';
     };
 
     const isFieldsValid = computed(() =>{
@@ -161,21 +176,12 @@ export default {
       emit('getAddress', isFieldsValid.value);
     };
 
-    validateName();
-    validateMobile();
-    validateAddress();
-    validatePincode();
-    validateBuilding();
     return {
       address,
       saveDetails,
       valid,
-      validateName,
-      validateMobile,
       isFieldsValid,
-      validateAddress,
-      validatePincode,
-      validateBuilding
+      validateInput
     };
   }
 };
