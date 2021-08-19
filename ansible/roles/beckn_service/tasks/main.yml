@@ -31,4 +31,4 @@
     backup: yes
 
 - name: Cleanup older docker images
-  ansible.builtin.shell: 'docker image prune --all --force --filter until=$(date "--date=`date` -2 DAY" +%Y-%m-%dT%H:%m)'
+  ansible.builtin.shell: 'docker image prune --all --force --filter until=$(date "--date=`date` -1 DAY" +%Y-%m-%dT%H:%m)'
