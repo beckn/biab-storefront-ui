@@ -115,7 +115,7 @@
         </CardContent>
       </Card>
 
-      <div class="sub-heading">
+      <div v-if="isShippingAddressFilled" class="sub-heading">
         <div class="p-name">Billing</div>
         <SfButton
           v-if="isBillingAddressFilled || !shippingAsBilling"
@@ -125,7 +125,7 @@
           <div class="color-def">Change</div>
         </SfButton>
       </div>
-      <Card class="card-checkbox">
+      <Card v-if="isShippingAddressFilled" class="card-checkbox">
         <CardContent>
           <div class="address-bar-icon">
             <SfCheckbox
@@ -271,7 +271,7 @@ export default {
   setup(_, context) {
     // const isThankYou = computed(() => currentStep.value === 'thank-you');
 
-    const shippingAsBilling = ref(false);
+    const shippingAsBilling = ref(true);
     const shippingAddressModal = ref(false);
     const billingAddressModal = ref(false);
     const enableLoader = ref(false);
@@ -296,7 +296,7 @@ export default {
       setBillingAddress,
       setShippingAddress
     } = useAddress();
-
+    console.log(getShippingAddress());
     const shippingAddress = ref(getShippingAddress());
 
     const billingAddress = ref(getBillngAddress());
@@ -308,8 +308,7 @@ export default {
         shippingAddress.value.name !== '' &&
         shippingAddress.value.mobile !== '' &&
         shippingAddress.value.building !== '' &&
-        shippingAddress.value.address !== '' &&
-        shippingAddress.value.valid
+        shippingAddress.value.address !== ''
       );
     });
     const isBillingAddressFilled = computed(() => {
@@ -317,8 +316,7 @@ export default {
         billingAddress.value.name !== '' &&
         billingAddress.value.mobile !== '' &&
         billingAddress.value.building !== '' &&
-        billingAddress.value.address !== '' &&
-        billingAddress.value.valid
+        billingAddress.value.address !== ''
       );
     });
 
