@@ -123,10 +123,12 @@ export default {
     };
 
     const { addItem, cart, isInCart, load } = useCart();
-    const searchKey = ref(searchString.value);
+    const data = context.root.$route.params.searchKey;
+    console.log(data);
+    const searchKey = ref(data);
     const keyVal = ref(0);
     const { search, result } = useFacet();
-    const { pollResults, poll, polling, stopPolling } = useOnSearch();
+    const { pollResults, poll, polling, stopPolling } = useOnSearch('search');
     const noSearchFound = ref(false);
 
     console.log(cart);
@@ -285,7 +287,8 @@ export default {
             // eslint-disable-next-line camelcase
             bpp_id: bpp.bpp_id
           },
-          provider
+          provider,
+          searchValue: searchKey.value
         }
       });
     };
