@@ -166,9 +166,26 @@
         </CardContent>
       </Card>
 
-      <!-- <div class="sub-heading">
+      <div class="sub-heading">
         <div class="p-name">Order Policy</div>
-      </div> -->
+      </div>
+      <Card>
+        <template>
+          <CardContent
+            v-for="policyObj in policy"
+            :key="policyObj.id"
+            class="flex-space-bw"
+          >
+            <div class="address-text">{{ policyObj.descriptor.name }}</div>
+            <div class="address-text">{{ policyObj.descriptor.code }}</div>
+          </CardContent>
+          <!-- <div><hr class="sf-divider divider" /></div>
+          <CardContent class="flex-space-bw">
+            <div class="address-text bold">Total</div>
+            <div class="address-text bold">₹{{ cart.quote.price.value }}</div>
+          </CardContent> -->
+        </template>
+      </Card>
     </div>
     <Footer
       class="footer-fixed"
@@ -213,6 +230,10 @@
         @getAddress="toggleBillingModal"
       />
     </ModalSlide>
+
+    <!-- <ModalSlide :visible="billingAddressModal" @close="toggleBillingModal">
+
+    </ModalSlide> -->
   </div>
 </template>
 <script>
@@ -247,6 +268,7 @@ import CardContent from '~/components/CardContent.vue';
 import ProductCard from '~/components/ProductCard';
 import AddressCard from '~/components/AddressCard';
 import { createOrderRequest } from '../helpers/helpers';
+/* eslint camelcase: 0 */
 
 export default {
   name: 'Checkout',
@@ -276,6 +298,31 @@ export default {
     const billingAddressModal = ref(false);
     const enableLoader = ref(false);
 
+    const policy = ref([
+      {
+        descriptor: {
+          code: 'Cancellable within a day',
+
+          long_desc:
+            'However if there is a delay in delivery and you would like to cancel the order after a day of placing the order then please contact the customer support.',
+          name: 'Cancellation Policy',
+          short_desc:
+            'This item is cancellable with a day of the order being placed.'
+        },
+        id: '1'
+      },
+      {
+        descriptor: {
+          code: 'Non-Returnable',
+          long_desc:
+            'However, in the unlikely event of damaged, defective or different/wrong item delivered to you, we will provide a full refund or free replacement as applicable. We may contact you to ascertain the damage or defect in the product prior to issuing refund/replacement.',
+          name: 'Return Policy',
+          short_desc:
+            'This item is non-returnable due to the consumable nature of the product.'
+        },
+        id: '2'
+      }
+    ]);
     // const billingAddressModal = ref(false);
 
     const { cart, load } = useCart();
@@ -416,7 +463,8 @@ export default {
       cart,
       proceedToPay,
       enableLoader,
-      initOrder
+      initOrder,
+      policy
     };
   }
 };

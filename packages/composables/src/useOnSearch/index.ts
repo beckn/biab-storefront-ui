@@ -9,17 +9,6 @@ const factoryParams = {
     params = params.params;
     const ackResponse: AckResponse = await context.$beckn.api.onSearch(params);
     return ackResponse;
-    // const catalogs: Array<any> = (ackResponse.message as any)?.catalogs ?? null;
-    // if (catalogs) {
-    //   const oldCodes = pollResults.map((obj) => {
-    //     return obj.bpp_descriptor.code;
-    //   });
-    //   const data = catalogs.filter((bpp) => {
-    //     return !(oldCodes.includes(bpp.bpp_descriptor.code));
-    //   });
-    //   return data;
-    // }
-    // return [];
   },
 
   dataHandler: (_, { oldResults, newResults }) => {

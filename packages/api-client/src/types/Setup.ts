@@ -7,6 +7,12 @@ export interface ApiEndpoints {
   onInitializeOrder: string,
   confirmOrder: string,
   onConfirmOrder: string,
+  cancel: string,
+  onCancel: string,
+  orderStatus: string,
+  onOrderStatus: string,
+  track: string,
+  onTrack: string,
 }
 
 export interface ApiConfig {

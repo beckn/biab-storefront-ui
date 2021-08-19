@@ -7,6 +7,12 @@
         </span>
       </div>
       <div class="header-push">Order Details</div>
+      <SfButton
+        class="sf-button--pure top-button"
+        @click="callTrack"
+      >
+        <div class="color-def">Track Order</div>
+      </SfButton>
     </div>
 
     <div v-if="enableLoader" key="loadingCircle" class="loader-circle">
@@ -100,7 +106,8 @@
             <CardContent v-if="order.shippingAsBilling" class="flex-space-bw">
               <div class="address-text">Same as Shipping Details</div>
             </CardContent>
-            <AddressCard v-else
+            <AddressCard
+              v-else
               :name="order.billingAddress.name"
               :address="order.billingAddress.address"
               :mobile="order.billingAddress.mobile"
@@ -249,7 +256,10 @@
           </div>
         </div>
       </div>
-      <button class="sf-button color-primary support-btns" @click="openSupportModal = true" >
+      <button
+        class="sf-button color-primary support-btns"
+        @click="openSupportModal = true"
+      >
         <div class="f-btn-text">Contact Support</div>
         <img class="btn-img" src="/icons/support.svg" />
       </button>
@@ -261,13 +271,51 @@
         <div><hr class="sf-divider" /></div>
         <div class="modal-body">
           <div class="support-text">
-            You can reach out to one of our customer
-            support executives for any help, queries
-            or feedback to {{providerGetters.getProviderName(cartGetters.getBppProvider(order.cart))}}
+            You can reach out to one of our customer support executives for any
+            help, queries or feedback to
+            {{
+              providerGetters.getProviderName(
+                cartGetters.getBppProvider(order.cart)
+              )
+            }}
           </div>
-          <SfButton class="support-btns" aria-label="Close modal" type="button">Call us</SfButton>
-          <SfButton class="support-btns" aria-label="Close modal" type="button">Email us</SfButton>
-          <SfButton class="support-btns" aria-label="Close modal" type="button">Chat with us</SfButton>
+          <SfButton class="support-btns" aria-label="Close modal" type="button"
+            >Call us</SfButton
+          >
+          <SfButton class="support-btns" aria-label="Close modal" type="button"
+            >Email us</SfButton
+          >
+          <SfButton class="support-btns" aria-label="Close modal" type="button"
+            >Chat with us</SfButton
+          >
+        </div>
+      </ModalSlide>
+
+      <ModalSlide :visible="openTrackModal" @close="openTrackModal = false">
+        <div v-if="loadingTrack" key="loadingCircle" class="loader-circle">
+          <LoadingCircle :enable="loadingTrack" />
+        </div>
+        <div class="modal-heading">Contact Support</div>
+        <div><hr class="sf-divider" /></div>
+        <div class="modal-body">
+          <div class="support-text">
+            You can reach out to one of our customer support executives for any
+            help, queries or feedback to
+            {{
+              providerGetters.getProviderName(
+                cartGetters.getBppProvider(order.cart)
+              )
+            }}
+          </div>
+          <SfButton class="support-btns" aria-label="Close modal" type="button"
+            >Call us</SfButton
+          >
+          <SfButton class="support-btns" aria-label="Close modal" type="button"
+            >Email us</SfButton
+          >
+          <SfButton class="support-btns" aria-label="Close modal" type="button"
+            >Chat with us</SfButton
+          >
         </div>
       </ModalSlide>
     </div>
@@ -290,7 +338,7 @@ import LoadingCircle from '~/components/LoadingCircle';
 import SfAccordionItem from '~/components/Accordion.vue';
 import AddressInputs from '~/components/AddressInputs.vue';
 import Footer from '~/components/Footer.vue';
-import { cartGetters, providerGetters } from '@vue-storefront/beckn';
+import { cartGetters, providerGetters, useTrack } from '@vue-storefront/beckn';
 
 import { ref, onBeforeMount } from '@vue/composition-api';
 import Card from '~/components/Card.vue';
@@ -326,10 +374,24 @@ export default {
 
     const order = ref(null);
     const enableLoader = ref(true);
+    const { poll: onTrack, init: track, polling: loadingTrack } = useTrack();
     const transactionId = context.root.$route.query.id;
-    const fulfillmentStep = [{status: 'Items Packed', time: 'May 2021, 2021 12:40 PM'}, {status: 'Delivery agent assigned', time: 'May 2021, 2021 12:40 PM'}, {status: 'Agent enroute to store', time: 'May 2021, 2021 12:40 PM'}, null, null, null, null];
-    const fulfillmentSteps = [{status: 'Items Packed', time: 'May 2021, 2021 12:40 PM'}, {status: 'Delivery agent assigned', time: 'May 2021, 2021 12:40 PM'}, {status: 'Agent enroute to store', time: 'May 2021, 2021 12:40 PM'}];
+    const fulfillmentStep = [
+      { status: 'Items Packed', time: 'May 2021, 2021 12:40 PM' },
+      { status: 'Delivery agent assigned', time: 'May 2021, 2021 12:40 PM' },
+      { status: 'Agent enroute to store', time: 'May 2021, 2021 12:40 PM' },
+      null,
+      null,
+      null,
+      null
+    ];
+    const fulfillmentSteps = [
+      { status: 'Items Packed', time: 'May 2021, 2021 12:40 PM' },
+      { status: 'Delivery agent assigned', time: 'May 2021, 2021 12:40 PM' },
+      { status: 'Agent enroute to store', time: 'May 2021, 2021 12:40 PM' }
+    ];
     const openSupportModal = ref(false);
+    const openTrackModal = ref(false);
     const goBack = () => context.root.$router.back();
     const onCancel = () => context.root.$router.push('/cancelorder');
 
@@ -342,6 +404,23 @@ export default {
       enableLoader.value = false;
     });
 
+    const callTrack = async () => {
+      openTrackModal.value = true;
+      const params = {
+        context: {
+          // eslint-disable-next-line camelcase
+          transaction_id: order.value.transactionId,
+          // eslint-disable-next-line camelcase
+          bpp_id: order.value.order.provider.id
+        },
+        message: {
+          orderId: order.value.order.id
+        }
+      };
+      const response = await track(params);
+      onTrack({ messageId: response.context.message_id });
+    };
+
     return {
       goBack,
       order,
@@ -351,7 +430,10 @@ export default {
       fulfillmentSteps,
       openSupportModal,
       onCancel,
-      enableLoader
+      enableLoader,
+      openTrackModal,
+      callTrack,
+      loadingTrack
     };
   }
 };
@@ -365,13 +447,13 @@ export default {
 //     z-index: 9;
 // }
 .support-btns {
-    width: 100%;
-    border-radius: 3px;
+  width: 100%;
+  border-radius: 3px;
 }
 
-.cancel-order-btn{
-    width: 100%;
-    border-radius: 3px;
+.cancel-order-btn {
+  width: 100%;
+  border-radius: 3px;
 }
 
 .bold {
@@ -522,12 +604,20 @@ export default {
   font-weight: 500;
 }
 
+.color-def {
+  color: #f37a20;
+}
+
+.top-button {
+  position: absolute;
+  right: 6vw;
+}
 .modal-body {
   padding: 28px;
-  .support-text{
+  .support-text {
     font-size: 15px;
   }
-  .support-btns{
+  .support-btns {
     margin-top: 20px;
     width: 100%;
   }

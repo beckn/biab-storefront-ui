@@ -21,4 +21,6 @@ export { default as useAddress } from './useAddress';
 export { default as useConfirmOrder } from './useConfirmOrder';
 export { default as useInitOrder } from './useInitOrder';
 export { default as useQuote } from './useQuote';
+export { default as useTrack } from './useTrack';
+export { default as useOrderStatus } from './useOrderStatus';
 export * from './getters';
