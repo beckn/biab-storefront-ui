@@ -295,8 +295,8 @@
         <div v-if="loadingTrack" key="loadingCircle" class="loader-circle">
           <LoadingCircle :enable="loadingTrack" />
         </div>
-        <div class="modal-heading">Contact Support</div>
-        <div><hr class="sf-divider" /></div>
+        <div class="modal-heading">Track</div>
+        <!-- <div><hr class="sf-divider" /></div>
         <div class="modal-body">
           <div class="support-text">
             You can reach out to one of our customer support executives for any
@@ -306,8 +306,8 @@
                 cartGetters.getBppProvider(order.cart)
               )
             }}
-          </div>
-          <SfButton class="support-btns" aria-label="Close modal" type="button"
+          </div> -->
+          <!-- <SfButton class="support-btns" aria-label="Close modal" type="button"
             >Call us</SfButton
           >
           <SfButton class="support-btns" aria-label="Close modal" type="button"
@@ -315,8 +315,8 @@
           >
           <SfButton class="support-btns" aria-label="Close modal" type="button"
             >Chat with us</SfButton
-          >
-        </div>
+          > -->
+        <!-- </div> -->
       </ModalSlide>
     </div>
   </div>
@@ -374,7 +374,8 @@ export default {
 
     const order = ref(null);
     const enableLoader = ref(true);
-    const { poll: onTrack, init: track, polling: loadingTrack } = useTrack();
+    const { poll: onTrack, init: track } = useTrack();
+    const loadingTrack = ref(false);
     const transactionId = context.root.$route.query.id;
     const fulfillmentStep = [
       { status: 'Items Packed', time: 'May 2021, 2021 12:40 PM' },
@@ -417,8 +418,11 @@ export default {
           orderId: order.value.order.id
         }
       };
+      loadingTrack.value = true;
       const response = await track(params);
       onTrack({ messageId: response.context.message_id });
+
+      loadingTrack.value = false;
     };
 
     return {
@@ -621,5 +625,9 @@ export default {
     margin-top: 20px;
     width: 100%;
   }
+}
+
+.sf-loader{
+  top: 40px;
 }
 </style>

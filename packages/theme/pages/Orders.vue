@@ -1,7 +1,7 @@
 <template>
   <div id="payment">
     <div class="top-bar">
-      <div class="sf-chevron--left sf-chevron icon_back">
+      <div @click="goBack" class="sf-chevron--left sf-chevron icon_back">
         <span class="sf-search-bar__icon">
           <SfIcon color="var(--c-primary)" size="20px" icon="chevron_left" />
         </span>
@@ -93,10 +93,13 @@ export default {
         }
       });
     };
+
+    const goBack = () => context.root.$router.back();
     return {
       orders,
       enableLoader,
-      goToOrder
+      goToOrder,
+      goBack
     };
   }
 };

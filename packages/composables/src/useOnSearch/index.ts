@@ -8,6 +8,10 @@ const factoryParams = {
     // const pollResults = params.pollResults.value;
     params = params.params;
     const ackResponse: AckResponse = await context.$beckn.api.onSearch(params);
+    if (ackResponse?.error) {
+      throw new Error('Error in Api');
+    }
+    // const ackResponse: AckResponse = await context.$beckn.api.onSearch(params);
     return ackResponse;
   },
 
