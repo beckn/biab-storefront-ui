@@ -19,7 +19,8 @@ const state = reactive({
     address: ''
   },
   clearCartPopup: false,
-  enableLoadindBar: false
+  enableLoadindBar: false,
+  explorePageData: null
 });
 
 const useUiState = () => {
@@ -82,6 +83,11 @@ const useUiState = () => {
     state.enableLoadindBar = value;
   };
 
+  const explorePageData = computed(() => state.explorePageData);
+  const updateExpPageData = (data) => {
+    state.explorePageData = data;
+  };
+
   return {
     isCartSidebarOpen,
     isWishlistSidebarOpen,
@@ -94,6 +100,7 @@ const useUiState = () => {
     selectedLocation,
     clearCartPopup,
     enableLoadindBar,
+    explorePageData,
     toggleCartSidebar,
     toggleWishlistSidebar,
     toggleLoginModal,
@@ -105,7 +112,8 @@ const useUiState = () => {
     toggleSearchVisible,
     updateLocation,
     changeClearCart,
-    toggleLoadindBar
+    toggleLoadindBar,
+    updateExpPageData
   };
 };
 

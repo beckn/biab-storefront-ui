@@ -80,11 +80,11 @@
         <div
           v-if="!enableLoader"
           key="p-list"
-          class="product-container"
-          :class="{ grid: expAll }"
+          class="product-container grid"
         >
           <ProductCard
             v-for="(product, pIndex) in itemList"
+            v-if="pIndex < loadNum"
             @goToProduct="goToProduct(product, provider, bpp)"
             :key="pIndex + '-' + keyVal + 'product'"
             :pName="productGetters.getName(product)"
@@ -95,7 +95,7 @@
             @updateItemCount="(item) => updateItemCount(item, pIndex)"
           />
         </div>
-        <div v-if="!expAll" key="load-more" class="load-more">
+        <div v-if="itemList.length > loadNum " key="load-more" class="load-more" @click="loadMore">
           <button>Load More</button>
         </div>
         <LoadingCircle :enable="enableLoader" key="loding-cir" />
@@ -142,18 +142,19 @@ export default {
     Footer
   },
   setup(_, context) {
-    const { selectedLocation } =
-      useUiState();
+    const { selectedLocation, explorePageData, updateExpPageData } = useUiState();
     const enableLoader = ref(false);
     const goBack = () => context.root.$router.back();
-
+    console.log(explorePageData);
     const { addItem, cart, isInCart, load } = useCart();
-    const { bpp, provider, searchValue } = context.root.$route.params;
-    const searchKey = ref(searchValue);
-    const setSearchKey = ref(searchValue);
+    // const { bpp, provider, searchValue } = context.root.$route.params;
+    const bpp = explorePageData.value.bpp;
+    const provider = explorePageData.value.provider;
+    const searchKey = ref(explorePageData.value.searchValue);
+    const setSearchKey = ref(explorePageData.value.searchValue);
     const itemList = ref(provider.items);
     const keyVal = ref(0);
-    const expAll = ref(false);
+    const loadNum = ref(10);
     const { search, result } = useFacet();
     const { pollResults, poll, polling, stopPolling } = useOnSearch('search-by-provider');
     console.log(bpp, provider);
@@ -163,7 +164,6 @@ export default {
     });
 
     const handleSearch = async (paramValue) => {
-      expAll.value = true;
       setSearchKey.value = paramValue;
       console.log(polling.value);
       stopPolling();
@@ -185,6 +185,7 @@ export default {
         (newValue) => {
           console.log(newValue);
           if (newValue?.length > 0 && enableLoader.value) {
+            updateExpPageData({...explorePageData.value, provider: { ...explorePageData.value.provider, items: newValue[0].bpp_providers[0].items}, searchValue: searchKey.value});
             itemList.value = newValue[0].bpp_providers[0].items;
             enableLoader.value = false;
             stopPolling();
@@ -235,6 +236,13 @@ export default {
       context.root.$router.push('/cart');
     };
 
+    const loadMore = () => {
+      if (itemList.value.length > loadNum.value) {
+        loadNum.value += 10;
+        console.log(loadNum);
+      }
+    };
+
     return {
       goBack,
       bpp,
@@ -246,8 +254,8 @@ export default {
       searchKey,
       itemList,
       keyVal,
-      expAll,
       cart,
+      loadNum,
       setSearchKey,
       isInCart,
       onSearchChange,
@@ -255,7 +263,8 @@ export default {
       updateItemCount,
       handleSearch,
       searchHit,
-      footerClick
+      footerClick,
+      loadMore
     };
   }
 };
@@ -306,7 +315,7 @@ export default {
     align-items: center;
   }
   .details {
-    height: calc(100vh - 179px);
+    height: calc(100vh - 181px);
     padding-top: 20px;
     overflow: scroll;
     .s-text {
@@ -326,15 +335,17 @@ export default {
       grid-template-columns: auto auto;
       justify-content: center;
       grid-row-gap: 25px;
-      padding-bottom: 70px;
+      padding-bottom: 60px;
       .s-product {
         margin-right: unset;
       }
     }
     .load-more {
       padding: 20px;
+      padding-bottom: unset;
       display: flex;
       justify-content: center;
+      padding-bottom: 70px;
       button {
         background-color: #fff;
         color: #f37a20;

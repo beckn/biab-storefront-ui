@@ -115,7 +115,8 @@ export default {
       changeSearchString,
       selectedLocation,
       toggleLoadindBar,
-      clearCartPopup
+      clearCartPopup,
+      updateExpPageData
     } = useUiState();
     const enableLoader = ref(false);
     const goBack = () => {
@@ -277,20 +278,17 @@ export default {
     };
 
     const openProvider = (bpp, provider) => {
-      console.log('clicked ', bpp, provider);
-      context.root.$router.push({
-        name: 'ExploreProvider',
-        params: {
-          bpp: {
-            // eslint-disable-next-line camelcase
-            bpp_descriptor: bpp.bpp_descriptor,
-            // eslint-disable-next-line camelcase
-            bpp_id: bpp.bpp_id
-          },
-          provider,
-          searchValue: searchKey.value
-        }
+      updateExpPageData({
+        bpp: {
+          // eslint-disable-next-line camelcase
+          bpp_descriptor: bpp.bpp_descriptor,
+          // eslint-disable-next-line camelcase
+          bpp_id: bpp.bpp_id
+        },
+        provider,
+        searchValue: searchKey.value
       });
+      context.root.$router.push('/ExploreProvider');
     };
 
     return {
