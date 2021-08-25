@@ -26,7 +26,7 @@
                 </SfButton>
         </div>
         <ul class="location-list">
-          <li v-for="(result, i) in searchResults" :key="i" @click="getLocationDetails(result)" v-e2e="'app-location-sidebar-input-options-'+i" >
+          <li v-for="(result, i) in searchResults" :key="i" @click="getLocationDetails(result)" v-e2e="'app-location-sidebar-input-options'" >
             <SfButton
               class="button-pos sf-button--pure pos-left"
             >
