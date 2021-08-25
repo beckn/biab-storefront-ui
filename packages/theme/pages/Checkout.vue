@@ -13,7 +13,7 @@
     </div>
     <div class="details header-push">
       <div class="sub-heading">
-        <div class="p-name">Items in Cart</div>
+        <div class="p-name" v-e2e="'cart-item'">Items in Cart</div>
       </div>
 
       <div class="provider-head p-0">
@@ -109,7 +109,7 @@
               />
             </svg>
           </div>
-          <div @click="toggleShippingModal" class="address-text color-def">
+          <div @click="toggleShippingModal" v-e2e="'add-shipping-details'" class="address-text color-def">
             Add Shipping Details
           </div>
         </CardContent>

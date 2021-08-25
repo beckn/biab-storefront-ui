@@ -60,6 +60,7 @@
         <div class="collected-product-list">
           <transition-group name="sf-fade" tag="div">
             <ProductCard
+              v-e2e="'cart-product'"
               name="product-card"
               class="product-card"
               v-for="(product, index) in cartGetters.getItems(cart)"

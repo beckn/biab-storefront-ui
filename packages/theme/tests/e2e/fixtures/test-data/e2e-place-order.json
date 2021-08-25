@@ -9,8 +9,8 @@
         "city": "Los Angeles",
         "state": "California",
         "country": "United States",
-        "zipcode": "45678",
-        "phone": "123456789"
+        "zipcode": "456787",
+        "phone": "1234567890"
       },
       "billing": {
         "streetName": "1 VueStorefront Rd.",
@@ -18,8 +18,8 @@
         "city": "Los Angeles",
         "state": "California",
         "country": "United States",
-        "zipcode": "45678",
-        "phone": "123456789"
+        "zipcode": "456786",
+        "phone": "1234567890"
       }
     }
   }

@@ -1,6 +1,7 @@
 import { Customer } from '../types/customer';
 import { el } from './utils/element';
-
+import addressInput from './components/addressInput';
+import footer from './components/footer';
 class Shipping {
 
   get firstName(): Cypress.Chainable {
@@ -147,9 +148,35 @@ class ThankYou {
   }
 }
 
+class CheckOut {
+  get getHead(): Cypress.Chainable {
+    return cy.get('[data-e2e="cart-item"]', { timeout: 60000 });
+  }
+
+  get getAddShippingButton(): Cypress.Chainable {
+    return cy.get('[data-e2e="add-shipping-details"]');
+  }
+
+  public fillAddress() {
+    addressInput.getNameInput.type('akhil singh');
+    addressInput.getMobileInput.type('8596748596');
+    addressInput.getCompleteAddInput.type('j p nagar');
+    addressInput.getBuildingInput.type('f-202');
+    addressInput.getPintInput.type('859675');
+    addressInput.getLandMarkInput.type('bus stop');
+    addressInput.getAddButton.click();
+  }
+
+  get footer() {
+    return footer;
+  }
+
+}
+
 export {
   Shipping,
   Billing,
   Payment,
-  ThankYou
+  ThankYou,
+  CheckOut
 };

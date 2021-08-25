@@ -243,6 +243,27 @@ export default {
       }
     };
 
+    const goToProduct = (product, provider, bpp) => {
+      const data = btoa(JSON.stringify({
+        product,
+        bpp: {
+          id: bpp.bpp_id,
+          descriptor: bpp.bpp_descriptor
+        },
+        bppProvider: {
+          id: provider.id,
+          descriptor: provider.descriptor
+        },
+        locations: provider.locations
+      }));
+      context.root.$router.push({
+        path: '/product',
+        query: {
+          data: data
+        }
+      });
+    };
+
     return {
       goBack,
       bpp,
@@ -264,7 +285,8 @@ export default {
       handleSearch,
       searchHit,
       footerClick,
-      loadMore
+      loadMore,
+      goToProduct
     };
   }
 };

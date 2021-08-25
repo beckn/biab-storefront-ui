@@ -4,6 +4,7 @@
     <div><hr class="sf-divider" /></div>
     <div class="address-inputs-container">
       <SfInput
+        v-e2e="'name-input'"
         :valid="!validateInput('Name')"
         :errorMessage="validateInput('Name')"
         v-model="address.name"
@@ -12,6 +13,7 @@
         :name="'Name'"
       />
       <SfInput
+        v-e2e="'mobile-input'"
         :valid="!validateInput('mobile')"
         :errorMessage="validateInput('mobile')"
         v-model="address.mobile"
@@ -23,18 +25,21 @@
         :name="'mobile'"
       />
       <SfInput
+        v-e2e="'full-address-input'"
         v-model="address.address"
         :type="'text'"
         :label="'Complete Address'"
         :name="'address'"
       />
       <SfInput
+        v-e2e="'building-input'"
         v-model="address.building"
         :type="'text'"
         :label="'Building Name Floor'"
         :name="'building'"
       />
       <SfInput
+        v-e2e="'pin-input'"
         v-model="address.pincode"
         :type="'number'"
         :maxlength="6"
@@ -47,6 +52,7 @@
         :errorMessage="validateInput('Pincode')"
       />
       <SfInput
+        v-e2e="'landmark-input'"
         v-model="address.landmark"
         :type="'text'"
         :label="'Landmark (Optional)'"
@@ -54,6 +60,7 @@
         @change="() => {}"
       />
       <SfButton
+        v-e2e="'add-address'"
         class="address-button"
         aria-label="Close modal"
         type="button"

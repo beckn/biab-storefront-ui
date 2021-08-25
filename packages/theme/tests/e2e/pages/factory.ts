@@ -1,12 +1,13 @@
 import Category from './category';
-import { Billing, Payment, Shipping, ThankYou } from './checkout';
-import Cart from './components/cart-sidebar';
+import { Billing, Payment, Shipping, ThankYou, CheckOut } from './checkout';
 import Home from './home';
 import Product from './product';
+import search from './search';
+import cart from './cart';
 
 const page = {
   get cart() {
-    return Cart;
+    return cart;
   },
   get category() {
     return Category;
@@ -16,7 +17,8 @@ const page = {
       shipping: new Shipping(),
       billing: new Billing(),
       payment: new Payment(),
-      thankyou: new ThankYou()
+      thankyou: new ThankYou(),
+      checkOut: new CheckOut()
     };
   },
   get home() {
@@ -24,6 +26,9 @@ const page = {
   },
   get product() {
     return Product;
+  },
+  get search() {
+    return search;
   }
 };
 

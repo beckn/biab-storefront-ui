@@ -13,7 +13,7 @@
       </div>
       <div class="s-p-add-cart">
         <SfImage v-if="deleteCard" src="/icons/delete.svg" alt="delete-icon" @click="$emit('deleteItem')"/>
-        <AddToCart v-if="!dropdownCouner" :value="_pCount" @updateItemCount="(data)=>$emit('updateItemCount',data)" />
+        <AddToCart v-if="!dropdownCouner" v-e2e="'add-to-cart'" :value="_pCount" @updateItemCount="(data)=>$emit('updateItemCount',data)" />
         <div v-if="dropdownCouner" class="dropdown-container d-flex ">
           <span class="avail-unit" v-if="!!_updatedCount && _updatedCount !== _pCount ">{{_updatedCount}} units are available</span>
           <div class="position-relative">
