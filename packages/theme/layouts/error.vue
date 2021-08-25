@@ -6,9 +6,9 @@
       <SfButton class="sf-button--full-width actions__button" @click="goHome">
         Return home
       </SfButton>
-      <!-- <SfButton class="sf-button--full-width sf-button--text actions__button">
+      <SfButton @click="goBack" class="sf-button--full-width sf-button--text actions__button">
         Back
-      </SfButton> -->
+      </SfButton>
     </div>
   </div>
 </template>
@@ -19,8 +19,11 @@ export default {
   components: { SfButton, SfImage, SfHeading },
   setup(_, context) {
     const goHome = () => context.root.$router.push('/');
+
+    const goBack = () => context.root.$router.back();
     return {
-      goHome
+      goHome,
+      goBack
     };
   }
 };

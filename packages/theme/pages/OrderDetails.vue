@@ -296,17 +296,16 @@
           <LoadingCircle :enable="loadingTrack" />
         </div>
         <div class="modal-heading">Track</div>
-        <!-- <div><hr class="sf-divider" /></div>
+        <div><hr class="sf-divider" /></div>
         <div class="modal-body">
-          <div class="support-text">
-            You can reach out to one of our customer support executives for any
-            help, queries or feedback to
-            {{
+          <div v-if="!loadingTrack" class="support-text">
+            No Tracking details available
+            <!-- {{
               providerGetters.getProviderName(
                 cartGetters.getBppProvider(order.cart)
               )
-            }}
-          </div> -->
+            }} -->
+          </div>
           <!-- <SfButton class="support-btns" aria-label="Close modal" type="button"
             >Call us</SfButton
           >
@@ -316,7 +315,7 @@
           <SfButton class="support-btns" aria-label="Close modal" type="button"
             >Chat with us</SfButton
           > -->
-        <!-- </div> -->
+        </div>
       </ModalSlide>
     </div>
   </div>
@@ -374,7 +373,7 @@ export default {
 
     const order = ref(null);
     const enableLoader = ref(true);
-    const { poll: onTrack, init: track } = useTrack();
+    const { poll: onTrack, init: track, pollResults: trackResult } = useTrack();
     const loadingTrack = ref(false);
     const transactionId = context.root.$route.query.id;
     const fulfillmentStep = [
@@ -412,16 +411,17 @@ export default {
           // eslint-disable-next-line camelcase
           transaction_id: order.value.transactionId,
           // eslint-disable-next-line camelcase
-          bpp_id: order.value.order.provider.id
+          bpp_id: order.value.cart.bpp.id
         },
         message: {
-          orderId: order.value.order.id
+          // eslint-disable-next-line camelcase
+          order_id: order.value.order.id
         }
       };
       loadingTrack.value = true;
       const response = await track(params);
       onTrack({ messageId: response.context.message_id });
-
+      console.log(trackResult);
       loadingTrack.value = false;
     };
 
@@ -437,7 +437,8 @@ export default {
       enableLoader,
       openTrackModal,
       callTrack,
-      loadingTrack
+      loadingTrack,
+      trackResult
     };
   }
 };

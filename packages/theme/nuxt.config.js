@@ -8,6 +8,9 @@ export default {
     port: 3000,
     host: '0.0.0.0'
   },
+  generate: {
+    fallback: true
+  },
   head: {
     title: 'Beckn storefront',
     script: [{
@@ -21,7 +24,8 @@ export default {
       { hid: 'description', name: 'description', content: process.env.npm_package_description || '' }
     ],
     link: [
-      { rel: 'icon',
+      {
+        rel: 'icon',
         type: 'image/x-icon',
         href: '/favicon.ico'
       },
@@ -124,7 +128,7 @@ export default {
     ]
   },
   router: {
-    scrollBehavior (_to, _from, savedPosition) {
+    scrollBehavior(_to, _from, savedPosition) {
       if (savedPosition) {
         return savedPosition;
       } else {

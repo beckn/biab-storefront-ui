@@ -7,8 +7,9 @@ import { AckResponse } from '../../types/BecknClientApi';
 export async function track(context, params: onInitializeOrderParam): Promise<AckResponse> {
   const config = (context.config as Config);
   const client = (context.client as sa.SuperAgent<sa.SuperAgentRequest>);
-  return client.get(config.api.url + config.api.endpoints.track)
-    .query(params)
+
+  return client.post(config.api.url + config.api.endpoints.track)
+    .send(params)
     .then(res => {
       return (res.body as AckResponse);
     });
