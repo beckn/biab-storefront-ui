@@ -1,25 +1,59 @@
 <template>
-  <div id="error">
-    <SfImage class="image" :src="require('@storefront-ui/shared/icons/error.svg')" alt="something went wrong" />
-    <SfHeading title="Something went wrong" :level="2" description="please go back and try again" class="heading sf-heading--no-underline" />
-    <div class="actions">
-      <SfButton class="sf-button--full-width actions__button" @click="goHome">
-        Return home
-      </SfButton>
-      <!-- <SfButton class="sf-button--full-width sf-button--text actions__button">
-        Back
-      </SfButton> -->
+  <div>
+    <slot v-if="!error" />
+    <div v-else id="error">
+      <SfImage
+        class="image"
+        :src="require('@storefront-ui/shared/icons/error.svg')"
+        alt="something went wrong"
+      />
+      <SfHeading
+        title="Something went wrong"
+        :level="2"
+        description="please go back and try again"
+        class="heading sf-heading--no-underline"
+      />
+      <div class="actions">
+        <SfButton class="sf-button--full-width actions__button" @click="goHome">
+          Return home
+        </SfButton>
+        <!-- <SfButton
+          @click="goBack"
+          class="sf-button--full-width sf-button--text actions__button"
+        >
+          Back
+        </SfButton> -->
+      </div>
     </div>
   </div>
 </template>
 <script>
 import { SfButton, SfImage, SfHeading } from '@storefront-ui/vue';
+import { ref, onErrorCaptured } from '@vue/composition-api';
+
 export default {
   name: 'Error',
   components: { SfButton, SfImage, SfHeading },
   setup(_, context) {
-    const goHome = () => context.root.$router.push('/');
+    const error = ref(false);
+    const goHome = () => {
+      context.root.$router.push('/');
+      error.value = false;
+    };
+
+    const goBack = () => {
+      context.root.$router.back();
+      error.value = false;
+    };
+
+    onErrorCaptured(async (err) => {
+      error.value = err;
+      return false;
+    });
+
     return {
+      error,
+      goBack,
       goHome
     };
   }

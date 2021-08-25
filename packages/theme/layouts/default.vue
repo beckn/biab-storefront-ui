@@ -1,26 +1,28 @@
 <template>
   <div>
-    <LazyHydrate when-visible>
-      <!-- <TopBar class="desktop-only" /> -->
-    </LazyHydrate>
-    <!-- <LazyHydrate when-idle> -->
-    <AppHeader />
-    <!-- </LazyHydrate> -->
-
-    <div id="layout">
-      <nuxt :key="$route.fullPath" />
-      <ClearCartPopup />
       <LazyHydrate when-visible>
-        <!-- <BottomNavigation /> -->
+        <!-- <TopBar class="desktop-only" /> -->
       </LazyHydrate>
-      <CartSidebar />
-      <WishlistSidebar />
-      <LoginModal />
-      <Notification />
-    </div>
-    <LazyHydrate when-visible>
-      <!-- <AppFooter /> -->
-    </LazyHydrate>
+      <!-- <LazyHydrate when-idle> -->
+      <AppHeader />
+      <!-- </LazyHydrate> -->
+
+      <div id="layout">
+    <Error>
+        <nuxt :key="$route.fullPath" />
+    </Error>
+        <ClearCartPopup />
+        <LazyHydrate when-visible>
+          <!-- <BottomNavigation /> -->
+        </LazyHydrate>
+        <CartSidebar />
+        <WishlistSidebar />
+        <LoginModal />
+        <Notification />
+      </div>
+      <LazyHydrate when-visible>
+        <!-- <AppFooter /> -->
+      </LazyHydrate>
   </div>
 </template>
 
@@ -34,10 +36,13 @@ import LoginModal from '~/components/LoginModal.vue';
 import LazyHydrate from 'vue-lazy-hydration';
 import Notification from '~/components/Notification';
 import ClearCartPopup from '~/components/ClearCartPopup.vue';
+import Error from '~/pages/Error.vue';
+
 // import { useCart } from '@vue-storefront/beckn';
 
 export default {
   name: 'DefaultLayout',
+  ssr: false,
 
   components: {
     LazyHydrate,
@@ -48,7 +53,8 @@ export default {
     WishlistSidebar,
     LoginModal,
     Notification,
-    ClearCartPopup
+    ClearCartPopup,
+    Error
   },
   setup() {
     // const { load } = useCart();
@@ -118,5 +124,4 @@ h4 {
   line-height: 1.6;
   margin: 0;
 }
-
 </style>
