@@ -12,7 +12,7 @@ context('Search item', () => {
     page.home.header.locationInputDiv.click();
     page.home.locationModal.locationInputDiv.click();
     page.home.locationSideBar.sideBarInput.type('j p nagar');
-    page.home.locationSideBar.sideBarFirstOption.click;
+    page.home.locationSideBar.sideBarFirstOption.click();
     page.home.openSearch.getSearchHomeInput.should('exist');
     page.home.openSearch.getSearchHomeInput.type('orange');
     page.home.openSearch.getSearchButton.should('exist');
