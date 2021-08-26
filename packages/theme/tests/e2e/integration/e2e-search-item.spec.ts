@@ -12,7 +12,18 @@ context('Search item', () => {
     page.home.header.locationInputDiv.click();
     page.home.locationModal.locationInputDiv.click();
     page.home.locationSideBar.sideBarInput.type('j p nagar');
-    page.home.locationSideBar.sideBarFirstOption.click();
+    page.home.locationSideBar.sideBarFirstOption.then(($temp)=>{
+      const text = $temp.text();
+      cy.log(text);
+      page.home.locationSideBar.sideBarFirstOption.click();
+      page.home.header.locationInput.invoke('val').then((inputText)=>{
+        // todo: fix the way the text is chosen from google. Seems to have a lot of special characters
+        const val = text.replace(/[^a-zA-Z]/g, '').trim();
+        if (inputText.replace(/[^a-zA-Z]/g, '').trim() !== val)
+          throw new Error;
+      });
+    });
+
     page.home.openSearch.getSearchHomeInput.should('exist');
     page.home.openSearch.getSearchHomeInput.type('orange');
     page.home.openSearch.getSearchButton.should('exist');
