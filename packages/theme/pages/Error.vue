@@ -47,6 +47,7 @@ export default {
     };
 
     onErrorCaptured(async (err) => {
+      // debugger;
       error.value = err;
       return false;
     });

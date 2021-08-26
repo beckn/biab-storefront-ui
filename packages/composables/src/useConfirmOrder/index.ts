@@ -5,6 +5,9 @@ import usePollerFactory from '../usePoller';
 const factoryParams = {
   poll: async (context: Context, { params }): Promise<any> => {
     const ackResponse: AckResponse = await context.$beckn.api.onConfirmOrder(params);
+    if (ackResponse.error?.code) {
+      throw ackResponse.error;
+    }
     return ackResponse;
   },
 
@@ -21,6 +24,9 @@ const factoryParams = {
   },
   init: async (context: Context, { params }) => {
     const ackResponse: AckResponse = await context.$beckn.api.confirmOrder(params);
+    if (ackResponse.error?.code) {
+      throw ackResponse.error;
+    }
     return ackResponse;
   },
   pollTime: () => 60000,

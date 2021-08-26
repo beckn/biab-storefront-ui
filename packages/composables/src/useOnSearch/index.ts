@@ -12,6 +12,9 @@ const factoryParams = {
       throw new Error('Error in Api');
     }
     // const ackResponse: AckResponse = await context.$beckn.api.onSearch(params);
+    if (ackResponse.error?.code) {
+      throw ackResponse.error;
+    }
     return ackResponse;
   },
 
@@ -35,9 +38,9 @@ const factoryParams = {
   continuePolling: () => {
     return true;
   },
-  init: async ()=>{},
-  pollTime: ()=> 60000,
-  intervalTime: ()=> 2000
+  init: async () => { },
+  pollTime: () => 60000,
+  intervalTime: () => 2000
 
 };
 
