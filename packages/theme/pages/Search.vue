@@ -95,7 +95,7 @@ import {
   cartGetters,
   useCart,
   useFacet,
-  useOnSearch
+  useSearch
 } from '@vue-storefront/beckn';
 
 export default {
@@ -129,7 +129,7 @@ export default {
     const searchKey = ref(data);
     const keyVal = ref(0);
     const { search, result } = useFacet();
-    const { pollResults, poll, polling, stopPolling } = useOnSearch('search');
+    const { pollResults, poll, polling, stopPolling } = useSearch('search');
     const noSearchFound = ref(false);
 
     console.log(cart);

@@ -12,8 +12,6 @@ export default async function getProduct(context: Context, params, customQuery?:
   const criteriaData: { [k: string]: any } = {
     delivery_location: params.locationIs
   };
-  // provider_id: params.,
-  // category_id: params.
   if (params.providerId) criteriaData.provider_id = params.providerId;
   if (params.itemContains) criteriaData.search_string = params.itemContains;
 

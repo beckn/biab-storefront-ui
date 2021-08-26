@@ -1,17 +1,6 @@
 import { Context, Logger, configureFactoryParams, sharedRef, FactoryParams } from '@vue-storefront/core';
 import { computed, Ref } from '@vue/composition-api';
 
-// const usePoller = () => {
-//   const pollResultss = vsfRef([], 'poll-results');
-//   const poll = async (context: Context, messageId) => {
-//     pollResultss.value.push(await context.$beckn.api.onSearch({ messageId }));
-//   };
-
-//   return { pollResultss, poll };
-// };
-
-// export default usePoller;
-
 interface UsePollerFactoryParams extends FactoryParams {
   poll: (context: Context, params?: any) => Promise<any>;
   dataHandler: (context: Context, currentResult, newResult) => any;
@@ -40,8 +29,6 @@ const usePollerFactory = (factoryParams: UsePollerFactoryParams) => {
       pollResults.value = null;
       clearInterval(pollFunction.value.interval);
       clearTimeout(pollFunction.value.interval);
-      clearInterval(pollFunction.value.timeout);
-      clearTimeout(pollFunction.value.timeout);
       const data = await _factoryParams.poll({ params });
       pollResults.value = _factoryParams.dataHandler({oldResults: pollResults.value, newResults: data});
       polling.value = true;
@@ -54,8 +41,6 @@ const usePollerFactory = (factoryParams: UsePollerFactoryParams) => {
           if (!_factoryParams.continuePolling({oldResults: pollResults.value, newResults: data})) {
             clearInterval(pollFunction.value.interval);
             clearTimeout(pollFunction.value.interval);
-            clearInterval(pollFunction.value.timeout);
-            clearTimeout(pollFunction.value.timeout);
           }
         } catch (err) {
           console.error(err);
@@ -79,8 +64,6 @@ const usePollerFactory = (factoryParams: UsePollerFactoryParams) => {
     const stopPolling = async () => {
       clearInterval(pollFunction.value.interval);
       clearTimeout(pollFunction.value.interval);
-      clearInterval(pollFunction.value.timeout);
-      clearTimeout(pollFunction.value.timeout);
     };
 
     return {

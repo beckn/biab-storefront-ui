@@ -128,7 +128,7 @@ import {
   cartGetters,
   useCart,
   useFacet,
-  useOnSearch
+  useSearch
 } from '@vue-storefront/beckn';
 
 export default {
@@ -156,7 +156,7 @@ export default {
     const keyVal = ref(0);
     const loadNum = ref(10);
     const { search, result } = useFacet();
-    const { pollResults, poll, polling, stopPolling } = useOnSearch('search-by-provider');
+    const { pollResults, poll, polling, stopPolling } = useSearch('search-by-provider');
     console.log(bpp, provider);
 
     onBeforeMount(async () => {

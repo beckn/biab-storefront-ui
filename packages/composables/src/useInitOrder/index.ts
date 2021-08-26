@@ -1,8 +1,8 @@
 import { AckResponse } from '@vue-storefront/beckn-api';
 import { Context } from '@vue-storefront/core';
-// import { OnSearchParam } from '../types';
 import usePollerFactory from '../usePoller';
 
+import config from '../../beckn.config.js';
 const factoryParams = {
   poll: async (context: Context, { params }): Promise<any> => {
     const ackResponse: AckResponse = await context.$beckn.api.onInitializeOrder(params);
@@ -24,8 +24,12 @@ const factoryParams = {
     const ackResponse: AckResponse = await context.$beckn.api.initializeOrder(params);
     return ackResponse;
   },
-  pollTime: () => 60000,
-  intervalTime: () => 2000
+  pollTime: () => {
+    return config.timers.initOrder.poll;
+  },
+  intervalTime: () => {
+    return config.timers.initOrder.interval;
+  }
 
 };
 
