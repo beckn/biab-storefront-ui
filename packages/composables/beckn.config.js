@@ -4,6 +4,10 @@ export default {
       interval: 2000,
       poll: 60000
     },
+    quote: {
+      interval: 2000,
+      poll: 60000
+    },
     initOrder: {
       interval: 2000,
       poll: 60000

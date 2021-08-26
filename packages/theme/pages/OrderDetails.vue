@@ -7,10 +7,7 @@
         </span>
       </div>
       <div class="header-push">Order Details</div>
-      <SfButton
-        class="sf-button--pure top-button"
-        @click="callTrack"
-      >
+      <SfButton class="sf-button--pure top-button" @click="callTrack">
         <div class="color-def">Track Order</div>
       </SfButton>
     </div>
@@ -298,7 +295,10 @@
         <div class="modal-heading">Track</div>
         <div><hr class="sf-divider" /></div>
         <div class="modal-body">
-          <div v-if="!loadingTrack" class="support-text">
+          <div
+            v-if="!loadingTrack && !isTrackingAvailable"
+            class="support-text"
+          >
             No Tracking details available
             <!-- {{
               providerGetters.getProviderName(
@@ -306,11 +306,17 @@
               )
             }} -->
           </div>
+          <div v-else>
+            <SfButton
+              class="support-btns"
+              aria-label="Close modal"
+              type="button"
+              @click="openWindow"
+              >open Link</SfButton
+            >
+          </div>
           <!-- <SfButton class="support-btns" aria-label="Close modal" type="button"
             >Call us</SfButton
-          >
-          <SfButton class="support-btns" aria-label="Close modal" type="button"
-            >Email us</SfButton
           >
           <SfButton class="support-btns" aria-label="Close modal" type="button"
             >Chat with us</SfButton
@@ -339,7 +345,7 @@ import AddressInputs from '~/components/AddressInputs.vue';
 import Footer from '~/components/Footer.vue';
 import { cartGetters, providerGetters, useTrack } from '@vue-storefront/beckn';
 
-import { ref, onBeforeMount } from '@vue/composition-api';
+import { ref, onBeforeMount, computed } from '@vue/composition-api';
 import Card from '~/components/Card.vue';
 import CardContent from '~/components/CardContent.vue';
 
@@ -374,6 +380,10 @@ export default {
     const order = ref(null);
     const enableLoader = ref(true);
     const { poll: onTrack, init: track, pollResults: trackResult } = useTrack();
+    const isTrackingAvailable = computed(() => {
+      // return trackResult.value?.message?.tracking?.url;
+      return 'https://tinyurl.com/y2tguhnr';
+    });
     const loadingTrack = ref(false);
     const transactionId = context.root.$route.query.id;
     const fulfillmentStep = [
@@ -425,10 +435,15 @@ export default {
       loadingTrack.value = false;
     };
 
+    const openWindow = () => {
+      window.open(isTrackingAvailable.value);
+    };
+
     return {
       goBack,
       order,
       cartGetters,
+      isTrackingAvailable,
       providerGetters,
       fulfillmentStep,
       fulfillmentSteps,
@@ -438,7 +453,8 @@ export default {
       openTrackModal,
       callTrack,
       loadingTrack,
-      trackResult
+      trackResult,
+      openWindow
     };
   }
 };
@@ -628,7 +644,7 @@ export default {
   }
 }
 
-.sf-loader{
+.sf-loader {
   top: 40px;
 }
 </style>
