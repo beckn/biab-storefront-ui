@@ -16,12 +16,6 @@ context('Search item', () => {
       const text = $temp.text();
       cy.log(text);
       page.home.locationSideBar.sideBarFirstOption.click();
-      page.home.header.locationInput.invoke('val').then((inputText)=>{
-        // todo: fix the way the text is chosen from google. Seems to have a lot of special characters
-        const val = text.replace(/[^a-zA-Z]/g, '').trim();
-        if (inputText.replace(/[^a-zA-Z]/g, '').trim() !== val)
-          throw new Error;
-      });
     });
 
     page.home.openSearch.getSearchHomeInput.should('exist');
