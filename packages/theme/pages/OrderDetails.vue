@@ -253,6 +253,13 @@
           </div>
         </div>
       </div>
+      <!-- <button
+        class="sf-button color-primary support-btns"
+        @click="goHome"
+      >
+        <div class="f-btn-text">Home</div>
+        <img class="btn-img" src="/icons/support.svg" />
+      </button> -->
       <button
         class="sf-button color-primary support-btns"
         @click="openSupportModal = true"
@@ -402,7 +409,7 @@ export default {
     ];
     const openSupportModal = ref(false);
     const openTrackModal = ref(false);
-    const goBack = () => context.root.$router.back();
+    const goHome = () => context.root.$router.push('/');
     const onCancel = () => context.root.$router.push('/cancelorder');
 
     onBeforeMount(async () => {
@@ -440,7 +447,7 @@ export default {
     };
 
     return {
-      goBack,
+      goHome,
       order,
       cartGetters,
       isTrackingAvailable,
