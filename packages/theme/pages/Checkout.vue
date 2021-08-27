@@ -174,9 +174,9 @@
           <CardContent
             v-for="policyObj in policy"
             :key="policyObj.id"
-            class="flex-space-bw"
+            class="flex-half"
           >
-            <div class="address-text">{{ policyObj.descriptor.name }}</div>
+            <div class="">{{ policyObj.descriptor.name }}</div>
             <div class="address-text">{{ policyObj.descriptor.code }}</div>
           </CardContent>
           <!-- <div><hr class="sf-divider divider" /></div>
@@ -514,6 +514,11 @@ export default {
 
 .flex-space-bw {
   justify-content: space-between;
+}
+
+.flex-half{
+  display: grid;
+  grid-template-columns: 50% 50%;
 }
 
 .details {

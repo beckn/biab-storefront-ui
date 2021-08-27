@@ -230,18 +230,17 @@ export default {
                 const quoteItem = newValue.message.quote?.items.filter(
                   (quoteItem) => quoteItem.id === cartItem.id
                 )[0];
-                const singleItemValue =
-                  quoteItem.price.value / quoteItem.quantity.selected.count;
+                // const singleItemValue = quoteItem.price.value / quoteItem.quantity.selected.count;
                 console.log(
                   'price',
                   parseFloat(cartItem.price.value),
-                  parseFloat(singleItemValue)
+                  parseFloat(quoteItem.price.value)
                 );
                 if (
                   parseFloat(cartItem.price.value) !==
-                  parseFloat(singleItemValue)
+                  parseFloat(quoteItem.price.value)
                 ) {
-                  cartItem.updatedPrice = singleItemValue;
+                  cartItem.updatedPrice = quoteItem.price.value;
                   errPricechange.value = true;
                 }
                 if (cartItem.quantity !== quoteItem.quantity.selected.count) {
@@ -269,7 +268,9 @@ export default {
     };
 
     const updateItemCount = (data, index, matchQ = true) => {
-      console.log(data, index);
+      if (errUpdateCount) errUpdateCount.value = false;
+      if (errPricechange) errPricechange.value = false;
+      if (errOutOfStock) errOutOfStock.value = false;
       addItem({
         product: cart.value.items[index],
         quantity: data,
