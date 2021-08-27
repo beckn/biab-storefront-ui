@@ -14,7 +14,7 @@
           aria-label="Close modal"
           type="button"
           @click="close"
-          style="right: 20px; top: 24px"
+          style="position: absolute; right: 20px; top: 24px"
         >
           <svg
             width="15"
