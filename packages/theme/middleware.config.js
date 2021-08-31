@@ -19,7 +19,9 @@ module.exports = {
             orderStatus: '/v1/status',
             onOrderStatus: '/v1/on_status',
             track: '/v1/track',
-            onTrack: '/v1/on_track'
+            onTrack: '/v1/on_track',
+            support: '/v1/support',
+            onSupport: '/v1/on_support'
           }
         }
       }

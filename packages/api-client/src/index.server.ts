@@ -13,6 +13,8 @@ import onConfirmOrder from './api/onConfirmOrder';
 import { orderStatus, onOrderStatus } from './api/orderStatus';
 import { track, onTrack } from './api/track';
 
+import { support, onSupport } from './api/support';
+
 const defaultSettings = {};
 import * as request from 'superagent';
 
@@ -39,7 +41,9 @@ const { createApiClient } = apiClientFactory<any, any>({
     orderStatus,
     onOrderStatus,
     track,
-    onTrack
+    onTrack,
+    support,
+    onSupport
   }
 });
 

@@ -48,6 +48,7 @@
         pattern="[0-9]{6}"
         :label="'Pincode'"
         :name="'Pincode'"
+        @change="getStateCity"
         :valid="!validateInput('Pincode')"
         :errorMessage="validateInput('Pincode')"
       />
@@ -112,44 +113,6 @@ export default {
       building: false
     });
 
-    // const validateName = () => {
-    //   if (address.value.name.length > 3) {
-    //     valid.value.name = true;
-    //   } else {
-    //     valid.value.name = false;
-    //   }
-    // };
-    // const validateMobile = () => {
-    //   const re = /^[0-9\b]+$/;
-    //   if (re.test(address.value.mobile) && address.value.mobile.length === 10) {
-    //     valid.value.mobile = true;
-    //   } else {
-    //     valid.value.mobile = false;
-    //   }
-    // };
-    // const validateAddress = () => {
-    //   if (address.value.address.length > 5) {
-    //     valid.value.address = true;
-    //   } else {
-    //     valid.value.address = false;
-    //   }
-    // };
-    // const validateBuilding = () => {
-    //   if (address.value.building.length > 5) {
-    //     valid.value.building = true;
-    //   } else {
-    //     valid.value.building = false;
-    //   }
-    // };
-    // const validatePincode = () => {
-    //   const re = /^[0-9\b]+$/;
-    //   if (re.test(address.value.pincode) && address.value.pincode.length === 6) {
-    //     valid.value.pincode = true;
-    //   } else {
-    //     valid.value.pincode = false;
-    //   }
-    // };
-
     const validateInput = (field) => {
       const re = /^[0-9\b]+$/;
       switch (field) {
@@ -159,12 +122,20 @@ export default {
           }
           break;
         case 'mobile':
-          if (address.value.mobile && (!re.test(address.value.mobile) || address.value.mobile.length !== 10)) {
+          if (
+            address.value.mobile &&
+            (!re.test(address.value.mobile) ||
+              address.value.mobile.length !== 10)
+          ) {
             return 'Please enter a valid mobile';
           }
           break;
         case 'Pincode':
-          if (address.value.pincode && (!re.test(address.value.pincode) || address.value.pincode.length !== 6)) {
+          if (
+            address.value.pincode &&
+            (!re.test(address.value.pincode) ||
+              address.value.pincode.length !== 6)
+          ) {
             return 'Please enter a valid pincode';
           }
           break;
@@ -174,9 +145,47 @@ export default {
       return '';
     };
 
-    const isFieldsValid = computed(() =>{
-      address.value.valid = (valid.value.address && valid.value.name && valid.value.mobile && valid.value.pincode && valid.value.building);
-      return (valid.value.address && valid.value.name && valid.value.mobile && valid.value.pincode && valid.value.building);
+    const autoComplete = new window.google.maps.places.AutocompleteService();
+    const geoCoder = new window.google.maps.Geocoder();
+    const getStateCity = () => {
+      if (address.value.pincode.length === 6) {
+        // call google Geolocationapi
+        autoComplete.getPlacePredictions(
+          {
+            input: address.pincode,
+            types: ['geocode']
+          },
+          (predictions, status) => {
+            if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+              const loc = predictions[0].description;
+              geoCoder
+                .geocode({ placeId: loc.place_id })
+                .then((response) => {
+                  console.log('addressresp', response);
+                })
+              // eslint-disable-next-line no-alert
+                .catch((err) => alert(err));
+
+            }
+          }
+        );
+      }
+    };
+
+    const isFieldsValid = computed(() => {
+      address.value.valid =
+        valid.value.address &&
+        valid.value.name &&
+        valid.value.mobile &&
+        valid.value.pincode &&
+        valid.value.building;
+      return (
+        valid.value.address &&
+        valid.value.name &&
+        valid.value.mobile &&
+        valid.value.pincode &&
+        valid.value.building
+      );
     });
 
     const saveDetails = () => {
@@ -188,7 +197,8 @@ export default {
       saveDetails,
       valid,
       isFieldsValid,
-      validateInput
+      validateInput,
+      getStateCity
     };
   }
 };

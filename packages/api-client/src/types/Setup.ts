@@ -13,6 +13,8 @@ export interface ApiEndpoints {
   onOrderStatus: string,
   track: string,
   onTrack: string,
+  support: string,
+  onSupport: string,
 }
 
 export interface ApiConfig {

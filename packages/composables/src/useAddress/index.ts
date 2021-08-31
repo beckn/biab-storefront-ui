@@ -1,11 +1,13 @@
 type Address = {
-    name: string;
-    mobile: string,
-    building: string;
-    landmark: string;
-    pincode:number | null;
-    valid:boolean;
-    address: string;
+  name: string;
+  mobile: string,
+  building: string;
+  landmark: string;
+  city: string | null;
+  state: string | null;
+  pincode: number | null;
+  valid: boolean;
+  address: string;
 };
 
 const useAddress = () => {
@@ -19,6 +21,8 @@ const useAddress = () => {
           mobile: '',
           building: '',
           landmark: '',
+          city: '',
+          state: '',
           pincode: null,
           valid: false,
           address: ''
@@ -31,6 +35,8 @@ const useAddress = () => {
         mobile: '',
         building: '',
         landmark: '',
+        city: '',
+        state: '',
         pincode: null,
         valid: false,
         address: ''
@@ -47,6 +53,8 @@ const useAddress = () => {
           mobile: '',
           building: '',
           landmark: '',
+          city: '',
+          state: '',
           pincode: null,
           valid: false,
           address: ''
@@ -59,6 +67,8 @@ const useAddress = () => {
         mobile: '',
         building: '',
         landmark: '',
+        city: '',
+        state: '',
         pincode: null,
         valid: false,
         address: ''

@@ -44,13 +44,13 @@ export const createOrderRequest = (transactionId, cart, shippingAddress, billing
         address: {
           door: bAddress.landmark,
           country: 'IND',
-          city: '',
+          city: bAddress.city,
           street: bAddress.address,
 
           // eslint-disable-next-line camelcase
-          area_code: '560078',
-          state: '',
-          building: ''
+          area_code: bAddress.pincode,
+          state: bAddress.state,
+          building: bAddress.building
         },
         phone: bAddress.mobile,
         name: bAddress.name,
@@ -67,13 +67,13 @@ export const createOrderRequest = (transactionId, cart, shippingAddress, billing
           address: {
             door: shippingAddress.landmark,
             country: 'IND',
-            city: '',
+            city: shippingAddress.city,
             street: shippingAddress.address,
 
             // eslint-disable-next-line camelcase
-            area_code: '560078',
-            state: '',
-            building: ''
+            area_code: shippingAddress.pincode,
+            state: shippingAddress.state,
+            building: shippingAddress.building
           },
           gps: gps
         }
