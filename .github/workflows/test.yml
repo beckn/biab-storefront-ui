@@ -104,7 +104,6 @@ jobs:
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
       - name: Push image to ECR
         env:
-          APS_API_KEY: ${{ secrets.QA_MAPS_API_KEY }}
           GITHUB_RUN_NUMBER: ${{ github.run_number }}
         run: |
           aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 795151977897.dkr.ecr.ap-south-1.amazonaws.com
