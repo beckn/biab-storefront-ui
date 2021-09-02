@@ -1,6 +1,6 @@
 name: Build
 
-on: [ push ]
+on: [push]
 
 jobs:
   prepare_dependencies:
@@ -17,12 +17,12 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v1
         with:
-          node-version: '12'
+          node-version: "12"
 
       - name: Get cached dependencies
         uses: actions/cache@v2
         with:
-          path: '**/node_modules'
+          path: "**/node_modules"
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
 
       - name: Install dependencies
@@ -40,14 +40,14 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v1
         with:
-          node-version: '12'
+          node-version: "12"
 
       - name: Get cached dependencies
         uses: actions/cache@v2
         with:
-          path: '**/node_modules'
+          path: "**/node_modules"
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-      
+
       - name: Clean yarn cache
         run: yarn cache clean
 
@@ -72,7 +72,7 @@ jobs:
       - name: Test e2e theme
         env:
           MAPS_KEY: ${{ secrets.TEST_MAPS_API_KEY }}
-        run: |          
+        run: |
           yarn dev > /dev/null &
           sleep 1m
           export PROCESS_ID=$!
@@ -104,7 +104,7 @@ jobs:
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
       - name: Push image to ECR
         env:
-          APS_API_KEY: ${{ secrets.QA_MAPS_API_KEY }}
+          MAPS_API_KEY: ${{ secrets.QA_MAPS_API_KEY }}
           GITHUB_RUN_NUMBER: ${{ github.run_number }}
         run: |
           aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 795151977897.dkr.ecr.ap-south-1.amazonaws.com
