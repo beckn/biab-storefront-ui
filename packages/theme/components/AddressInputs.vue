@@ -48,7 +48,6 @@
         pattern="[0-9]{6}"
         :label="'Pincode'"
         :name="'Pincode'"
-        @change="getStateCity"
         :valid="!validateInput('Pincode')"
         :errorMessage="validateInput('Pincode')"
       />
@@ -75,7 +74,7 @@
 
 <script>
 import { SfButton, SfInput } from '@storefront-ui/vue';
-import { ref, computed } from '@vue/composition-api';
+import { ref, computed, watch } from '@vue/composition-api';
 export default {
   name: 'AddressInputs',
   components: {
@@ -147,38 +146,46 @@ export default {
 
     const autoComplete = new window.google.maps.places.AutocompleteService();
     const geoCoder = new window.google.maps.Geocoder();
-    const getStateCity = () => {
-      if (address.value.pincode.length === 6) {
-        // call google Geolocationapi
-        autoComplete.getPlacePredictions(
-          {
-            input: address.pincode,
-            types: ['geocode']
-          },
-          (predictions, status) => {
-            if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-              const loc = predictions[0];
-              geoCoder
-                .geocode({ placeId: loc.place_id })
-                .then((response) => {
-                  const adds = response.results[0].address_components;
-                  console.log('address', adds);
-                  const state = adds.filter((v) => {
-                    return v.types[0] === 'administrative_area_level_1';
-                  });
-                  const city = adds.filter((v) => {
-                    return v.types[0] === 'locality';
-                  });
+    watch(
+      () => address.value.pincode,
+      (newValue) => {
+        if (newValue.length === 6) {
+          // call google Geolocationapi
+          autoComplete.getPlacePredictions(
+            {
+              input: newValue,
+              types: ['geocode']
+            },
+            (predictions, status) => {
+              if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+                const loc = predictions[0];
+                geoCoder
+                  .geocode({ placeId: loc.place_id })
+                  .then((response) => {
+                    const adds = response.results[0].address_components;
+                    console.log('address', adds);
+                    const state = adds.filter((v) => {
+                      return v.types[0] === 'administrative_area_level_1';
+                    });
+                    const city = adds.filter((v) => {
+                      return v.types[0] === 'locality';
+                    });
 
-                  console.log(state, city);
-                })
-                // eslint-disable-next-line no-alert
-                .catch((err) => alert(err));
+                    console.log(state, city);
+
+                    // eslint-disable-next-line camelcase
+                    address.value.city = city.long_name;
+                    // eslint-disable-next-line camelcase
+                    address.value.state = state.long_name;
+                  })
+                  // eslint-disable-next-line no-alert
+                  .catch((err) => alert(err));
+              }
             }
-          }
-        );
+          );
+        }
       }
-    };
+    );
 
     const isFieldsValid = computed(() => {
       address.value.valid =
@@ -205,8 +212,7 @@ export default {
       saveDetails,
       valid,
       isFieldsValid,
-      validateInput,
-      getStateCity
+      validateInput
     };
   }
 };
