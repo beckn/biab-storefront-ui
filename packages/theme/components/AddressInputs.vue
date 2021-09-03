@@ -157,15 +157,23 @@ export default {
           },
           (predictions, status) => {
             if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-              const loc = predictions[0].description;
+              const loc = predictions[0];
               geoCoder
                 .geocode({ placeId: loc.place_id })
                 .then((response) => {
-                  console.log('addressresp', response);
-                })
-              // eslint-disable-next-line no-alert
-                .catch((err) => alert(err));
+                  const adds = response.results[0].address_components;
+                  console.log('address', adds);
+                  const state = adds.filter((v) => {
+                    return v.types[0] === 'administrative_area_level_1';
+                  });
+                  const city = adds.filter((v) => {
+                    return v.types[0] === 'locality';
+                  });
 
+                  console.log(state, city);
+                })
+                // eslint-disable-next-line no-alert
+                .catch((err) => alert(err));
             }
           }
         );
