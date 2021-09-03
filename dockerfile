@@ -1,11 +1,10 @@
 # build environment
 #syntax=docker/dockerfile:1.2
 FROM node:14.17.6-alpine as build
-RUN --mount=type=secret,id=MAPS_API_KEY \
-    cat /run/secrets/MAPS_API_KEY
-ENV MAPS_KEY=$MAPS_API_KEY
-RUN echo $MAPS_KEY
-RUN echo $MAPS_API_KEY
+RUN --mount=type=secret,id=MAPS_API_KEY 
+    # cat /run/secrets/MAPS_API_KEY
+# ENV MAPS_KEY=$MAPS_API_KEY
+RUN export MAPS_KEY=$(cat /run/secrets/MAPS_API_KEY)
 RUN apk update
 RUN apk add nginx
 WORKDIR /app
