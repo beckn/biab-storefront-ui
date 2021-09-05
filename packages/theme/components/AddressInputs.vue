@@ -164,10 +164,10 @@ export default {
                   .then((response) => {
                     const adds = response.results[0].address_components;
                     console.log('address', adds);
-                    const state = adds.filter((v) => {
+                    const state = adds.find((v) => {
                       return v.types[0] === 'administrative_area_level_1';
                     });
-                    const city = adds.filter((v) => {
+                    const city = adds.find((v) => {
                       return v.types[0] === 'locality';
                     });
 
