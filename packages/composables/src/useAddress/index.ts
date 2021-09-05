@@ -14,20 +14,19 @@ const useAddress = () => {
 
   const getBillngAddress = (): Address => {
     try {
-      let address: Address = JSON.parse(localStorage.getItem('billing_address'));
-      if (!address) {
-        address = {
-          name: '',
-          mobile: '',
-          building: '',
-          landmark: '',
-          city: '',
-          state: '',
-          pincode: null,
-          valid: false,
-          address: ''
-        };
-      }
+      const addressLocal: Address = JSON.parse(localStorage.getItem('billing_address'));
+      const address: Address = {
+        name: '',
+        mobile: '',
+        building: '',
+        landmark: '',
+        city: '',
+        state: '',
+        pincode: null,
+        valid: false,
+        address: ''
+      };
+      return { ...address, ...addressLocal };
       return address;
     } catch (error) {
       return {
@@ -46,21 +45,19 @@ const useAddress = () => {
 
   const getShippingAddress = (): Address => {
     try {
-      let address: Address = JSON.parse(localStorage.getItem('shipping_address'));
-      if (!address) {
-        address = {
-          name: '',
-          mobile: '',
-          building: '',
-          landmark: '',
-          city: '',
-          state: '',
-          pincode: null,
-          valid: false,
-          address: ''
-        };
-      }
-      return address;
+      const addressLocal: Address = JSON.parse(localStorage.getItem('shipping_address'));
+      const address: Address = {
+        name: '',
+        mobile: '',
+        building: '',
+        landmark: '',
+        city: '',
+        state: '',
+        pincode: null,
+        valid: false,
+        address: ''
+      };
+      return { ...address, ...addressLocal };
     } catch (error) {
       return {
         name: '',

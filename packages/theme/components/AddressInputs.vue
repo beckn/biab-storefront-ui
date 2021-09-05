@@ -177,6 +177,8 @@ export default {
                     address.value.city = city.long_name;
                     // eslint-disable-next-line camelcase
                     address.value.state = state.long_name;
+
+                    console.log('Addres setState', address.value);
                   })
                   // eslint-disable-next-line no-alert
                   .catch((err) => alert(err));
