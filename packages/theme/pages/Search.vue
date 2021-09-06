@@ -70,7 +70,7 @@
     <div v-if="cartGetters.getTotalItems(cart)" class="sr-footer">
       <Footer
         @buttonClick="footerClick"
-        :totalPrice="cart.totalPrice"
+        :totalPrice="cartGetters.getTotals(cart).total"
         :totalItem="cartGetters.getTotalItems(cart)"
         buttonText="View Cart"
       >
