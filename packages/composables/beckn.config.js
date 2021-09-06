@@ -23,6 +23,10 @@ export default {
     support: {
       interval: 2000,
       poll: 60000
+    },
+    orderPolicy: {
+      interval: 2000,
+      poll: 60000
     }
   }
 };

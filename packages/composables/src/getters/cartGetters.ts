@@ -11,7 +11,7 @@ export const getBppProvider = (cart)=> {
 };
 
 export const getBpp = (cart)=> {
-  return cart?.bpp || null;
+  return cart?.bpp?.descriptor?.name || null;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
