@@ -13,6 +13,24 @@
     </div>
     <div class="details header-push">
       <div class="sub-heading">
+        <div class="p-name">Payment</div>
+      </div>
+      <Card v-if="order.cart">
+        <CardContent
+          v-for="breakup in order.cart.quote.breakup"
+          :key="breakup.title"
+          class="flex-space-bw"
+        >
+          <div class="address-text">{{ breakup.title }}</div>
+          <div class="address-text">₹{{ parseFloat(breakup.price.value).toFixed( 2 ) }}</div>
+        </CardContent>
+        <div><hr class="sf-divider divider" /></div>
+        <CardContent class="flex-space-bw">
+          <div class="address-text bold">Total</div>
+          <div class="address-text bold">₹{{ order.cart.quote.price.value }}</div>
+        </CardContent>
+      </Card>
+      <div class="sub-heading">
         <div class="p-name">Other</div>
       </div>
       <Card>
@@ -34,7 +52,7 @@
       class="footer-fixed"
       :buttonText="'Pay & Confirm'"
       :buttonEnable="isPayConfirmActive"
-      :totalPrice="cartGetters.getTotals(order.cart).total"
+      :totalPrice="parseFloat(order.cart.quote.price.value) "
       :totalItem="cartGetters.getTotalItems(order.cart)"
       @buttonClick="proceedToConfirm"
     >
@@ -157,6 +175,7 @@ export default {
       if (!isTransactionMatching.value) {
         context.root.$router.push('/');
       }
+      console.log(order.value);
       clear();
     });
     return {
@@ -223,5 +242,9 @@ export default {
   // top: 130px;
   left: 0;
   height: 95vh;
+}
+
+.flex-space-bw {
+  justify-content: space-between;
 }
 </style>

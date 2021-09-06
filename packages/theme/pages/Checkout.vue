@@ -70,7 +70,7 @@
           <div class="s-p-name">{{ cartGetters.getItemName(product) }}</div>
           <div class="s-p-weight">x {{ cartGetters.getItemQty(product) }}</div>
           <div class="s-p-price">
-            ₹ {{ cartGetters.getItemPrice(product).regular }}
+            ₹ {{ cartGetters.getUpdatedPrice(product) ? cartGetters.getUpdatedPrice(product) : cartGetters.getItemPrice(product).regular }}
           </div>
         </div>
       </div>
@@ -399,6 +399,7 @@ export default {
       () => onInitResult.value,
       (newValue) => {
         if (newValue?.message?.initialized) {
+          cart.value.quote = newValue.message.initialized.quote;
           localStorage.setItem(
             'orderProgress',
             JSON.stringify({

@@ -42,7 +42,7 @@ export const getCartItemSku = (product: any): string => product?.sku || 'some-sk
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getCartTotals = (cart): AgnosticTotals => {
-  const totalPrice:number = parseInt(cart?.totalPrice) || 0;
+  const totalPrice:number = parseFloat(cart?.totalPrice) || 0;
   return {
     total: totalPrice,
     subtotal: 10
@@ -69,7 +69,7 @@ export const getCoupons = (cart: Cart): AgnosticCoupon[] => [];
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getDiscounts = (cart: Cart): AgnosticDiscount[] => [];
 
-export const getUpdatedPrice = (product: any): number => parseInt(product.updatedPrice) ?? null;
+export const getUpdatedPrice = (product: any): number => parseFloat(product.updatedPrice) ?? null;
 
 export const getUpdatedCount = (product: any): number => product.updatedCount ?? null;
 

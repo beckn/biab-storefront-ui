@@ -209,7 +209,7 @@ export default {
             }
           };
         });
-
+        stopPolling();
         const cartData = await init({
           // eslint-disable-next-line camelcase
           context: { transaction_id: transactionId },
@@ -223,7 +223,6 @@ export default {
               throw 'api fail';
             }
             if (newValue?.message?.quote) {
-              stopPolling();
               const updatedCartData = cart.value.items.map((cartItem) => {
                 if (cartItem.updatedCount) cartItem.updatedCount = null;
                 if (cartItem.updatedPrice) cartItem.updatedPrice = null;
@@ -253,10 +252,11 @@ export default {
               });
               cart.value.items = updatedCartData;
               cart.value.quote = newValue?.message?.quote.quote;
-              cart.value.totalPrice = newValue?.message?.quote?.quote?.price?.value;
+              cart.value.totalPrice = parseFloat(newValue?.message?.quote?.quote?.price?.value);
               setCart(cart.value);
               enableLoader.value = false;
               console.log('cart', cart);
+              // stopPolling();
             }
           }
         );
