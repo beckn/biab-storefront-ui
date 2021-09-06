@@ -39,7 +39,7 @@
           }}
         </div>
         <div class="text-padding">
-          <span class="p-distance"> by </span> {{ cart.bpp.descriptor.name }}
+          <span class="p-distance"> by </span> {{ cartGetters.getBpp(cart) }}
         </div>
 
         <!-- <div class="text-padding">
@@ -109,7 +109,11 @@
               />
             </svg>
           </div>
-          <div @click="toggleShippingModal" v-e2e="'add-shipping-details'" class="address-text color-def">
+          <div
+            @click="toggleShippingModal"
+            v-e2e="'add-shipping-details'"
+            class="address-text color-def"
+          >
             Add Shipping Details
           </div>
         </CardContent>
@@ -172,7 +176,7 @@
       <Card>
         <template>
           <CardContent
-            v-for="policyObj in policy"
+            v-for="policyObj in policy.cancellation_reasons"
             :key="policyObj.id"
             class="flex-half"
           >
@@ -256,7 +260,8 @@ import {
   cartGetters,
   providerGetters,
   useAddress,
-  useInitOrder
+  useInitOrder,
+  useOrderPolicy
 } from '@vue-storefront/beckn';
 
 // import { useUiState } from '~/composables';
@@ -298,35 +303,9 @@ export default {
     const billingAddressModal = ref(false);
     const enableLoader = ref(false);
 
-    const policy = ref([
-      {
-        descriptor: {
-          code: 'Cancellable within a day',
-
-          long_desc:
-            'However if there is a delay in delivery and you would like to cancel the order after a day of placing the order then please contact the customer support.',
-          name: 'Cancellation Policy',
-          short_desc:
-            'This item is cancellable with a day of the order being placed.'
-        },
-        id: '1'
-      },
-      {
-        descriptor: {
-          code: 'Non-Returnable',
-          long_desc:
-            'However, in the unlikely event of damaged, defective or different/wrong item delivered to you, we will provide a full refund or free replacement as applicable. We may contact you to ascertain the damage or defect in the product prior to issuing refund/replacement.',
-          name: 'Return Policy',
-          short_desc:
-            'This item is non-returnable due to the consumable nature of the product.'
-        },
-        id: '2'
-      }
-    ]);
     // const billingAddressModal = ref(false);
 
     const { cart, load } = useCart();
-    console.log('cart', cart.value?.quote);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     // const { selectedLocation } = useUiState();
 
@@ -337,6 +316,9 @@ export default {
       init
     } = useInitOrder();
 
+    const { init: getOrderPolicy } = useOrderPolicy();
+
+    const policy = ref({cancellation_reasons: []});
     const {
       getBillngAddress,
       getShippingAddress,
@@ -444,6 +426,13 @@ export default {
     onBeforeMount(() => {
       load();
       transactionId.value = localStorage.getItem('transactionId');
+      getOrderPolicy({
+        context: {
+          bpp_id: cart.value.bpp.id
+        }
+      }).then((res)=>{
+        policy.value = res.message;
+      });
     });
 
     return {
@@ -516,7 +505,7 @@ export default {
   justify-content: space-between;
 }
 
-.flex-half{
+.flex-half {
   display: grid;
   grid-template-columns: 50% 50%;
 }

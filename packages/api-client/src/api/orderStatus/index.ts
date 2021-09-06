@@ -7,8 +7,8 @@ import { AckResponse } from '../../types/BecknClientApi';
 export async function orderStatus(context, params: onInitializeOrderParam): Promise<AckResponse> {
   const config = (context.config as Config);
   const client = (context.client as sa.SuperAgent<sa.SuperAgentRequest>);
-  return client.get(config.api.url + config.api.endpoints.orderStatus)
-    .query(params)
+  return client.post(config.api.url + config.api.endpoints.orderStatus)
+    .send(params)
     .then(res => {
       return (res.body as AckResponse);
     });

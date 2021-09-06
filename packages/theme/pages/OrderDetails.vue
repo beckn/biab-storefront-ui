@@ -1,13 +1,17 @@
 <template>
   <div>
     <div class="top-bar">
-      <div @click="goBack" class="sf-chevron--left sf-chevron icon_back">
+      <div class="sf-chevron--left sf-chevron icon_back">
         <span class="sf-search-bar__icon">
           <SfIcon color="var(--c-primary)" size="20px" icon="chevron_left" />
         </span>
       </div>
       <div class="header-push">Order Details</div>
-      <SfButton class="sf-button--pure top-button" @click="callTrack">
+      <SfButton
+        v-if="isTrackingAvailable"
+        class="sf-button--pure top-button"
+        @click="openTrackModal = true"
+      >
         <div class="color-def">Track Order</div>
       </SfButton>
     </div>
@@ -196,60 +200,68 @@
       <div class="sub-heading">
         <!-- <div class="p-name">Order</div> -->
       </div>
-      <Card>
-        <SfAccordion>
-          <SfAccordionItem :header="'Fulfillment'">
-            <CardContent class="flex-space-bw">
-              <div class="address-text">ID</div>
-              <div class="address-text">#99J787jL</div>
-            </CardContent>
-            <CardContent class="flex-space-bw">
-              <div class="address-text">Provider</div>
-              <div class="address-text">₹0.00</div>
-            </CardContent>
-            <CardContent class="flex-space-bw">
-              <div class="address-text">Status</div>
-              <div class="address-text">Confirmed</div>
-            </CardContent>
-          </SfAccordionItem>
-        </SfAccordion>
-      </Card>
-      <div class="fulfillment-progress">
-        <div class="head">
-          <span>Fulfillment Progress</span>
-        </div>
-        <div class="sub-head">
-          <img src="/icons/calendar.svg" alt="" />
-          <span>ETA</span>
-          <span class="time">Today, 1.30pm</span>
-        </div>
-        <div class="tabs-container">
-          <div
-            class="tab"
-            :class="{ fill: tab }"
-            v-for="(tab, index) in fulfillmentStep"
-            :key="index"
-          ></div>
-        </div>
-        <div
-          class="track-details"
-          :class="{
-            first: index === 0,
-            last: index === fulfillmentSteps.length - 1,
-          }"
-          v-for="(step, index) in fulfillmentSteps"
-          :key="index"
-        >
-          <div class="check-container">
-            <div v-if="index !== 0" class="dot"></div>
-            <div v-if="index !== 0" class="dot"></div>
-            <div class="check"><img src="/icons/check.svg" alt="" /></div>
-            <div v-if="index !== fulfillmentSteps.length - 1" class="dot"></div>
-            <div v-if="index !== fulfillmentSteps.length - 1" class="dot"></div>
+      <div v-if='isFulfillmentAvailable'>
+        <Card>
+          <SfAccordion>
+            <SfAccordionItem :header="'Fulfillment'">
+              <CardContent class="flex-space-bw">
+                <div class="address-text">ID</div>
+                <div class="address-text">#99J787jL</div>
+              </CardContent>
+              <CardContent class="flex-space-bw">
+                <div class="address-text">Provider</div>
+                <div class="address-text">₹0.00</div>
+              </CardContent>
+              <CardContent class="flex-space-bw">
+                <div class="address-text">Status</div>
+                <div class="address-text">{{isFulfillmentAvailable.state}}</div>
+              </CardContent>
+            </SfAccordionItem>
+          </SfAccordion>
+        </Card>
+        <div class="fulfillment-progress">
+          <div class="head">
+            <span>Fulfillment Progress</span>
           </div>
-          <div class="step-details">
-            <div class="step-name">{{ step.status }}</div>
-            <div class="step-time">{{ step.time }}</div>
+          <div class="sub-head">
+            <img src="/icons/calendar.svg" alt="" />
+            <span>ETA</span>
+            <span class="time">Today, 1.30pm</span>
+          </div>
+          <div class="tabs-container">
+            <div
+              class="tab"
+              :class="{ fill: tab }"
+              v-for="(tab, index) in fulfillmentStep"
+              :key="index"
+            ></div>
+          </div>
+          <div
+            class="track-details"
+            :class="{
+              first: index === 0,
+              last: index === fulfillmentSteps.length - 1,
+            }"
+            v-for="(step, index) in fulfillmentSteps"
+            :key="index"
+          >
+            <div class="check-container">
+              <div v-if="index !== 0" class="dot"></div>
+              <div v-if="index !== 0" class="dot"></div>
+              <div class="check"><img src="/icons/check.svg" alt="" /></div>
+              <div
+                v-if="index !== fulfillmentSteps.length - 1"
+                class="dot"
+              ></div>
+              <div
+                v-if="index !== fulfillmentSteps.length - 1"
+                class="dot"
+              ></div>
+            </div>
+            <div class="step-details">
+              <div class="step-name">{{ step.status }}</div>
+              <div class="step-time">{{ step.time }}</div>
+            </div>
           </div>
         </div>
       </div>
@@ -283,29 +295,35 @@
               )
             }}
           </div>
-          <SfButton class="support-btns" aria-label="Close modal" type="button"
+          <SfButton
+            class="support-btns"
+            @click="openWindow('tel:' + isSupportAvailable.phone)"
+            aria-label="Close modal"
+            type="button"
             >Call us</SfButton
           >
-          <SfButton class="support-btns" aria-label="Close modal" type="button"
+          <SfButton
+            class="support-btns"
+            @click="openWindow('mailto:' + isSupportAvailable.email)"
+            aria-label="Close modal"
+            type="button"
             >Email us</SfButton
           >
-          <SfButton class="support-btns" aria-label="Close modal" type="button"
+          <SfButton
+            class="support-btns"
+            @click="openWindow(isSupportAvailable.uri)"
+            aria-label="Close modal"
+            type="button"
             >Chat with us</SfButton
           >
         </div>
       </ModalSlide>
 
       <ModalSlide :visible="openTrackModal" @close="openTrackModal = false">
-        <div v-if="loadingTrack" key="loadingCircle" class="loader-circle">
-          <LoadingCircle :enable="loadingTrack" />
-        </div>
         <div class="modal-heading">Track</div>
         <div><hr class="sf-divider" /></div>
         <div class="modal-body">
-          <div
-            v-if="!loadingTrack && !isTrackingAvailable"
-            class="support-text"
-          >
+          <div v-if="!isTrackingAvailable" class="support-text">
             No Tracking details available
             <!-- {{
               providerGetters.getProviderName(
@@ -318,7 +336,7 @@
               class="support-btns"
               aria-label="Close modal"
               type="button"
-              @click="openWindow"
+              @click="openWindow(isTrackingAvailable)"
               >open Link</SfButton
             >
           </div>
@@ -350,7 +368,13 @@ import LoadingCircle from '~/components/LoadingCircle';
 import SfAccordionItem from '~/components/Accordion.vue';
 import AddressInputs from '~/components/AddressInputs.vue';
 import Footer from '~/components/Footer.vue';
-import { cartGetters, providerGetters, useTrack } from '@vue-storefront/beckn';
+import {
+  cartGetters,
+  providerGetters,
+  useTrack,
+  useOrderStatus,
+  useSupport
+} from '@vue-storefront/beckn';
 
 import { ref, onBeforeMount, computed } from '@vue/composition-api';
 import Card from '~/components/Card.vue';
@@ -386,12 +410,32 @@ export default {
 
     const order = ref(null);
     const enableLoader = ref(true);
-    const { poll: onTrack, init: track, pollResults: trackResult } = useTrack();
+    const {
+      poll: onTrack,
+      init: track,
+      pollResults: trackResult
+    } = useTrack('track');
+    const {
+      poll: onSupport,
+      init: support,
+      pollResults: supportResult
+    } = useSupport('support');
+
+    const {
+      poll: onStatus,
+      init: status,
+      pollResults: statusResult
+    } = useOrderStatus('status');
     const isTrackingAvailable = computed(() => {
-      // return trackResult.value?.message?.tracking?.url;
-      return 'https://tinyurl.com/y2tguhnr';
+      return trackResult.value?.message?.tracking?.url;
     });
-    const loadingTrack = ref(false);
+
+    const isFulfillmentAvailable = computed(() => {
+      return statusResult.value?.message?.order;
+    });
+    const isSupportAvailable = computed(() => {
+      return supportResult.value?.message;
+    });
     const transactionId = context.root.$route.query.id;
     const fulfillmentStep = [
       { status: 'Items Packed', time: 'May 2021, 2021 12:40 PM' },
@@ -412,17 +456,24 @@ export default {
     const goHome = () => context.root.$router.push('/');
     const onCancel = () => context.root.$router.push('/cancelorder');
 
-    onBeforeMount(async () => {
-      const orders = JSON.parse(localStorage.getItem('orderHistory')) ?? [];
+    const callSupport = async () => {
+      const params = {
+        context: {
+          // eslint-disable-next-line camelcase
+          transaction_id: order.value.transactionId,
+          // eslint-disable-next-line camelcase
+          bpp_id: order.value.cart.bpp.id
+        },
+        message: {
+          // eslint-disable-next-line camelcase
+          ref_id: order.value.order.id
+        }
+      };
+      const response = await support(params);
+      await onSupport({ messageId: response.context.message_id });
+    };
 
-      order.value = orders.find((ord) => {
-        return ord.transactionId === transactionId;
-      });
-      enableLoader.value = false;
-    });
-
-    const callTrack = async () => {
-      openTrackModal.value = true;
+    const callStatus = async () => {
       const params = {
         context: {
           // eslint-disable-next-line camelcase
@@ -435,17 +486,42 @@ export default {
           order_id: order.value.order.id
         }
       };
-      loadingTrack.value = true;
+      const response = await status(params);
+      await onStatus({ messageId: response.context.message_id });
+    };
+
+    const callTrack = async () => {
+      const params = {
+        context: {
+          // eslint-disable-next-line camelcase
+          transaction_id: order.value.transactionId,
+          // eslint-disable-next-line camelcase
+          bpp_id: order.value.cart.bpp.id
+        },
+        message: {
+          // eslint-disable-next-line camelcase
+          order_id: order.value.order.id
+        }
+      };
       const response = await track(params);
-      onTrack({ messageId: response.context.message_id });
-      console.log(trackResult);
-      loadingTrack.value = false;
+      await onTrack({ messageId: response.context.message_id });
     };
+    onBeforeMount(async () => {
+      const orders = JSON.parse(localStorage.getItem('orderHistory')) ?? [];
 
-    const openWindow = () => {
-      window.open(isTrackingAvailable.value);
+      order.value = orders.find((ord) => {
+        return ord.transactionId === transactionId;
+      });
+      await callTrack();
+      await callSupport();
+      await callStatus();
+      enableLoader.value = false;
+    });
+
+    const openWindow = (link) => {
+      // debugger
+      window.open(link);
     };
-
     return {
       goHome,
       order,
@@ -459,9 +535,10 @@ export default {
       enableLoader,
       openTrackModal,
       callTrack,
-      loadingTrack,
       trackResult,
-      openWindow
+      openWindow,
+      isFulfillmentAvailable,
+      isSupportAvailable
     };
   }
 };

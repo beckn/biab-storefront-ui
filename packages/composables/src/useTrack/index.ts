@@ -20,7 +20,7 @@ const factoryParams = {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   continuePolling: (_, { oldResults, newResults }) => {
-    if (newResults?.message?.initialized) {
+    if (newResults?.message?.tracking) {
       return false;
     }
     return true;

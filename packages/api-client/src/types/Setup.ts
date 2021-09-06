@@ -15,6 +15,7 @@ export interface ApiEndpoints {
   onTrack: string,
   support: string,
   onSupport: string,
+  orderPolicy: string,
 }
 
 export interface ApiConfig {

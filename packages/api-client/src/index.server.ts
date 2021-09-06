@@ -7,6 +7,8 @@ import onGetQuote from './api/onGetQuote';
 import initializeOrder from './api/initializeOrder';
 import onInitializeOrder from './api/onInitializeOrder';
 
+import orderPolicy from './api/orderPolicy';
+
 import confirmOrder from './api/confirmOrder';
 import onConfirmOrder from './api/onConfirmOrder';
 
@@ -43,7 +45,8 @@ const { createApiClient } = apiClientFactory<any, any>({
     track,
     onTrack,
     support,
-    onSupport
+    onSupport,
+    orderPolicy
   }
 });
 
