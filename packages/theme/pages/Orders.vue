@@ -48,7 +48,7 @@
             <div class="order-price">
               ₹
               {{
-                0
+                order.initOrder.payment.params.amount
               }}
             </div>
           </div>
@@ -154,6 +154,9 @@ export default {
   font-weight: 500;
   margin: 6px 0px;
   color: #37474f;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .order-status {

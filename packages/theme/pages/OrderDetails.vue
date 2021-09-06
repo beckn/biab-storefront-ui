@@ -183,7 +183,7 @@
           <SfAccordionItem :header="'Order'">
             <CardContent class="flex-space-bw">
               <div class="address-text">ID</div>
-              <div class="address-text">{{ order.order.id }}</div>
+              <div class="address-text order-id">{{ order.order.id }}</div>
             </CardContent>
             <CardContent class="flex-space-bw">
               <div class="address-text">Placed at</div>
@@ -219,7 +219,7 @@
             </SfAccordionItem>
           </SfAccordion>
         </Card>
-        <div class="fulfillment-progress">
+        <div class="fulfillment-progress" v-if="false">
           <div class="head">
             <span>Fulfillment Progress</span>
           </div>
@@ -227,14 +227,6 @@
             <img src="/icons/calendar.svg" alt="" />
             <span>ETA</span>
             <span class="time">Today, 1.30pm</span>
-          </div>
-          <div class="tabs-container">
-            <div
-              class="tab"
-              :class="{ fill: tab }"
-              v-for="(tab, index) in fulfillmentStep"
-              :key="index"
-            ></div>
           </div>
           <div
             class="track-details"
@@ -730,5 +722,11 @@ export default {
 
 .sf-loader {
   top: 40px;
+}
+
+.order-id{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 </style>
