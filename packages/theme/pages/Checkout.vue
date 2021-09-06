@@ -399,6 +399,7 @@ export default {
       () => onInitResult.value,
       (newValue) => {
         if (newValue?.message?.initialized) {
+          cart.value.quote = newValue.message.initialized.quote;
           localStorage.setItem(
             'orderProgress',
             JSON.stringify({
