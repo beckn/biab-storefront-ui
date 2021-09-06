@@ -62,6 +62,7 @@ const usePollerFactory = (factoryParams: UsePollerFactoryParams) => {
     };
 
     const stopPolling = async () => {
+      polling.value = false;
       clearInterval(pollFunction.value.interval);
       clearTimeout(pollFunction.value.interval);
     };

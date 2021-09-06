@@ -179,7 +179,7 @@ export default {
   },
   setup(_, { root }) {
     const { cart, addItem, load, setCart } = useCart();
-    const { init, poll, pollResults, stopPolling } = useQuote('cart');
+    const { init, poll, pollResults, stopPolling, polling } = useQuote('cart');
     const openModal = ref(false);
     const modelOpenIndex = ref(-1);
     const itemNumber = ref(null);
@@ -209,7 +209,6 @@ export default {
             }
           };
         });
-        stopPolling();
         const cartData = await init({
           // eslint-disable-next-line camelcase
           context: { transaction_id: transactionId },
@@ -222,19 +221,14 @@ export default {
             if (newValue?.error) {
               throw 'api fail';
             }
-            if (newValue?.message?.quote) {
+            if (newValue?.message?.quote && polling.value) {
+              stopPolling();
               const updatedCartData = cart.value.items.map((cartItem) => {
                 if (cartItem.updatedCount) cartItem.updatedCount = null;
                 if (cartItem.updatedPrice) cartItem.updatedPrice = null;
                 const quoteItem = newValue.message.quote?.items.filter(
                   (quoteItem) => quoteItem.id === cartItem.id
                 )[0];
-                // const singleItemValue = quoteItem.price.value / quoteItem.quantity.selected.count;
-                console.log(
-                  'price',
-                  parseFloat(cartItem.price.value),
-                  parseFloat(quoteItem.price.value)
-                );
                 if (
                   parseFloat(cartItem.price.value) !==
                   parseFloat(quoteItem.price.value)
@@ -255,8 +249,6 @@ export default {
               cart.value.totalPrice = parseFloat(newValue?.message?.quote?.quote?.price?.value);
               setCart(cart.value);
               enableLoader.value = false;
-              console.log('cart', cart);
-              // stopPolling();
             }
           }
         );
@@ -307,7 +299,6 @@ export default {
 
     const updateAll = () => {
       for (let i = 0; i < cart.value.items.length; i++) {
-        console.log(cart.value.items[i].quantity);
         if (
           Boolean(cart.value.items[i]?.updatedCount) &&
           cart.value.items[i].updatedCount !== cart.value.items[i].quantity
