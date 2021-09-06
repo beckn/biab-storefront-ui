@@ -122,7 +122,7 @@ export default {
         {
           amount: cartGetters.getTotals(order.value.cart).total,
           status: 'PAID',
-          transactionId: 'rand' + Math.floor(Math.random() * 100000)
+          transactionId: order.value.transactionId
         }
       );
       const response = await init(params);
