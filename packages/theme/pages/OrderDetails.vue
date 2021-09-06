@@ -257,13 +257,12 @@
           </div>
         </div>
       </div>
-      <!-- <button
-        class="sf-button color-primary support-btns"
+      <button
+        class="sf-button color-primary support-btns card-checkbox"
         @click="goHome"
       >
         <div class="f-btn-text">Home</div>
-        <img class="btn-img" src="/icons/support.svg" />
-      </button> -->
+      </button>
       <button
         class="sf-button color-primary support-btns"
         @click="openSupportModal = true"
