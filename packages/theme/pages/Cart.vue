@@ -253,6 +253,7 @@ export default {
               });
               cart.value.items = updatedCartData;
               cart.value.quote = newValue?.message?.quote.quote;
+              cart.value.totalPrice = newValue?.message?.quote?.quote?.price?.value;
               setCart(cart.value);
               enableLoader.value = false;
               console.log('cart', cart);

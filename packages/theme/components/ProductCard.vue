@@ -7,7 +7,7 @@
       <div @click="$emit('goToProduct')" class="s-p-details">
         <div class="s-p-name">{{ _pName }}</div>
         <!-- <div class="s-p-weight">{{ _pWieght }}</div> -->
-        <div class="price-increase"  v-if="!!_updatedPrice && _updatedPrice !== _pPrice">Price increased by <span>₹{{_pPrice-_updatedPrice}}</span></div>
+        <div class="price-increase"  v-if="!!_updatedPrice && _updatedPrice !== _pPrice">Price increased by <span>₹{{_updatedPrice-_pPrice}}</span></div>
         <div class="s-p-price" v-if="_updatedCount !== 0">₹ {{ _pPrice }}</div>
         <span class="out-stock"  v-if="_updatedCount === 0">Out of Stock</span>
       </div>
