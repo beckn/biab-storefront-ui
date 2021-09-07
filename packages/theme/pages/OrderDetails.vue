@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="top-bar">
-      <div class="sf-chevron--left sf-chevron icon_back">
+      <div @clic='goBack' class="sf-chevron--left sf-chevron icon_back">
         <span class="sf-search-bar__icon">
           <SfIcon color="var(--c-primary)" size="20px" icon="chevron_left" />
         </span>
@@ -191,7 +191,7 @@
             </CardContent>
             <CardContent class="flex-space-bw">
               <div class="address-text">Status</div>
-              <div class="address-text">Confirmed</div>
+              <div class="address-text">{{order.order.state}}</div>
             </CardContent>
           </SfAccordionItem>
         </SfAccordion>
@@ -445,6 +445,7 @@ export default {
     const openSupportModal = ref(false);
     const openTrackModal = ref(false);
     const goHome = () => context.root.$router.push('/');
+    const goBack = () => context.root.$router.push('/orders');
     const onCancel = () => context.root.$router.push('/cancelorder');
 
     const callSupport = async () => {
@@ -515,6 +516,7 @@ export default {
     };
     return {
       goHome,
+      goBack,
       order,
       cartGetters,
       isTrackingAvailable,
