@@ -270,7 +270,7 @@
         <div class="f-btn-text">Contact Support</div>
         <img class="btn-img" src="/icons/support.svg" />
       </button>
-      <button class="color-light sf-button cancel-order-btn" @click="onCancel">
+      <button v-if="false" class="color-light sf-button cancel-order-btn" @click="onCancel">
         <div class="btn-text">Cancel Order</div>
       </button>
       <ModalSlide :visible="openSupportModal" @close="openSupportModal = false">
