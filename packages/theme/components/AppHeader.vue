@@ -66,7 +66,7 @@
 <script>
 import { SfImage, SfIcon, SfBottomModal } from '@storefront-ui/vue';
 import { useUiState } from '~/composables';
-import { useWishlist, useUser } from '@vue-storefront/beckn';
+import { useWishlist, useUser, useSearch } from '@vue-storefront/beckn';
 import { computed, onBeforeUnmount } from '@vue/composition-api';
 import { onSSR } from '@vue-storefront/core';
 import { useUiHelpers } from '~/composables';
@@ -91,6 +91,7 @@ export default {
     const { setTermForUrl } = useUiHelpers();
     const { isAuthenticated, load: loadUser } = useUser();
     const { load: loadWishlist } = useWishlist();
+    const { stopPolling } = useSearch('search');
 
     const accountIcon = computed(() =>
       isAuthenticated.value ? 'profile_fill' : 'profile'
@@ -99,6 +100,7 @@ export default {
     const openHamburger = false;
 
     const goBack = () => {
+      stopPolling();
       root.$router.back();
     };
 

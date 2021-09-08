@@ -142,7 +142,7 @@ export default {
 
     const handleSearch = debounce(async (paramValue) => {
       if (polling.value) stopPolling();
-      if (!enableLoader.value) enableLoader.value = true;
+      enableLoader.value = true;
       if (noSearchFound.value) noSearchFound.value = false;
       toggleLoadindBar(false);
 
@@ -180,6 +180,9 @@ export default {
             if (pollResults?.value.length === 0) {
               noSearchFound.value = true;
             }
+          } else {
+            enableLoader.value = true;
+            noSearchFound.value = false;
           }
         }
       );
