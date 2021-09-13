@@ -367,7 +367,7 @@ import {
   useSupport
 } from '@vue-storefront/beckn';
 
-import { ref, onBeforeMount, computed } from '@vue/composition-api';
+import { ref, onBeforeMount, computed, onBeforeUnmount } from '@vue/composition-api';
 import Card from '~/components/Card.vue';
 import CardContent from '~/components/CardContent.vue';
 
@@ -415,7 +415,8 @@ export default {
     const {
       poll: onStatus,
       init: status,
-      pollResults: statusResult
+      pollResults: statusResult,
+      stopPolling: stopStatusPolling
     } = useOrderStatus('status');
     const isTrackingAvailable = computed(() => {
       return trackResult.value?.message?.tracking?.url;
@@ -508,6 +509,10 @@ export default {
       await callSupport();
       await callStatus();
       enableLoader.value = false;
+    });
+
+    onBeforeUnmount(async () => {
+      stopStatusPolling();
     });
 
     const openWindow = (link) => {

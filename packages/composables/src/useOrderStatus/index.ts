@@ -32,10 +32,10 @@ const factoryParams = {
     return ackResponse;
   },
   pollTime: () => {
-    return config.timers.trackOrder.poll;
+    return config.timers.orderStatus.poll;
   },
   intervalTime: () => {
-    return config.timers.trackOrder.interval;
+    return config.timers.orderStatus.interval;
   }
 
 };
