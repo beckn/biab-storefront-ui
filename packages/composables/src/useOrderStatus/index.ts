@@ -19,9 +19,9 @@ const factoryParams = {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   continuePolling: (_, { oldResults, newResults }) => {
-    if (newResults?.message?.order) {
-      return false;
-    }
+    // if (newResults?.message?.order) {
+    //   return false;
+    // }
     return true;
   },
   init: async (context: Context, { params }) => {
