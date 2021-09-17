@@ -170,7 +170,7 @@
         </CardContent>
       </Card>
 
-      <div class="sub-heading">
+      <!-- <div class="sub-heading">
         <div class="p-name">Order Policy</div>
       </div>
       <Card>
@@ -182,14 +182,14 @@
           >
             <div class="">{{ policyObj.descriptor.name }}</div>
             <div class="address-text">{{ policyObj.descriptor.code }}</div>
-          </CardContent>
+          </CardContent> -->
           <!-- <div><hr class="sf-divider divider" /></div>
           <CardContent class="flex-space-bw">
             <div class="address-text bold">Total</div>
             <div class="address-text bold">₹{{ cart.quote.price.value }}</div>
           </CardContent> -->
-        </template>
-      </Card>
+        <!-- </template>
+      </Card> -->
     </div>
     <Footer
       class="footer-fixed"
