@@ -154,7 +154,7 @@
             <CardContent class="flex-space-bw">
               <div class="address-text bold">Total</div>
               <div class="address-text bold">
-                ₹{{ cartGetters.getTotals(order.cart).total }}
+                ₹{{ order.cart.quote.price.value }}
               </div>
             </CardContent>
             <CardContent class="flex-space-bw">
@@ -191,7 +191,7 @@
             </CardContent>
             <CardContent class="flex-space-bw">
               <div class="address-text">Status</div>
-              <div class="address-text">{{order.order.state}}</div>
+              <div class="address-text">{{isFulfillmentAvailable.state}}</div>
             </CardContent>
           </SfAccordionItem>
         </SfAccordion>
@@ -212,10 +212,10 @@
                 <div class="address-text">Provider</div>
                 <div class="address-text">₹0.00</div>
               </CardContent>
-              <CardContent class="flex-space-bw">
+              <!-- <CardContent class="flex-space-bw">
                 <div class="address-text">Status</div>
                 <div class="address-text">{{isFulfillmentAvailable.state}}</div>
-              </CardContent>
+              </CardContent> -->
             </SfAccordionItem>
           </SfAccordion>
         </Card>
