@@ -34,7 +34,7 @@
                       <div class="p-name">{{providerGetters.getProviderName(provider,provider)}}</div>
                       <div class="text-padding"> <span class="p-distance">by</span> <span>{{providerGetters.getProviderBpp(bpp.bpp_descriptor)}}</span></div>
                     </div>
-                    <div class="p-distance">{{providerGetters.getProviderDistance(provider)}} km</div>
+                    <!-- <div class="p-distance">{{providerGetters.getProviderDistance(provider)}} km</div> -->
                   </div>
                 </div>
                 <div class="exp-provider" @click="openProvider(bpp,provider )">Explore All</div>
