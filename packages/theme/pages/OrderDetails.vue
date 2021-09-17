@@ -189,7 +189,7 @@
               <div class="address-text">Placed at</div>
               <div class="address-text">{{ order.order.created_at }}</div>
             </CardContent>
-            <CardContent class="flex-space-bw">
+            <CardContent v-if='isFulfillmentAvailable' class="flex-space-bw">
               <div class="address-text">Status</div>
               <div class="address-text">{{isFulfillmentAvailable.state}}</div>
             </CardContent>
