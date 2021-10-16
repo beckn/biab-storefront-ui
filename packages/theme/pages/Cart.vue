@@ -11,21 +11,7 @@
     <div v-if="enableLoader" key="loadingCircle" class="loader-circle">
       <LoadingCircle :enable="enableLoader" />
     </div>
-    <div v-if="cartGetters.getTotalItems(cart)" class="provider-head">
-      <div class="provide-img">
-        <img
-          :src="
-            cartGetters.getProviderImage(cart.bppProvider)
-              ? cartGetters.getProviderImage(cart.bppProvider)
-              : require('~/assets/images/store-placeholder.png')
-          "
-        />
-      </div>
-      <div class="p-name">{{ cart.bppProvider.descriptor.name }}</div>
-      <div class="text-padding">
-        <span class="p-distance"> by </span> {{ cart.bpp.descriptor.name }}
-      </div>
-    </div>
+    <div v-if="cartGetters.getTotalItems(cart)" class="provider-head"></div>
     <div>
       <div v-if="errOutOfStock" class="cart-error-msg">
         <img src="../assets/images/bx_bx-error.png" alt="" />
@@ -52,11 +38,7 @@
       </div>
     </div>
     <transition name="sf-fade" mode="out-in">
-      <div
-        v-if="cartGetters.getTotalItems(cart)"
-        key="my-cart"
-        class="my-cart"
-      >
+      <div v-if="cartGetters.getTotalItems(cart)" key="my-cart" class="my-cart">
         <div class="collected-product-list">
           <transition-group name="sf-fade" tag="div">
             <ProductCard
@@ -66,6 +48,7 @@
               v-for="(product, index) in cartGetters.getItems(cart)"
               :key="index + 'new'"
               :pName="cartGetters.getItemName(product)"
+              :pRetailer="cart.bppProvider.descriptor.name"
               :pPrice="cartGetters.getItemPrice(product).regular"
               :pImage="cartGetters.getItemImage(product)"
               :pCount="cartGetters.getItemQty(product)"
@@ -123,12 +106,12 @@
             label="Enter Quantity"
             name="locality"
             errorMessage="Maximum limit on cart quantity is 10."
-           @input="onChangeInput"
+            @input="onChangeInput"
           />
         </div>
         <SfButton
           class="add-quantity"
-          :class="{'is-disabled--button':!validInput}"
+          :class="{ 'is-disabled--button': !validInput }"
           aria-label="Close modal"
           type="button"
           @click="addQuantity"
@@ -177,6 +160,7 @@ export default {
     SfInput,
     LoadingCircle
   },
+
   setup(_, { root }) {
     const { cart, addItem, load, setCart } = useCart();
     const { init, poll, pollResults, stopPolling, polling } = useQuote('cart');
@@ -246,7 +230,9 @@ export default {
               });
               cart.value.items = updatedCartData;
               cart.value.quote = newValue?.message?.quote.quote;
-              cart.value.totalPrice = parseFloat(newValue?.message?.quote?.quote?.price?.value);
+              cart.value.totalPrice = parseFloat(
+                newValue?.message?.quote?.quote?.price?.value
+              );
               setCart(cart.value);
               enableLoader.value = false;
             }
@@ -343,7 +329,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.sf-sidebar__aside{
+.sf-sidebar__aside {
   top: 45px;
 }
 .sf-bar {
@@ -509,4 +495,3 @@ export default {
   }
 }
 </style>
-
