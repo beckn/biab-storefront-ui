@@ -12,7 +12,7 @@
           <div class="location-icon">
             <slot>
               <div>
-                <p>{{ name }}</p>
+                <p>{{ locationText }}</p>
               </div>
               <div
                 @click="toggleIsShow"
@@ -31,6 +31,21 @@
                 </template>
               </div>
             </slot>
+          </div>
+          <div v-if="isLocationSelected">
+            <input
+              v-model="location"
+              type="text"
+              aria-label="Select Location"
+              class="
+                  sf-header__search
+                  sf-search-bar
+                  sf-header__search
+                  be-search-location
+                "
+              disabled="isActive"
+              v-e2e="'app-header-location-input'"
+            />
           </div>
         </client-only>
         <template>
@@ -68,18 +83,18 @@
       </div>
       <div class="user-cart-content">
         <div class="cart-content">
-          <template>
+          <nuxt-link :to="localePath('/cart')">
             <SfButton class="button-pos sf-button--pure">
               <SfIcon icon="empty_cart" />
             </SfButton>
-          </template>
+          </nuxt-link>
         </div>
         <div class="user-content">
-          <template>
+          <nuxt-link :to="localePath('/')">
             <SfButton class="button-pos sf-button--pure">
               <SfIcon icon="profile" />
             </SfButton>
-          </template>
+          </nuxt-link>
         </div>
       </div>
     </div>
@@ -119,7 +134,6 @@ export default {
     const { selectedLocation, updateLocation } = useUiState();
     const isLocationdropOpen = ref(false);
     const isShow = ref(false);
-    const name = ref('Your Location');
     const location = ref(selectedLocation?.value?.address);
 
     const toggleLocationDrop = () => {
@@ -132,7 +146,6 @@ export default {
 
     const locationSelected = (latitude, longitude, address) => {
       location.value = address;
-      name.value = address;
       toggleLocationDrop();
       updateLocation({
         latitude: latitude,
@@ -140,8 +153,8 @@ export default {
         address: address
       });
     };
+
     return {
-      name,
       isLocationdropOpen,
       toggleLocationDrop,
       isShow,
@@ -149,6 +162,14 @@ export default {
       location,
       locationSelected
     };
+  },
+  computed: {
+    isLocationSelected() {
+      return this.location !== '';
+    },
+    locationText() {
+      return this.location !== '' ? 'Your location' : 'Set location';
+    }
   }
 };
 </script>

@@ -16,15 +16,16 @@
         <div class="p-name" v-e2e="'cart-item'">Items</div>
       </div>
 
-      <div class="provider-head p-0">
-        <!-- <SfImage
+      <!-- to do cleanUp by Ujjwal -->
+      <!-- <div class="provider-head p-0"> -->
+      <!-- <SfImage
             class="back"
             :src="providerGetters.getProviderImages(provider)[0]"
             alt="Vila stripe maxi shirt dress"
             :width="35"
             :height="35"
           /> -->
-        <!-- <div class="provide-img">
+      <!-- <div class="provide-img">
           <img
             :src="
               cartGetters.getProviderImage(cartGetters.getBppProvider(cart))
@@ -42,7 +43,7 @@
           <span class="p-distance"> by </span> {{ cartGetters.getBpp(cart) }}
         </div> -->
 
-        <!-- <div class="text-padding">
+      <!-- <div class="text-padding">
             <div class="flexy-center">
               <div class="p-name">Abc</div>
               <div class="text-padding">
@@ -51,7 +52,8 @@
               </div>
             </div>
           </div> -->
-      </div>
+      <!-- </div> -->
+      <!-- CLEANUP UPTO THIS EXTENT -->
 
       <div
         :key="index + 'new'"

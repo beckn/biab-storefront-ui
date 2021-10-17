@@ -11,7 +11,6 @@
     <div v-if="enableLoader" key="loadingCircle" class="loader-circle">
       <LoadingCircle :enable="enableLoader" />
     </div>
-    <div v-if="cartGetters.getTotalItems(cart)" class="provider-head"></div>
     <div>
       <div v-if="errOutOfStock" class="cart-error-msg">
         <img src="../assets/images/bx_bx-error.png" alt="" />
@@ -48,7 +47,7 @@
               v-for="(product, index) in cartGetters.getItems(cart)"
               :key="index + 'new'"
               :pName="cartGetters.getItemName(product)"
-              :pRetailer="cart.bppProvider.descriptor.name"
+              :pRetailer="cartGetters.getBppProvider(cart).descriptor.name"
               :pPrice="cartGetters.getItemPrice(product).regular"
               :pImage="cartGetters.getItemImage(product)"
               :pCount="cartGetters.getItemQty(product)"

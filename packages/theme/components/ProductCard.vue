@@ -11,8 +11,10 @@
       </div>
       <div @click="$emit('goToProduct')" class="s-p-details">
         <div class="s-p-name">{{ _pName }}</div>
-        <div class="s-p-retailer">Sold by {{ _pRetailer }}</div>
-        <!-- <div class="s-p-weight">{{ _pWieght }}</div> -->
+        <div class="s-p-retailer">
+          Sold by {{ _pRetailer }},{{ _pDistance }}
+        </div>
+        <!-- <div class="s-p-weight">{{ _pWieght }}</div>    -->
         <div
           class="price-increase"
           v-if="!!_updatedPrice && _updatedPrice !== _pPrice"
@@ -89,6 +91,7 @@ export default {
     product: { type: Object },
     pName: { type: String, default: '' },
     pRetailer: { type: String, default: '' },
+    pDistance: { type: String, default: '' },
     pWieght: { type: String, default: '' },
     pPrice: { type: Number, default: '' },
     pImage: { type: String, default: '' },
@@ -102,6 +105,7 @@ export default {
   setup(props, { emit }) {
     const _pName = computed(() => props.pName);
     const _pRetailer = computed(() => props.pRetailer);
+    const _pDistance = computed(() => props.pDistance);
     const _pWieght = computed(() => props.pWieght);
     const _pPrice = computed(() => props.pPrice);
     const _pImage = computed(() => props.pImage);
@@ -126,6 +130,7 @@ export default {
       productGetters,
       _pName,
       _pRetailer,
+      _pDistance,
       _pWieght,
       _pPrice,
       _pImage,

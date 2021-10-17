@@ -106,6 +106,7 @@
                   "
                   :pPrice="productGetters.getPrice(product).regular"
                   :pImage="productGetters.getGallery(product)[0].small[0]"
+                  :pDistance="'800m away'"
                   :pWieght="productGetters.getProductWeight(product) + ' kg'"
                   :pCount="cartGetters.getItemQty(isInCart({ product }))"
                   @updateItemCount="
