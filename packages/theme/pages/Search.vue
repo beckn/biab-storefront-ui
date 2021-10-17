@@ -34,7 +34,7 @@
       </SfSearchBar>
     </div>
     <div class="details">
-      <transition-group name="sf-fade" mode="out-in">
+      <transition-group name="sf-fade" mode="out-in" v-if="!enableLoader">
         <div
           v-if="pollResults && pollResults.length > 0"
           class="search__wrapper-results"
@@ -80,7 +80,6 @@
                         }}</span>
                       </div>
                     </div>
-                    <!-- <div class="p-distance">{{providerGetters.getProviderDistance(provider)}} km</div> -->
                   </div>
                 </div>
                 <div class="exp-provider" @click="openProvider(bpp, provider)">
@@ -120,7 +119,7 @@
             </div>
           </div>
         </div>
-        <LoadingCircle :enable="enableLoader" key="loding-cir" />
+
         <div v-if="noSearchFound" key="no-search" class="before-results">
           <SfImage
             src="/icons/feather_search.svg"
@@ -138,6 +137,8 @@
           <p>{{ $t('different keyword') }}</p>
         </div>
       </transition-group>
+
+      <LoadingCircle :enable="enableLoader" key="loding-cir" />
     </div>
     <div v-if="cartGetters.getTotalItems(cart)" class="sr-footer">
       <Footer
@@ -190,7 +191,6 @@ export default {
       clearCartPopup,
       updateExpPageData
     } = useUiState();
-    const enableLoader = ref(false);
     const goBack = () => {
       context.root.$router.back();
     };
@@ -199,6 +199,7 @@ export default {
     const data = context.root.$route.params.searchKey;
     console.log(data);
     const searchKey = ref(data);
+    const enableLoader = ref(Boolean(data));
     const keyVal = ref(0);
     const { search, result } = useFacet();
     const { pollResults, poll, polling, stopPolling } = useSearch('search');
@@ -215,57 +216,59 @@ export default {
       }
     );
 
-    const handleSearch = debounce(async (paramValue) => {
+    const handleSearch = debounce((paramValue) => {
       if (polling.value) stopPolling();
       enableLoader.value = true;
       if (noSearchFound.value) noSearchFound.value = false;
       toggleLoadindBar(false);
 
-      await search({
+      search({
         term: paramValue,
         locationIs:
           selectedLocation?.value?.latitude +
           ',' +
           selectedLocation?.value?.longitude
+        // eslint-disable-next-line no-unused-vars
+      }).then((_) => {
+        localStorage.setItem(
+          'transactionId',
+          result.value.data.ackResponse.context.transaction_id
+        );
+
+        poll({
+          // eslint-disable-next-line camelcase
+          message_id: result.value.data.ackResponse.context.message_id
+        });
       });
-
-      localStorage.setItem(
-        'transactionId',
-        result.value.data.ackResponse.context.transaction_id
-      );
-
-      watch(
-        () => pollResults.value,
-        (newValue) => {
-          if (newValue?.length > 0 && enableLoader.value) {
-            enableLoader.value = false;
-            toggleLoadindBar(true);
-          }
-        }
-      );
-      // eslint-disable-next-line camelcase
-      await poll({
-        message_id: result.value.data.ackResponse.context.message_id
-      });
-
-      watch(
-        () => polling.value,
-        (newValue) => {
-          if (!newValue) {
-            enableLoader.value = false;
-            toggleLoadindBar(false);
-            if (pollResults?.value.length === 0) {
-              noSearchFound.value = true;
-            }
-          } else {
-            enableLoader.value = true;
-            noSearchFound.value = false;
-          }
-        }
-      );
 
       console.log('result value', pollResults.value);
     }, 1000);
+
+    watch(
+      () => pollResults.value,
+      (newValue) => {
+        if (newValue?.length > 0 && enableLoader.value) {
+          enableLoader.value = false;
+          toggleLoadindBar(true);
+        }
+      }
+    );
+
+    watch(
+      () => polling.value,
+      (newValue) => {
+        if (!newValue) {
+          enableLoader.value = false;
+          toggleLoadindBar(false);
+          if (pollResults?.value.length === 0) {
+            noSearchFound.value = true;
+          }
+        } else {
+          enableLoader.value = true;
+          noSearchFound.value = false;
+        }
+      }
+    );
 
     onBeforeMount(async () => {
       await load();
