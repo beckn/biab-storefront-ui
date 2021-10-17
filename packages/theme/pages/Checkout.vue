@@ -13,7 +13,7 @@
     </div>
     <div class="details header-push">
       <div class="sub-heading">
-        <div class="p-name" v-e2e="'cart-item'">Items in Cart</div>
+        <div class="p-name" v-e2e="'cart-item'">Items</div>
       </div>
 
       <div class="provider-head p-0">
@@ -24,7 +24,7 @@
             :width="35"
             :height="35"
           /> -->
-        <div class="provide-img">
+        <!-- <div class="provide-img">
           <img
             :src="
               cartGetters.getProviderImage(cartGetters.getBppProvider(cart))
@@ -40,7 +40,7 @@
         </div>
         <div class="text-padding">
           <span class="p-distance"> by </span> {{ cartGetters.getBpp(cart) }}
-        </div>
+        </div> -->
 
         <!-- <div class="text-padding">
             <div class="flexy-center">
@@ -68,9 +68,20 @@
         </div>
         <div class="s-p-details">
           <div class="s-p-name">{{ cartGetters.getItemName(product) }}</div>
+          <div class="s-p-retailer">
+            sold by
+            {{
+              providerGetters.getProviderName(cartGetters.getBppProvider(cart))
+            }}
+          </div>
           <div class="s-p-weight">x {{ cartGetters.getItemQty(product) }}</div>
           <div class="s-p-price">
-            ₹ {{ cartGetters.getUpdatedPrice(product) ? cartGetters.getUpdatedPrice(product) : cartGetters.getItemPrice(product).regular }}
+            ₹
+            {{
+              cartGetters.getUpdatedPrice(product)
+                ? cartGetters.getUpdatedPrice(product)
+                : cartGetters.getItemPrice(product).regular
+            }}
           </div>
         </div>
       </div>
@@ -155,18 +166,36 @@
         <div class="p-name">Payment</div>
       </div>
       <Card>
-        <CardContent
-          v-for="breakup in cart.quote.breakup"
-          :key="breakup.title"
-          class="flex-space-bw"
-        >
-          <div class="address-text">{{ breakup.title }}</div>
-          <div class="address-text">₹{{ breakup.price.value }}</div>
+        <CardContent class="card-size flex-space-bw">
+          <div class="address-text">Subtoal</div>
+          <div class="address-text">
+            <p>₹{{ cart.quote.price.value }}</p>
+          </div>
+        </CardContent>
+        <CardContent class="card-size flex-space-bw">
+          <div class="address-text">Delivery Charges</div>
+          <div class="address-text">
+            <p>₹{{ cart.quote.price.value }}</p>
+          </div>
+        </CardContent>
+        <CardContent class="card-size flex-space-bw">
+          <div class="address-text">Taxes (CGST)</div>
+          <div class="address-text">
+            <p>₹{{ cart.quote.price.value }}</p>
+          </div>
+        </CardContent>
+        <CardContent class="card-size flex-space-bw">
+          <div class="address-text">Taxes (SGST)</div>
+          <div class="address-text">
+            <p>₹{{ cart.quote.price.value }}</p>
+          </div>
         </CardContent>
         <div><hr class="sf-divider divider" /></div>
-        <CardContent class="flex-space-bw">
+        <CardContent class="card-size flex-space-bw">
           <div class="address-text bold">Total</div>
-          <div class="address-text bold">₹{{ cart.quote.price.value }}</div>
+          <div class="address-text bold">
+            <p>₹{{ cart.quote.price.value }}</p>
+          </div>
         </CardContent>
       </Card>
 
@@ -183,12 +212,12 @@
             <div class="">{{ policyObj.descriptor.name }}</div>
             <div class="address-text">{{ policyObj.descriptor.code }}</div>
           </CardContent> -->
-          <!-- <div><hr class="sf-divider divider" /></div>
+      <!-- <div><hr class="sf-divider divider" /></div>
           <CardContent class="flex-space-bw">
             <div class="address-text bold">Total</div>
             <div class="address-text bold">₹{{ cart.quote.price.value }}</div>
           </CardContent> -->
-        <!-- </template>
+      <!-- </template>
       </Card> -->
     </div>
     <Footer
@@ -318,7 +347,7 @@ export default {
 
     const { init: getOrderPolicy } = useOrderPolicy();
 
-    const policy = ref({cancellation_reasons: []});
+    const policy = ref({ cancellation_reasons: [] });
     const {
       getBillngAddress,
       getShippingAddress,
@@ -431,7 +460,7 @@ export default {
         context: {
           bpp_id: cart.value.bpp.id
         }
-      }).then((res)=>{
+      }).then((res) => {
         policy.value = res.message;
       });
     });
@@ -581,8 +610,12 @@ export default {
     margin-right: 25px;
   }
   .s-p-name {
+    font-weight: 700;
+    font-size: 15px;
+  }
+  .s-p-retailer {
+    padding-top: 5px;
     font-size: 11px;
-    color: #000;
   }
   .s-p-price {
     font-size: 16px;
