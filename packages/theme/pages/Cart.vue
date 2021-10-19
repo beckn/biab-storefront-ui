@@ -38,30 +38,28 @@
     </div>
     <transition name="sf-fade" mode="out-in">
       <div v-if="cartGetters.getTotalItems(cart)" key="my-cart" class="my-cart">
-        <div class="collected-product-list">
-          <transition-group name="sf-fade" tag="div">
-            <ProductCard
-              v-e2e="'cart-product'"
-              name="product-card"
-              class="product-card"
-              v-for="(product, index) in cartGetters.getItems(cart)"
-              :key="index + 'new'"
-              :pName="cartGetters.getItemName(product)"
-              :pRetailer="cartGetters.getBppProvider(cart).descriptor.name"
-              :pPrice="cartGetters.getItemPrice(product).regular"
-              :pImage="cartGetters.getItemImage(product)"
-              :pCount="cartGetters.getItemQty(product)"
-              :updatedPrice="cartGetters.getUpdatedPrice(product)"
-              :updatedCount="cartGetters.getUpdatedCount(product)"
-              :horizontalView="false"
-              :deleteCard="true"
-              :dropdownCouner="true"
-              @updateItemCount="(item) => updateItemCount(item, index)"
-              @deleteItem="updateItemCount(0, index)"
-              @dropdownMore="toggleModal(index)"
-            />
-          </transition-group>
-        </div>
+        <transition-group name="sf-fade" tag="div">
+          <ProductCard
+            v-e2e="'cart-product'"
+            name="product-card"
+            class="product-card"
+            v-for="(product, index) in cartGetters.getItems(cart)"
+            :key="index + 'new'"
+            :pName="cartGetters.getItemName(product)"
+            :pRetailer="cartGetters.getBppProvider(cart).descriptor.name"
+            :pPrice="cartGetters.getItemPrice(product).regular"
+            :pImage="cartGetters.getItemImage(product)"
+            :pCount="cartGetters.getItemQty(product)"
+            :updatedPrice="cartGetters.getUpdatedPrice(product)"
+            :updatedCount="cartGetters.getUpdatedCount(product)"
+            :horizontalView="false"
+            :deleteCard="true"
+            :dropdownCouner="true"
+            @updateItemCount="(item) => updateItemCount(item, index)"
+            @deleteItem="updateItemCount(0, index)"
+            @dropdownMore="toggleModal(index)"
+          />
+        </transition-group>
       </div>
       <div v-else key="empty-cart" class="empty-cart">
         <div class="empty-cart__banner">

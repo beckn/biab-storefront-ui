@@ -53,39 +53,6 @@
               v-for="(provider, prIndex) in bpp.bpp_providers"
               :key="prIndex"
             >
-              <div class="provider-head aline-center side-padding">
-                <div class="flexy">
-                  <img
-                    class="provide-img"
-                    :src="
-                      providerGetters.getProviderImages(provider)[0]
-                        ? providerGetters.getProviderImages(provider)[0]
-                        : require('~/assets/images/store-placeholder.png')
-                    "
-                    alt="Vila stripe maxi shirt dress"
-                    :width="35"
-                    :height="36"
-                  />
-                  <div class="text-padding">
-                    <div class="aline-center">
-                      <div class="p-name">
-                        {{
-                          providerGetters.getProviderName(provider, provider)
-                        }}
-                      </div>
-                      <div class="text-padding">
-                        <span class="p-distance">by</span>
-                        <span>{{
-                          providerGetters.getProviderBpp(bpp.bpp_descriptor)
-                        }}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="exp-provider" @click="openProvider(bpp, provider)">
-                  Explore All
-                </div>
-              </div>
               <div class="results--mobile">
                 <ProductCard
                   v-for="(product, pIndex) in provider.items.slice(0, 5)"
@@ -112,10 +79,8 @@
                   @updateItemCount="
                     (item) => updateItemCount(item, provider, bpp, pIndex)
                   "
+                  :horizontalView="false"
                 />
-              </div>
-              <div>
-                <hr class="sf-divider" />
               </div>
             </div>
           </div>

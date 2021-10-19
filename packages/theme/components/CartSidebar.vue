@@ -9,9 +9,9 @@
     >
       <template #content-top>
         <div v-if="cartGetters.getTotalItems(cart)">
-          <div>{{cart.bppName}}</div>
+          <div>{{ cart.bppName }}</div>
           <div>by</div>
-          <div>{{cart.bppProviderName}}</div>
+          <div>{{ cart.bppProviderName }}</div>
         </div>
       </template>
       <template #errorMsg>
@@ -25,26 +25,24 @@
           key="my-cart"
           class="my-cart"
         >
-          <div class="collected-product-list">
-            <transition-group name="sf-fade" tag="div">
-              <ProductCard
-                name="product-card"
-                class="product-card"
-                v-for="(product, index) in cartGetters.getItems(cart)"
-                :key="index + 'new'"
-                :pName="cartGetters.getItemName(product)"
-                :pPrice="cartGetters.getItemPrice(product).regular"
-                :pImage="cartGetters.getItemImage(product)"
-                :pCount="cartGetters.getItemQty(product)"
-                :horizontalView="false"
-                :deleteCard="true"
-                :dropdownCouner="true"
-                @updateItemCount="(item) => updateItemCount(item, index)"
-                @deleteItem="updateItemCount(0, index)"
-                @dropdownMore="toggleModal(index)"
-              />
-            </transition-group>
-          </div>
+          <transition-group name="sf-fade" tag="div">
+            <ProductCard
+              name="product-card"
+              class="product-card"
+              v-for="(product, index) in cartGetters.getItems(cart)"
+              :key="index + 'new'"
+              :pName="cartGetters.getItemName(product)"
+              :pPrice="cartGetters.getItemPrice(product).regular"
+              :pImage="cartGetters.getItemImage(product)"
+              :pCount="cartGetters.getItemQty(product)"
+              :horizontalView="false"
+              :deleteCard="true"
+              :dropdownCouner="true"
+              @updateItemCount="(item) => updateItemCount(item, index)"
+              @deleteItem="updateItemCount(0, index)"
+              @dropdownMore="toggleModal(index)"
+            />
+          </transition-group>
         </div>
         <div v-else key="empty-cart" class="empty-cart">
           <div class="empty-cart__banner">
@@ -63,7 +61,7 @@
           </div>
         </div>
       </transition>
-      <div class="c-footer"  v-if="cartGetters.getTotalItems(cart)">
+      <div class="c-footer" v-if="cartGetters.getTotalItems(cart)">
         <Footer
           @buttonClick="footerClick"
           :totalPrice="cartGetters.getTotals(cart).total"
@@ -76,27 +74,27 @@
         </Footer>
       </div>
       <ModalSlide :visible="openModal" @close="toggleModal">
-          <div class="modal-heading">Cart Quantity</div>
-          <div><hr class="sf-divider" /></div>
-          <div class="modal-body">
-            <div class="inputs-container">
-              <SfInput
-                v-model="itemNumber"
-                type='number'
-                label='Enter Quantity'
-                name='locality'
-                @change="() => {}"
-              />
-            </div>
-            <SfButton
-              class="add-quantity"
-              aria-label="Close modal"
-              type="button"
-              @click="addQuantity"
-              style="width: 100%"
-              >Add quantity</SfButton
-            >
+        <div class="modal-heading">Cart Quantity</div>
+        <div><hr class="sf-divider" /></div>
+        <div class="modal-body">
+          <div class="inputs-container">
+            <SfInput
+              v-model="itemNumber"
+              type="number"
+              label="Enter Quantity"
+              name="locality"
+              @change="() => {}"
+            />
           </div>
+          <SfButton
+            class="add-quantity"
+            aria-label="Close modal"
+            type="button"
+            @click="addQuantity"
+            style="width: 100%"
+            >Add quantity</SfButton
+          >
+        </div>
       </ModalSlide>
     </SfSidebar>
   </div>
@@ -148,7 +146,10 @@ export default {
       addItem({
         product: cart.value.items[index],
         quantity: data,
-        customQuery: { bppName: cart.value.bppName, bppProvider: cart.value.bppProviderName}
+        customQuery: {
+          bppName: cart.value.bppName,
+          bppProvider: cart.value.bppProviderName
+        }
       });
     };
 
@@ -201,7 +202,7 @@ export default {
   font-weight: 500;
 }
 
-.modal-body{
+.modal-body {
   padding: 28px;
 }
 

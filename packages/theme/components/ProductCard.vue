@@ -10,9 +10,12 @@
         />
       </div>
       <div @click="$emit('goToProduct')" class="s-p-details">
-        <div class="s-p-name">{{ _pName }}</div>
-        <div class="s-p-retailer">
-          Sold by {{ _pRetailer }},{{ _pDistance }}
+        <div>
+          <div class="s-p-name">{{ _pName }}</div>
+          <div class="s-p-retailer">
+            Sold by {{ _pRetailer }},
+            <span class="s-p-retailer-distance">{{ _pDistance }}</span>
+          </div>
         </div>
         <!-- <div class="s-p-weight">{{ _pWieght }}</div>    -->
         <div
@@ -26,13 +29,14 @@
         </div>
         <span class="out-stock" v-if="_updatedCount === 0">Out of Stock</span>
       </div>
+      <SfImage
+        v-if="deleteCard"
+        src="/icons/delete.svg"
+        alt="delete-icon"
+        @click="$emit('deleteItem')"
+        class="delete-icon"
+      />
       <div class="s-p-add-cart">
-        <SfImage
-          v-if="deleteCard"
-          src="/icons/delete.svg"
-          alt="delete-icon"
-          @click="$emit('deleteItem')"
-        />
         <AddToCart
           v-if="!dropdownCouner"
           v-e2e="'add-to-cart'"
@@ -187,5 +191,15 @@ export default {
       cursor: pointer;
     }
   }
+}
+
+.s-p-retailer-distance {
+  font-weight: 700;
+}
+
+.delete-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
 }
 </style>
