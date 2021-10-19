@@ -231,6 +231,8 @@ export default {
   flex: 1;
   display: flex;
   flex-direction: column;
+  margin-top: 20px;
+
   &__total-items {
     margin: 0;
   }

@@ -411,6 +411,8 @@ export default {
   padding: 0 16px;
   height: calc(100vh - 235px);
   overflow: scroll;
+  margin-top: 20px;
+
   &__total-items {
     margin: 0;
   }

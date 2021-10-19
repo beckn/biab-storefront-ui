@@ -13,15 +13,18 @@
       v-e2e="'footer-button'"
       :value="buttonText"
       class="sf-button f-button"
-      :class="{'color-primary ':buttonEnable,'is-disabled--button':!buttonEnable}"
+      :class="{
+        'color-primary ': buttonEnable,
+        'is-disabled--button': !buttonEnable
+      }"
       :disabled="!buttonEnable"
       link=""
       @click="$emit('buttonClick')"
     >
       <!-- button icon template  -->
-      <slot name="buttonIcon"/>
-      <div class="f-btn-text">{{buttonText}}</div>
-      <SfIcon icon="chevron_right" color="white" :coverage="1" size="xxs"/>
+      <slot name="buttonIcon" />
+      <div class="f-btn-text">{{ buttonText }}</div>
+      <SfIcon icon="chevron_right" color="white" :coverage="1" size="xxs" />
     </button>
   </div>
 </template>
@@ -38,7 +41,7 @@ export default {
     totalItem: { type: Number, default: 0 },
     footerEnable: { type: Boolean, default: true },
     buttonEnable: { type: Boolean, default: true },
-    buttonText: {type: String, default: ''}
+    buttonText: { type: String, default: '' }
   },
   setup() {
     return {};
@@ -46,7 +49,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.color-def{
+.color-def {
   background: #cacaca;
 }
 </style>
