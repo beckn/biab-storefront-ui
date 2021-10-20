@@ -90,7 +90,7 @@
           </nuxt-link>
         </div>
         <div class="user-content">
-          <nuxt-link :to="localePath('/')">
+          <nuxt-link :to="localePath('/Login')">
             <SfButton class="button-pos sf-button--pure">
               <SfIcon icon="profile" />
             </SfButton>

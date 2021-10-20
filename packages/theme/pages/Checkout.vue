@@ -167,6 +167,8 @@
       <div class="sub-heading">
         <div class="p-name">Payment</div>
       </div>
+
+      <!-- Redo it after getting the correct billing details -->
       <Card>
         <CardContent class="card-size flex-space-bw">
           <div class="address-text">Subtoal</div>
@@ -199,6 +201,20 @@
             <p>₹{{ cart.quote.price.value }}</p>
           </div>
         </CardContent>
+      </Card>
+
+      <div class="sub-heading">
+        <div class="p-name">Order policy</div>
+      </div>
+      <Card>
+        <!-- To redo it after order policy content -->
+        <!-- <CardContent> -->
+        <p class="policy-text">
+          In publishing and graphic design, Lorem ipsum is a placeholder text
+          commonly used to demonstrate the visual form of a document or a
+          typeface without relying on..
+        </p>
+        <!-- </CardContent> -->
       </Card>
 
       <!-- <div class="sub-heading">
@@ -583,6 +599,10 @@ export default {
   font-weight: 500;
   background: white;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.07);
+}
+
+.policy-text {
+  font-size: 13px;
 }
 
 .p-name {
