@@ -118,6 +118,11 @@ export default {
     color: #f37a20;
     line-height: 45px;
   }
+   h4 {
+    font-size: 27px;
+    font-weight: 800;
+    line-height: 30px;
+  }
   .socialMedia-login-container {
     padding-top: 41px;
   }
