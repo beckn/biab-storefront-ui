@@ -20,6 +20,7 @@
             class="google-button"
             aria-label="Google login"
             type="button"
+            @click="googleLogin"
             ><span class="span-text">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -44,6 +45,7 @@
             class="facebook-button"
             aria-label="facebook login"
             type="button"
+            @click="facebookLogin"
           >
             <span class="span-text">
               <svg
@@ -79,11 +81,43 @@ export default {
     SfIcon,
     SfButton
   },
-  setup (_, context) {
+  setup(_, context) {
     const goBack = () => context.root.$router.back();
     return {
       goBack
     };
+  },
+  methods: {
+    facebookLogin() {
+      /* eslint-disable no-undef */
+      const provider = new $nuxt.$fireModule.auth.FacebookAuthProvider();
+      provider.addScope('email');
+      this.$fire.auth
+        .signInWithPopup(provider)
+        .catch((error) => {
+          this.snackbarText = error.message;
+          this.snackbar = true;
+        })
+        .then(() => {
+          // we are signed in
+          $nuxt.$router.push('/');
+        });
+    },
+    googleLogin() {
+      /* eslint-disable no-undef */
+      const provider = new $nuxt.$fireModule.auth.GoogleAuthProvider();
+      provider.addScope('email');
+      this.$fire.auth
+        .signInWithPopup(provider)
+        .catch((error) => {
+          this.snackbarText = error.message;
+          this.snackbar = true;
+        })
+        .then(() => {
+          // we are signed in
+          $nuxt.$router.push('/');
+        });
+    }
   }
 };
 </script>
@@ -118,7 +152,7 @@ export default {
     color: #f37a20;
     line-height: 45px;
   }
-   h4 {
+  h4 {
     font-size: 27px;
     font-weight: 800;
     line-height: 30px;
