@@ -268,7 +268,6 @@ export default {
 
     const clearSearch = () => {
       searchKey.value = '';
-      handleSearch('');
     };
 
     const totalResults = (newValue) => {
