@@ -131,7 +131,7 @@
       "files": "*.ts",
       "rules": {
         "no-undef": "off",
-        "no-unused-vars": ["error"],
+        "no-unused-vars": "off",
         "@typescript-eslint/explicit-module-boundary-types": ["error"]
       }
     }

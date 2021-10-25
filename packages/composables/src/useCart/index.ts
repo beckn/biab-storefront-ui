@@ -1,11 +1,6 @@
 /* istanbul ignore file */
 
-// import {
-//   Context,
-// } from '@vue-storefront/core';
-// import { Cart, CartItem, Coupon, Product } from '../types';
 import { useCartFactory } from '@vue-storefront/core';
-// import { ref, computed } from '@vue/composition-api';
 import { Context } from 'node:vm';
 import { CartProduct, Product } from '../types';
 import productGetters from '../getters/productGetters';
@@ -15,7 +10,7 @@ export type Coupon = Record<string, unknown>;
 type Cart = {
   // id: number;
   bpp: string;
-  bppProvider: string,
+  bppProvider: string;
   items: CartProduct[];
   totalPrice: number;
   totalItems: number;
@@ -42,8 +37,6 @@ const cartSample = {
 };
 
 const params = {
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   load: async () => {
     let cartData = { ...cartSample };
     if (localStorage.getItem('cartData')) {
@@ -52,9 +45,10 @@ const params = {
     return cartData;
   },
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  addItem: async (context: Context, { currentCart, product, quantity, customQuery }) => {
-    // debugger;
+  addItem: async (
+    context: Context,
+    { currentCart, product, quantity, customQuery }
+  ) => {
     if (customQuery.clearCart) {
       localStorage.removeItem('cartData');
       currentCart = {
@@ -72,16 +66,13 @@ const params = {
       };
     }
     const price = productGetters.getPrice(product).regular;
-    if (Boolean(currentCart.bpp) && (currentCart.bppProvider?.id !== customQuery.bppProvider.id || customQuery.bpp.id !== currentCart.bpp?.id)) {
-      currentCart.newBpp = customQuery.bpp;
-      currentCart.newProvider = customQuery.bppProvider;
-      currentCart.newProduct = { quantity, ...product };
-      return { ...currentCart };
-    }
-    const exisitingIndex = currentCart.items.findIndex(p => p.id === product.id);
+
+    const exisitingIndex = currentCart.items.findIndex(
+      (p) => p.id === product.id
+    );
     if (exisitingIndex !== -1) {
       const oldQuantity = currentCart.items[exisitingIndex].quantity;
-      const quantityDiff = (quantity - oldQuantity);
+      const quantityDiff = quantity - oldQuantity;
       const priceDifference = quantityDiff * price;
 
       currentCart.totalPrice += priceDifference;
@@ -119,19 +110,22 @@ const params = {
     return { ...currentCart };
   },
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  removeItem: async (context: Context, { currentCart, product, customQuery }) => {
+  removeItem: async (
+    context: Context,
+    { currentCart, product, customQuery }
+  ) => {
     console.log('Mocked: removeFromCart');
     return currentCart;
   },
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  updateItemQty: async (context: Context, { currentCart, product, quantity, customQuery }) => {
+  updateItemQty: async (
+    context: Context,
+    { currentCart, product, quantity, customQuery }
+  ) => {
     console.log('Mocked: updateQuantity');
     return currentCart;
   },
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   clear: async (context: Context, { currentCart }) => {
     localStorage.removeItem('cartData');
     currentCart = {
@@ -150,34 +144,29 @@ const params = {
     return currentCart;
   },
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  applyCoupon: async (context: Context, { currentCart, couponCode, customQuery }) => {
+  applyCoupon: async (
+    context: Context,
+    { currentCart, couponCode, customQuery }
+  ) => {
     console.log('Mocked: applyCoupon');
     return { updatedCart: currentCart, updatedCoupon: currentCart };
   },
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  removeCoupon: async (context: Context, { currentCart, coupon, customQuery }) => {
+  removeCoupon: async (
+    context: Context,
+    { currentCart, coupon, customQuery }
+  ) => {
     console.log('Mocked: removeCoupon');
     return { updatedCart: currentCart };
   },
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   isInCart: (context: Context, { currentCart, product }) => {
-    // debugger
-    const exisiting = currentCart?.items.find(p => p.id === product.id);
+    const exisiting = currentCart?.items.find((p) => p.id === product.id);
     if (exisiting) {
       return exisiting;
     }
     return false;
   }
-
-  // return {
-  //   loadCart,
-  //   addItem,
-  //   currentBpp: computed(() => currentBpp.value),
-  //   newBpp: computed(() => newBpp.value)
-  // };
 };
 
 export default useCartFactory<Cart, CartProduct, Product, Coupon>(params);
