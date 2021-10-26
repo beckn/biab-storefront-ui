@@ -92,7 +92,12 @@ const params = {
         }
       }
     } else {
-      product = { quantity, ...product };
+      product = {
+        quantity,
+        ...product,
+        bpp: customQuery.bpp,
+        bppProvider: customQuery.bppProvider
+      };
       const priceDifference = quantity * price;
 
       currentCart.totalPrice += priceDifference;

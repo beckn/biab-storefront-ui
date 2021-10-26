@@ -45,37 +45,37 @@ export type OrdersResponse = {
 };
 
 export interface FacetResultsData {
-  ackResponse: AckResponse
+  ackResponse: AckResponse;
 }
 export interface OnSearchParam {
-  message_id: string,
-  limit?: number,
-  skip?: number
+  message_id: string;
+  limit?: number;
+  skip?: number;
 }
 
-export type SearchData = FacetSearchResult<FacetResultsData>
+export type SearchData = FacetSearchResult<FacetResultsData>;
 
 export type ProductPrice = {
-  currency: string,
-  value: string,
-  estimated_value?: number,
-  computed_value?: number,
-  listed_value?: number,
-  offered_value?: number,
-  minimum_value?: number,
-  maximum_value?: number,
+  currency: string;
+  value: string;
+  estimated_value?: number;
+  computed_value?: number;
+  listed_value?: number;
+  offered_value?: number;
+  minimum_value?: number;
+  maximum_value?: number;
 };
 
 export type ProductDescriptor = {
-  name: string,
-  code: string,
-  symbol: string,
-  short_des: string,
-  long_desc: string,
-  images: string,
-  audio: string,
-  renderd?: string
-}
+  name: string;
+  code: string;
+  symbol: string;
+  short_des: string;
+  long_desc: string;
+  images: string;
+  audio: string;
+  renderd?: string;
+};
 
 export type Product = {
   id: string;
@@ -94,9 +94,22 @@ export type Product = {
   tags?: string[];
 };
 
-export type CartProduct= Product & {
-  quantity: number
-}
+export type BppDescriptor = {
+  images: string[];
+  name: string;
+  short_desc: string;
+};
+
+export type BppType = {
+  id: string;
+  descriptor: BppDescriptor;
+};
+
+export type CartProduct = Product & {
+  quantity: number;
+  bpp: BppType;
+  bppProvider: BppType;
+};
 
 export type ProviderDescriptor = {
   name: string;
@@ -161,4 +174,3 @@ export type ProductsResponse = {
 //   "recommended": true,
 //   "tags": null
 // },
-

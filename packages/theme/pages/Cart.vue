@@ -174,18 +174,60 @@ export default {
 
     toggleSearchVisible(false);
 
+    watch(
+      () => pollResults.value,
+      (newValue) => {
+        if (newValue?.error) {
+          throw 'api fail';
+        }
+        if (newValue?.message?.quote && polling.value) {
+          stopPolling();
+          const updatedCartData = cart.value.items.map((cartItem) => {
+            if (cartItem.updatedCount) cartItem.updatedCount = null;
+            if (cartItem.updatedPrice) cartItem.updatedPrice = null;
+            const quoteItem = newValue.message.quote?.items.filter(
+              (quoteItem) => quoteItem.id === cartItem.id
+            )[0];
+            if (
+              parseFloat(cartItem.price.value) !==
+              parseFloat(quoteItem.price.value)
+            ) {
+              cartItem.updatedPrice = quoteItem.price.value;
+              errPricechange.value = true;
+            }
+            if (cartItem.quantity !== quoteItem.quantity.selected.count) {
+              cartItem.updatedCount = quoteItem.quantity.selected.count;
+              if (quoteItem.quantity.selected.count === 0)
+                errOutOfStock.value = true;
+              else errUpdateCount.value = true;
+            }
+            return cartItem;
+          });
+          cart.value.items = updatedCartData;
+          cart.value.quote = newValue?.message?.quote.quote;
+          cart.value.totalPrice = parseFloat(
+            newValue?.message?.quote?.quote?.price?.value
+          );
+          setCart(cart.value);
+          enableLoader.value = false;
+        }
+      }
+    );
+
     const matchQuote = async () => {
       if (cart.value.totalItems > 0 && localStorage.getItem('transactionId')) {
         enableLoader.value = true;
         const transactionId = localStorage.getItem('transactionId');
-        const cartItems = await cart.value.items.map((item) => {
+        const cartItems = cart.value.items.map((item) => {
           return {
             id: item.id,
             quantity: { count: item.quantity },
             // eslint-disable-next-line camelcase
-            bpp_id: cart.value.bpp.id,
+            bpp_id: item.bpp.id,
+            // bpp_id: cart.value.bpp.id,
             provider: {
-              id: cart.value.bppProvider.id,
+              // id: cart.value.bppProvider.id,
+              id: item.bppProvider.id,
               locations: [item.location_id]
             }
           };
@@ -196,45 +238,6 @@ export default {
           message: { cart: { items: cartItems } }
         });
 
-        watch(
-          () => pollResults.value,
-          (newValue) => {
-            if (newValue?.error) {
-              throw 'api fail';
-            }
-            if (newValue?.message?.quote && polling.value) {
-              stopPolling();
-              const updatedCartData = cart.value.items.map((cartItem) => {
-                if (cartItem.updatedCount) cartItem.updatedCount = null;
-                if (cartItem.updatedPrice) cartItem.updatedPrice = null;
-                const quoteItem = newValue.message.quote?.items.filter(
-                  (quoteItem) => quoteItem.id === cartItem.id
-                )[0];
-                if (
-                  parseFloat(cartItem.price.value) !==
-                  parseFloat(quoteItem.price.value)
-                ) {
-                  cartItem.updatedPrice = quoteItem.price.value;
-                  errPricechange.value = true;
-                }
-                if (cartItem.quantity !== quoteItem.quantity.selected.count) {
-                  cartItem.updatedCount = quoteItem.quantity.selected.count;
-                  if (quoteItem.quantity.selected.count === 0)
-                    errOutOfStock.value = true;
-                  else errUpdateCount.value = true;
-                }
-                return cartItem;
-              });
-              cart.value.items = updatedCartData;
-              cart.value.quote = newValue?.message?.quote.quote;
-              cart.value.totalPrice = parseFloat(
-                newValue?.message?.quote?.quote?.price?.value
-              );
-              setCart(cart.value);
-              enableLoader.value = false;
-            }
-          }
-        );
         if (cartData?.context?.message_id) {
           await poll({ messageId: cartData.context.message_id });
         }
