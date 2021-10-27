@@ -22,6 +22,7 @@
             type="button"
             @click="googleLogin"
             ><span class="span-text">
+              <!-- TO DO :- to rearrange these icons after having a discussion with the designer -->
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 xmlns:xlink="http://www.w3.org/1999/xlink"
