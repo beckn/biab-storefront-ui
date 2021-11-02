@@ -15,7 +15,7 @@ RUN yarn install
 RUN yarn build
 
 # production environment
-FROM nginx:1.19.7-stable-alpine
+FROM nginx:1.19.7-alpine
 RUN apk update && apk upgrade
 RUN apk add --no-cache nodejs=14.18.1-r0 npm=14.18.1-r0
 RUN npm install -g yarn
