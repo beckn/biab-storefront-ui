@@ -398,8 +398,8 @@ export default {
     watch(
       () => onInitResult.value,
       (newValue) => {
-        if (newValue?.message?.initialized) {
-          cart.value.quote = newValue.message.initialized.quote;
+        if (newValue?.message?.order) {
+          cart.value.quote = newValue.message.order.quote;
           localStorage.setItem(
             'orderProgress',
             JSON.stringify({
@@ -408,7 +408,7 @@ export default {
               shippingAddress: shippingAddress.value,
               billingAddress: billingAddress.value,
               shippingAsBilling: shippingAsBilling.value,
-              initOrder: onInitResult.value.message.initialized,
+              initOrder: onInitResult.value.message.order,
               transactionId: transactionId.value
             })
           );
