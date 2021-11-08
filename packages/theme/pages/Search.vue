@@ -43,10 +43,8 @@
           <div class="side-padding result-num">
             <div>
               <span
-                ><span v-e2e="'total-result'">{{
-                  totalResults(pollResults)
-                }}</span>
-                results found</span
+                ><span v-e2e="'total-result'">{{ totalResults }}</span> results
+                found</span
               >
             </div>
             <div class="price-sort-toggler" @click="sortByPriceToggler">
@@ -71,9 +69,7 @@
               :key="prIndex"
             >
               <div
-                v-for="(product, pIndex) in sortItemsByPrice(
-                  provider.items.slice(0, 5)
-                )"
+                v-for="(product, pIndex) in sortItemsByPrice(provider.items)"
                 :key="
                   bppIndex +
                     '-' +
@@ -143,7 +139,7 @@
 </template>
 <script>
 import { SfIcon, SfSearchBar, SfButton, SfImage } from '@storefront-ui/vue';
-import { ref, onBeforeMount, watch } from '@vue/composition-api';
+import { ref, onBeforeMount, watch, computed } from '@vue/composition-api';
 import LoadingCircle from '~/components/LoadingCircle';
 import ProductCard from '~/components/ProductCard';
 import Footer from '~/components/Footer';
@@ -175,8 +171,7 @@ export default {
       changeSearchString,
       selectedLocation,
       toggleLoadindBar,
-      clearCartPopup,
-      updateExpPageData
+      clearCartPopup
     } = useUiState();
     const goBack = () => {
       context.root.$router.back();
@@ -291,17 +286,15 @@ export default {
       searchKey.value = '';
     };
 
-    const totalResults = (newValue) => {
-      if (newValue) {
-        let reusltNum = 0;
-        for (const bpp of newValue) {
-          for (const provider of bpp.bpp_providers) {
-            reusltNum += provider.items.length;
-          }
+    const totalResults = computed(() => {
+      let reusltNum = 0;
+      for (const bpp of pollResults?.value) {
+        for (const provider of bpp.bpp_providers) {
+          reusltNum += provider.items.length;
         }
-        return reusltNum;
       }
-    };
+      return reusltNum;
+    });
 
     const sortByPriceToggler = () => {
       isSortAscending.value = !isSortAscending.value;
@@ -367,20 +360,6 @@ export default {
           locations: provider.locations
         }
       });
-    };
-
-    const openProvider = (bpp, provider) => {
-      updateExpPageData({
-        bpp: {
-          // eslint-disable-next-line camelcase
-          bpp_descriptor: bpp.bpp_descriptor,
-          // eslint-disable-next-line camelcase
-          bpp_id: bpp.bpp_id
-        },
-        provider,
-        searchValue: searchKey.value
-      });
-      context.root.$router.push('/ExploreProvider');
     };
 
     return {
