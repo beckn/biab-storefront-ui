@@ -72,6 +72,7 @@ import {} from '@storefront-ui/vue';
 import { ref } from '@vue/composition-api';
 
 export default {
+  middleware: 'auth',
   name: 'rating',
   components: {},
   setup(_, context) {

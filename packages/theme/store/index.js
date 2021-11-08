@@ -9,10 +9,15 @@ const actions = {
         path: '/Login'
       });
     } else {
-      const { uid, email } = authUser;
+      const { uid, email, Aa } = authUser;
+      localStorage.setItem('token', Aa);
       state.commit('SET_USER', {
         uid,
-        email
+        email,
+        Aa
+      });
+      this.$router.push({
+        path: '/'
       });
     }
   }

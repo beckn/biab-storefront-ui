@@ -35,7 +35,9 @@
             <!-- TO DO -->
             <nuxt-link :to="localePath('/')">About</nuxt-link>
             <div><hr class="sf-divider" /></div>
-            <nuxt-link :to="localePath('/Logout')">Logout</nuxt-link>
+            <nuxt-link v-if="isUserAuthenticated()" :to="localePath('/Logout')"
+              >Logout</nuxt-link
+            >
           </div>
         </div>
         <!-- <div>
@@ -47,7 +49,7 @@
       <LoadingBar
         :enable="
           enableLoadindBar &&
-            ['Product', 'cart', 'Search'].includes($route.name)
+          ['Product', 'cart', 'Search'].includes($route.name)
         "
       />
       <div
@@ -92,7 +94,7 @@ export default {
     SfBottomModal,
     Location,
     LoadingBar,
-    Card
+    Card,
   },
   directives: { clickOutside },
   setup(props, { root }) {
@@ -107,6 +109,13 @@ export default {
     );
 
     const openHamburger = false;
+
+    const isUserAuthenticated = () => {
+      if (root.$store.$fire.auth.currentUser === null) {
+        return false;
+      }
+      return true;
+    };
 
     const goBack = () => {
       stopPolling();
@@ -137,9 +146,10 @@ export default {
       LoadingBar,
       enableLoadindBar,
       goBack,
-      openHamburger
+      openHamburger,
+      isUserAuthenticated,
     };
-  }
+  },
 };
 </script>
 

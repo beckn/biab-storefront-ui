@@ -5,8 +5,11 @@ import usePollerFactory from '../usePoller';
 import config from '../../beckn.config.js';
 
 const factoryParams = {
-  poll: async (context: Context, { params }): Promise<any> => {
-    const ackResponse: AckResponse = await context.$beckn.api.onGetQuote(params);
+  poll: async (context: Context, { params,token }): Promise<any> => {
+    const ackResponse: AckResponse = await context.$beckn.api.onGetQuote(
+      params,
+      token
+    );
     if (ackResponse.error?.code) {
       throw ackResponse.error;
     }
@@ -23,8 +26,11 @@ const factoryParams = {
     if (newResults?.error) return false;
     return true;
   },
-  init: async (context: Context, { params }) => {
-    const ackResponse: AckResponse = await context.$beckn.api.getQuote(params);
+  init: async (context: Context, { params, token }) => {
+    const ackResponse: AckResponse = await context.$beckn.api.getQuote(
+      params,
+      token
+    );
     if (ackResponse.error?.code) {
       throw ackResponse.error;
     }
@@ -36,7 +42,6 @@ const factoryParams = {
   intervalTime: () => {
     return config.timers.quote.interval;
   }
-
 };
 
 export default usePollerFactory(factoryParams);

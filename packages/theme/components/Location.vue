@@ -38,11 +38,11 @@
               type="text"
               aria-label="Select Location"
               class="
-                  sf-header__search
-                  sf-search-bar
-                  sf-header__search
-                  be-search-location
-                "
+                sf-header__search
+                sf-search-bar
+                sf-header__search
+                be-search-location
+              "
               disabled="isActive"
               v-e2e="'app-header-location-input'"
             />
@@ -115,22 +115,22 @@ export default {
     SfSidebar,
     SfIcon,
     LocationSearchBar,
-    ModalComponent
+    ModalComponent,
   },
 
   props: {
     isDisabled: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
 
   data() {
     return {
-      isActive: false
+      isActive: false,
     };
   },
-  setup() {
+  setup(props, { root }) {
     const { selectedLocation, updateLocation } = useUiState();
     const isLocationdropOpen = ref(false);
     const isShow = ref(false);
@@ -150,7 +150,7 @@ export default {
       updateLocation({
         latitude: latitude,
         longitude: longitude,
-        address: address
+        address: address,
       });
     };
 
@@ -160,7 +160,7 @@ export default {
       isShow,
       toggleIsShow,
       location,
-      locationSelected
+      locationSelected,
     };
   },
   computed: {
@@ -169,8 +169,8 @@ export default {
     },
     locationText() {
       return this.location !== '' ? 'Your location' : 'Set location';
-    }
-  }
+    },
+  },
 };
 </script>
 

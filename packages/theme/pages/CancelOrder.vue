@@ -87,6 +87,7 @@ import { ref } from '@vue/composition-api';
 import { SfIcon, SfRadio } from '@storefront-ui/vue';
 
 export default {
+  middleware: 'auth',
   name: 'CancelOrder',
   components: {
     ModalSlide,

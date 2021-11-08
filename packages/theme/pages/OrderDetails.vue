@@ -375,6 +375,7 @@ import ProductCard from '~/components/ProductCard';
 import AddressCard from '~/components/AddressCard';
 
 export default {
+  middleware: 'auth',
   name: 'OrderDetails',
   components: {
     SfButton,

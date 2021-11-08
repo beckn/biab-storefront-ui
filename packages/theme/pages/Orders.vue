@@ -68,6 +68,7 @@ import LoadingCircle from '~/components/LoadingCircle';
 import CardContent from '~/components/CardContent.vue';
 
 export default {
+  middleware: 'auth',
   name: 'Orders',
   components: {
     SfButton,

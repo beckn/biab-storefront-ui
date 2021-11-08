@@ -43,6 +43,7 @@ import Card from '~/components/Card.vue';
 import Footer from '~/components/Footer.vue';
 import CardContent from '~/components/CardContent.vue';
 export default {
+  middleware: 'auth',
   name: 'OrderSuccess',
   components: {
     SfButton,

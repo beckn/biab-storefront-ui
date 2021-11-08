@@ -130,7 +130,7 @@ import {
   SfPrice,
   SfCollectedProduct,
   SfImage,
-  SfInput
+  SfInput,
 } from '@storefront-ui/vue';
 import { useCart, cartGetters, useQuote } from '@vue-storefront/beckn';
 import ProductCard from '~/components/ProductCard';
@@ -141,6 +141,7 @@ import { useUiState } from '~/composables';
 import LoadingCircle from '~/components/LoadingCircle';
 
 export default {
+  middleware: 'auth',
   name: 'Cart',
   components: {
     SfSidebar,
@@ -155,7 +156,7 @@ export default {
     Footer,
     ModalSlide,
     SfInput,
-    LoadingCircle
+    LoadingCircle,
   },
 
   setup(_, { root }) {
@@ -173,7 +174,7 @@ export default {
     const validInput = ref(true);
 
     toggleSearchVisible(false);
-
+    console.log('cart :-', cart);
     watch(
       () => pollResults.value,
       (newValue) => {
@@ -228,18 +229,32 @@ export default {
             provider: {
               // id: cart.value.bppProvider.id,
               id: item.bppProvider.id,
-              locations: [item.location_id]
-            }
+              locations: [item.location_id],
+            },
           };
         });
-        const cartData = await init({
-          // eslint-disable-next-line camelcase
-          context: { transaction_id: transactionId },
-          message: { cart: { items: cartItems } }
-        });
+        const cartData = await init(
+          [
+            {
+              // eslint-disable-next-line camelcase
+              context: { transaction_id: transactionId },
+              message: { cart: { items: cartItems } },
+            },
+          ],
+          localStorage.getItem('token')
+        );
 
-        if (cartData?.context?.message_id) {
-          await poll({ messageId: cartData.context.message_id });
+        //    const cartData = await init({
+        //   // eslint-disable-next-line camelcase
+        //   context: { transaction_id: transactionId },
+        //   message: { cart: { items: cartItems } }
+        // });
+
+        if (cartData[0].context?.message_id) {
+          await poll(
+            { messageId: cartData[0].context.message_id },
+            localStorage.getItem('token')
+          );
         }
       } else {
         enableLoader.value = false;
@@ -256,8 +271,8 @@ export default {
         customQuery: {
           bpp: cart.value.bpp,
           bppProvider: cart.value.bppProvider,
-          locations: cart.value.locations
-        }
+          locations: cart.value.locations,
+        },
       });
       if (matchQ) matchQuote();
     };
@@ -322,9 +337,9 @@ export default {
       enableLoader,
       updateAll,
       validInput,
-      onChangeInput
+      onChangeInput,
     };
-  }
+  },
 };
 </script>
 

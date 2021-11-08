@@ -32,7 +32,12 @@
               >
                 <g id="surface8408064">
                   <path
-                    style=" stroke:none;fill-rule:nonzero;fill:rgb(100%,100%,100%);fill-opacity:1;"
+                    style="
+                      stroke: none;
+                      fill-rule: nonzero;
+                      fill: rgb(100%, 100%, 100%);
+                      fill-opacity: 1;
+                    "
                     d="M 10.917969 20.160156 C 5.589844 20.160156 1.257812 15.828125 1.257812 10.5 C 1.257812 5.171875 5.589844 0.839844 10.917969 0.839844 C 13.332031 0.839844 15.640625 1.734375 17.425781 3.359375 L 17.75 3.65625 L 14.5625 6.839844 L 14.269531 6.589844 C 13.332031 5.789062 12.144531 5.347656 10.917969 5.347656 C 8.078125 5.347656 5.761719 7.660156 5.761719 10.5 C 5.761719 13.339844 8.078125 15.652344 10.917969 15.652344 C 12.96875 15.652344 14.585938 14.605469 15.351562 12.824219 L 10.5 12.824219 L 10.5 8.472656 L 19.96875 8.488281 L 20.039062 8.820312 C 20.535156 11.164062 20.136719 14.613281 18.136719 17.082031 C 16.480469 19.125 14.050781 20.160156 10.917969 20.160156 Z M 10.917969 20.160156 "
                   />
                 </g></svg></span
@@ -58,7 +63,12 @@
               >
                 <g id="surface8413142">
                   <path
-                    style=" stroke:none;fill-rule:nonzero;fill:rgb(100%,100%,100%);fill-opacity:1;"
+                    style="
+                      stroke: none;
+                      fill-rule: nonzero;
+                      fill: rgb(100%, 100%, 100%);
+                      fill-opacity: 1;
+                    "
                     d="M 10.5 1.261719 C 5.398438 1.261719 1.261719 5.398438 1.261719 10.5 C 1.261719 15.132812 4.671875 18.957031 9.117188 19.625 L 9.117188 12.949219 L 6.832031 12.949219 L 6.832031 10.519531 L 9.117188 10.519531 L 9.117188 8.902344 C 9.117188 6.226562 10.421875 5.054688 12.648438 5.054688 C 13.710938 5.054688 14.273438 5.132812 14.542969 5.167969 L 14.542969 7.289062 L 13.023438 7.289062 C 12.082031 7.289062 11.75 8.183594 11.75 9.191406 L 11.75 10.519531 L 14.519531 10.519531 L 14.140625 12.949219 L 11.75 12.949219 L 11.75 19.644531 C 16.261719 19.035156 19.738281 15.175781 19.738281 10.5 C 19.738281 5.398438 15.601562 1.261719 10.5 1.261719 Z M 10.5 1.261719 "
                   />
                 </g></svg></span
@@ -75,22 +85,25 @@
 
 <script>
 import { SfButton, SfIcon } from '@storefront-ui/vue';
+// import {state} from '../store/index.js'
 
 export default {
+  middleware: 'auth',
   name: 'Login',
   components: {
     SfIcon,
-    SfButton
+    SfButton,
   },
   setup(_, context) {
     const goBack = () => context.root.$router.back();
     return {
-      goBack
+      goBack,
     };
   },
   methods: {
     facebookLogin() {
       /* eslint-disable no-undef */
+
       const provider = new $nuxt.$fireModule.auth.FacebookAuthProvider();
       provider.addScope('email');
       this.$fire.auth
@@ -106,6 +119,7 @@ export default {
     },
     googleLogin() {
       /* eslint-disable no-undef */
+      console.log('testing', $nuxt.$fireModule);
       const provider = new $nuxt.$fireModule.auth.GoogleAuthProvider();
       provider.addScope('email');
       this.$fire.auth
@@ -116,10 +130,12 @@ export default {
         })
         .then(() => {
           // we are signed in
+          // console.log("STATE1",state)
+          console.log('store', this.$store);
           $nuxt.$router.push('/');
         });
-    }
-  }
+    },
+  },
 };
 </script>
 
