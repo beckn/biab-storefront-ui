@@ -130,7 +130,7 @@ import {
   SfPrice,
   SfCollectedProduct,
   SfImage,
-  SfInput,
+  SfInput
 } from '@storefront-ui/vue';
 import { useCart, cartGetters, useQuote } from '@vue-storefront/beckn';
 import ProductCard from '~/components/ProductCard';
@@ -156,7 +156,7 @@ export default {
     Footer,
     ModalSlide,
     SfInput,
-    LoadingCircle,
+    LoadingCircle
   },
 
   setup(_, { root }) {
@@ -181,12 +181,12 @@ export default {
         if (newValue?.error) {
           throw 'api fail';
         }
-        if (newValue?.message?.quote && polling.value) {
+        if (newValue && newValue[0].message?.quote && polling.value) {
           stopPolling();
           const updatedCartData = cart.value.items.map((cartItem) => {
             if (cartItem.updatedCount) cartItem.updatedCount = null;
             if (cartItem.updatedPrice) cartItem.updatedPrice = null;
-            const quoteItem = newValue.message.quote?.items.filter(
+            const quoteItem = newValue[0].message.quote?.items.filter(
               (quoteItem) => quoteItem.id === cartItem.id
             )[0];
             if (
@@ -205,9 +205,9 @@ export default {
             return cartItem;
           });
           cart.value.items = updatedCartData;
-          cart.value.quote = newValue?.message?.quote.quote;
+          cart.value.quote = newValue[0]?.message?.quote.quote;
           cart.value.totalPrice = parseFloat(
-            newValue?.message?.quote?.quote?.price?.value
+            newValue[0]?.message?.quote?.quote?.price?.value
           );
           setCart(cart.value);
           enableLoader.value = false;
@@ -229,8 +229,8 @@ export default {
             provider: {
               // id: cart.value.bppProvider.id,
               id: item.bppProvider.id,
-              locations: [item.location_id],
-            },
+              locations: [item.location_id]
+            }
           };
         });
         const cartData = await init(
@@ -238,8 +238,8 @@ export default {
             {
               // eslint-disable-next-line camelcase
               context: { transaction_id: transactionId },
-              message: { cart: { items: cartItems } },
-            },
+              message: { cart: { items: cartItems } }
+            }
           ],
           localStorage.getItem('token')
         );
@@ -252,7 +252,7 @@ export default {
 
         if (cartData[0].context?.message_id) {
           await poll(
-            { messageId: cartData[0].context.message_id },
+            { messageIds: cartData[0].context.message_id },
             localStorage.getItem('token')
           );
         }
@@ -271,8 +271,8 @@ export default {
         customQuery: {
           bpp: cart.value.bpp,
           bppProvider: cart.value.bppProvider,
-          locations: cart.value.locations,
-        },
+          locations: cart.value.locations
+        }
       });
       if (matchQ) matchQuote();
     };
@@ -337,9 +337,9 @@ export default {
       enableLoader,
       updateAll,
       validInput,
-      onChangeInput,
+      onChangeInput
     };
-  },
+  }
 };
 </script>
 
