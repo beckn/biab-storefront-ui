@@ -7,31 +7,18 @@ import productGetters from '../getters/productGetters';
 
 export type Coupon = Record<string, unknown>;
 
-type Cart = {
-  // id: number;
-  bpp: string;
-  bppProvider: string;
+export type Cart = {
   items: CartProduct[];
   totalPrice: number;
   totalItems: number;
-  newBpp: string;
-  newProvider: string;
-  newProduct: Product;
-  locations: string[];
   cartTime: string;
   quote: any;
 };
 
 const cartSample = {
   items: [],
-  bpp: null,
-  bppProvider: null,
   totalPrice: 0,
   totalItems: 0,
-  newBpp: null,
-  newProvider: null,
-  newProduct: null,
-  locations: [],
   cartTime: null,
   quote: null
 };
@@ -53,14 +40,8 @@ const params = {
       localStorage.removeItem('cartData');
       currentCart = {
         items: [],
-        bpp: null,
-        bppProvider: null,
         totalPrice: 0,
         totalItems: 0,
-        newBpp: null,
-        newProvider: null,
-        newProduct: null,
-        locations: [],
         cartTime: null,
         quote: null
       };
@@ -70,6 +51,7 @@ const params = {
     const exisitingIndex = currentCart.items.findIndex(
       (p) => p.id === product.id
     );
+
     if (exisitingIndex !== -1) {
       const oldQuantity = currentCart.items[exisitingIndex].quantity;
       const quantityDiff = quantity - oldQuantity;
@@ -82,11 +64,6 @@ const params = {
       if (quantity === 0) {
         currentCart.items.splice(exisitingIndex, 1);
         if (currentCart.totalItems === 0) {
-          currentCart.bpp = null;
-          currentCart.newBpp = null;
-          currentCart.bppProvider = null;
-          currentCart.newProvider = null;
-          currentCart.locations = [];
           currentCart.cartTime = null;
           currentCart.quote = null;
         }
@@ -96,18 +73,14 @@ const params = {
         quantity,
         ...product,
         bpp: customQuery.bpp,
-        bppProvider: customQuery.bppProvider
+        bppProvider: customQuery.bppProvider,
+        locations: customQuery.locations
       };
       const priceDifference = quantity * price;
 
       currentCart.totalPrice += priceDifference;
       currentCart.totalItems += quantity;
       currentCart.items.push(product);
-      currentCart.bpp = customQuery.bpp;
-      currentCart.newBpp = customQuery.bpp;
-      currentCart.bppProvider = customQuery.bppProvider;
-      currentCart.newProvider = customQuery.bppProvider;
-      currentCart.locations = customQuery.locations;
       currentCart.cartTime = new Date();
     }
 
@@ -135,14 +108,8 @@ const params = {
     localStorage.removeItem('cartData');
     currentCart = {
       items: [],
-      bpp: null,
-      bppProvider: null,
       totalPrice: 0,
       totalItems: 0,
-      newBpp: null,
-      newProvider: null,
-      newProduct: null,
-      locations: [],
       cartTime: null,
       quote: null
     };

@@ -46,7 +46,7 @@
             v-for="(product, index) in cartGetters.getItems(cart)"
             :key="index + 'new'"
             :pName="cartGetters.getItemName(product)"
-            :pRetailer="cartGetters.getBppProvider(cart).descriptor.name"
+            :pRetailer="cartGetters.getBppProviderName(product)"
             :pPrice="cartGetters.getItemPrice(product).regular"
             :pImage="cartGetters.getItemImage(product)"
             :pCount="cartGetters.getItemQty(product)"
@@ -174,87 +174,161 @@ export default {
     const validInput = ref(true);
 
     toggleSearchVisible(false);
-    console.log('cart :-', cart);
-    watch(
-      () => pollResults.value,
-      (newValue) => {
-        if (newValue?.error) {
-          throw 'api fail';
-        }
-        if (newValue && newValue[0].message?.quote && polling.value) {
-          stopPolling();
-          const updatedCartData = cart.value.items.map((cartItem) => {
-            if (cartItem.updatedCount) cartItem.updatedCount = null;
-            if (cartItem.updatedPrice) cartItem.updatedPrice = null;
-            const quoteItem = newValue[0].message.quote?.items.filter(
-              (quoteItem) => quoteItem.id === cartItem.id
-            )[0];
-            if (
-              parseFloat(cartItem.price.value) !==
-              parseFloat(quoteItem.price.value)
-            ) {
-              cartItem.updatedPrice = quoteItem.price.value;
-              errPricechange.value = true;
-            }
-            if (cartItem.quantity !== quoteItem.quantity.selected.count) {
-              cartItem.updatedCount = quoteItem.quantity.selected.count;
-              if (quoteItem.quantity.selected.count === 0)
-                errOutOfStock.value = true;
-              else errUpdateCount.value = true;
-            }
-            return cartItem;
-          });
-          cart.value.items = updatedCartData;
-          cart.value.quote = newValue[0]?.message?.quote.quote;
-          cart.value.totalPrice = parseFloat(
-            newValue[0]?.message?.quote?.quote?.price?.value
-          );
-          setCart(cart.value);
-          enableLoader.value = false;
+
+    // Loops over each onGetQuote response array. If quote present in each object then return true else false.
+    const shouldStopPoolingOnGetQuote = (onGetQuoteRes) => {
+      let shouldStopPolling = true;
+      for (const getQuoteRes of onGetQuoteRes) {
+        if (!getQuoteRes.message?.quote) {
+          shouldStopPolling = false;
+          break;
         }
       }
+
+      return shouldStopPolling;
+    };
+
+    // Gets the respective cart item and its index corresponding to the quote item.
+    const getCartItemCorrespondingToQuoteItem = (quoteItem) => {
+      for (const [index, cartItem] of cart.value.items.entries()) {
+        if (quoteItem.id === cartItem.id) {
+          return { cartItem, index };
+        }
+      }
+    };
+
+    watch(
+      () => pollResults.value,
+      (onGetQuoteRes) => {
+        if (onGetQuoteRes?.error) {
+          throw 'api fail';
+        }
+
+        if (!polling.value) {
+          return;
+        }
+
+        errUpdateCount.value = true;
+        if (shouldStopPoolingOnGetQuote(onGetQuoteRes)) {
+          stopPolling();
+        }
+
+        const breakup = [];
+        let price = { value: 0 };
+        onGetQuoteRes.forEach((getQuoteRes) => {
+          if (getQuoteRes.message?.quote) {
+            const currentQuoteData = getQuoteRes.message.quote;
+            currentQuoteData.items.forEach((quoteItem) => {
+              const { cartItem, index } = getCartItemCorrespondingToQuoteItem(
+                quoteItem
+              );
+              if (cartItem.updatedCount) {
+                cartItem.updatedCount = null;
+              }
+
+              if (cartItem.updatedPrice) {
+                cartItem.updatedPrice = null;
+              }
+
+              if (
+                parseFloat(cartItem.price.value) !==
+                parseFloat(quoteItem.price.value)
+              ) {
+                cartItem.updatedPrice = quoteItem.price.value;
+                errPricechange.value = true;
+              }
+              if (
+                quoteItem.quantity.selected &&
+                cartItem.quantity !== quoteItem.quantity.selected.count
+              ) {
+                cartItem.updatedCount = quoteItem.quantity.selected.count;
+                if (quoteItem.quantity.selected.count === 0) {
+                  errOutOfStock.value = true;
+                } else {
+                  errUpdateCount.value = true;
+                }
+              }
+
+              cart.value.items[index] = cartItem;
+            });
+            // const quoteItem = currentQuoteData.items.filter(quoteItem => quote)
+
+            breakup.push(...currentQuoteData.quote?.breakup);
+            price = {
+              ...currentQuoteData.quote?.price,
+              value:
+                price.value + parseFloat(currentQuoteData.quote?.price?.value)
+            };
+          }
+        });
+
+        cart.value.quote = {
+          breakup,
+          price
+        };
+        cart.value.totalPrice =
+          cart.value.quote.price.value || cart.value.totalPrice;
+        setCart(cart.value);
+        enableLoader.value = false;
+      }
     );
+
+    const getQuoteDataForEachBpp = () => {
+      const getQuoteObj = {};
+
+      cart.value.items.map((item) => {
+        const cartItem = {
+          ...item,
+          id: item.id,
+          quantity: { count: item.quantity },
+          // eslint-disable-next-line camelcase
+          bpp_id: item.bpp.id,
+          bppProvider: item.bppProvider,
+          provider: {
+            id: item.bppProvider.id,
+            locations: [item.location_id]
+          }
+        };
+        if (getQuoteObj[item.bpp.id]) {
+          getQuoteObj[item.bpp.id].push(cartItem);
+        } else {
+          getQuoteObj[item.bpp.id] = [cartItem];
+        }
+      });
+
+      return getQuoteObj;
+    };
 
     const matchQuote = async () => {
       if (cart.value.totalItems > 0 && localStorage.getItem('transactionId')) {
         enableLoader.value = true;
         const transactionId = localStorage.getItem('transactionId');
-        const cartItems = cart.value.items.map((item) => {
+
+        const quoteDataForEachBpp = getQuoteDataForEachBpp();
+        const getQuoteRequest = Object.keys(quoteDataForEachBpp).map((key) => {
           return {
-            id: item.id,
-            quantity: { count: item.quantity },
-            // eslint-disable-next-line camelcase
-            bpp_id: item.bpp.id,
-            // bpp_id: cart.value.bpp.id,
-            provider: {
-              // id: cart.value.bppProvider.id,
-              id: item.bppProvider.id,
-              locations: [item.location_id]
-            }
+            context: {
+              // eslint-disable-next-line camelcase
+              transaction_id: transactionId,
+              // eslint-disable-next-line camelcase
+              bpp_id: key
+            },
+            message: { cart: { items: quoteDataForEachBpp[key] } }
           };
         });
+
         const cartData = await init(
-          [
-            {
-              // eslint-disable-next-line camelcase
-              context: { transaction_id: transactionId },
-              message: { cart: { items: cartItems } }
-            }
-          ],
+          getQuoteRequest,
           localStorage.getItem('token')
         );
 
-        //    const cartData = await init({
-        //   // eslint-disable-next-line camelcase
-        //   context: { transaction_id: transactionId },
-        //   message: { cart: { items: cartItems } }
-        // });
-
-        if (cartData[0].context?.message_id) {
-          await poll(
-            { messageIds: cartData[0].context.message_id },
-            localStorage.getItem('token')
-          );
+        if (cartData) {
+          let messageIds = '';
+          cartData.forEach((cartItem) => {
+            messageIds += cartItem.context?.message_id + ',';
+          });
+          messageIds = messageIds.substring(0, messageIds.length - 1);
+          await poll({ messageIds: messageIds }, localStorage.getItem('token'));
         }
       } else {
         enableLoader.value = false;
@@ -355,7 +429,6 @@ export default {
   height: 20px;
 }
 #cart {
-  // margin-top: 45px;
   --sidebar-z-index: 3;
   --overlay-z-index: 3;
   @include for-desktop {

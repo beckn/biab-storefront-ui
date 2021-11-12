@@ -1,48 +1,67 @@
-import { CartGetters, AgnosticPrice, AgnosticTotals, AgnosticCoupon, AgnosticDiscount } from '@vue-storefront/core';
+import {
+  CartGetters,
+  AgnosticPrice,
+  AgnosticTotals,
+  AgnosticCoupon,
+  AgnosticDiscount
+} from '@vue-storefront/core';
 import { Cart, LineItem } from '@vue-storefront/beckn-api/src/types';
 import productGetters from './productGetters';
 import providerGetters from './providers.Getters';
+import { Cart as CartType } from '../useCart';
+import { BppType, CartProduct, Product, ProviderVariant } from '../types';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const getCartItems = (cart): LineItem[] => cart?.items || [];
+export const getCartItems = (cart: CartType): LineItem[] => cart?.items || [];
 
-export const getBppProvider = (cart)=> {
-  return cart?.bppProvider || null;
+export const getBppProvider = (product: CartProduct): BppType => {
+  return product?.bppProvider || null;
 };
 
-export const getBpp = (cart)=> {
-  return cart?.bpp?.descriptor?.name || null;
+export const getBppProviderName = (product: CartProduct): string => {
+  return getBppProvider(product)?.descriptor?.name || '';
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const getCartItemName = (product: any): string => productGetters.getName(product) || 'Product\'s name';
+// export const getBpp = (cart: CartType) => {
+//   return cart?.bpp?.descriptor?.name || null;
+// };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const getCartItemImage = (product: any): string => productGetters.getGallery(product)[0].small[0] || 'https://s3-eu-west-1.amazonaws.com/commercetools-maximilian/products/081223_1_large.jpg';
+export const getCartItemName = (product: CartProduct): string =>
+  // eslint-disable-next-line quotes
+  productGetters.getName(product) || "Product's name";
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const getCartItemPrice = (product: any): AgnosticPrice => {
+export const getCartItemImage = (product: CartProduct): string =>
+  productGetters.getGallery(product)[0].small[0] ||
+  'https://s3-eu-west-1.amazonaws.com/commercetools-maximilian/products/081223_1_large.jpg';
+
+export const getCartItemPrice = (product: CartProduct): AgnosticPrice => {
   return productGetters.getPrice(product);
 };
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const getProviderImage = (provider: any): string => providerGetters.getProviderImages(provider)[0] || '';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const getItemQty = (product: any): number => product?.quantity || 0;
+
+export const getProviderImage = (provider: ProviderVariant): string =>
+  providerGetters.getProviderImages(provider)[0] || '';
+
+export const getItemQty = (product: CartProduct): number =>
+  product?.quantity || 0;
+
+// export const getMeasureValue = (product: any): string =>
+//   product?.measure?.value;
+
+// export const getMeasureUnit = (product: any): string => product?.measure?.unit;
+
+export const getCartItemAttributes = (
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  product: LineItem,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  filterByAttributeName?: Array<string>
+): any => ({ color: 'red' });
+
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export const getCartItemSku = (product: any): string =>
+  product?.sku || 'some-sku';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const getMeasureValue = (product: any): string => product?.measure?.value;
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const getMeasureUnit = (product: any): string => product?.measure?.unit;
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const getCartItemAttributes = (product: LineItem, filterByAttributeName?: Array<string>) => ({ color: 'red' });
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const getCartItemSku = (product: any): string => product?.sku || 'some-sku';
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const getCartTotals = (cart): AgnosticTotals => {
-  const totalPrice:number = parseFloat(cart?.totalPrice) || 0;
+export const getCartTotals = (cart: CartType): AgnosticTotals => {
+  const totalPrice: number = cart?.totalPrice || 0;
   return {
     total: totalPrice,
     subtotal: 10
@@ -56,12 +75,11 @@ export const getCartTotals = (cart): AgnosticTotals => {
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getCartShippingPrice = (cart: Cart): number => 0;
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const getCartTotalItems = (cart): number => {
+export const getCartTotalItems = (cart: CartType): number => {
   return cart?.totalItems || 0;
 };
 
-export const getFormattedPrice = (price: number) => String(price);
+export const getFormattedPrice = (price: number): string => String(price);
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getCoupons = (cart: Cart): AgnosticCoupon[] => [];
@@ -69,9 +87,11 @@ export const getCoupons = (cart: Cart): AgnosticCoupon[] => [];
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getDiscounts = (cart: Cart): AgnosticDiscount[] => [];
 
-export const getUpdatedPrice = (product: any): number => parseFloat(product.updatedPrice) ?? null;
+export const getUpdatedPrice = (product: CartProduct): number =>
+  parseFloat(product.updatedPrice) ?? null;
 
-export const getUpdatedCount = (product: any): number => product.updatedCount ?? null;
+export const getUpdatedCount = (product: CartProduct): number =>
+  product.updatedCount ?? null;
 
 const cartGetters: CartGetters<Cart, LineItem> = {
   getTotals: getCartTotals,
@@ -85,12 +105,10 @@ const cartGetters: CartGetters<Cart, LineItem> = {
   getItemSku: getCartItemSku,
   getFormattedPrice: getFormattedPrice,
   getTotalItems: getCartTotalItems,
-  getMeasureValue: getMeasureValue,
-  getMeasureUnit: getMeasureUnit,
   getCoupons,
   getDiscounts,
   getBppProvider,
-  getBpp,
+  getBppProviderName,
   getProviderImage,
   getUpdatedPrice,
   getUpdatedCount

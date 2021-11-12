@@ -109,6 +109,8 @@ export type CartProduct = Product & {
   quantity: number;
   bpp: BppType;
   bppProvider: BppType;
+  updatedPrice?: string;
+  updatedCount?: number;
 };
 
 export type ProviderDescriptor = {

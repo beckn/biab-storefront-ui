@@ -1,3 +1,5 @@
+<!-- File not used since functionality is removed.
+     If we are using again then need changes to the cart object as it is now an array -->
 <template>
   <div v-if="show" class="clear-cart">
     <SfOverlay :visible="show"></SfOverlay>

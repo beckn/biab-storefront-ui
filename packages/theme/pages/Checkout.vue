@@ -73,7 +73,9 @@
           <div class="s-p-retailer">
             sold by
             {{
-              providerGetters.getProviderName(cartGetters.getBppProvider(cart))
+              providerGetters.getProviderName(
+                cartGetters.getBppProvider(product)
+              )
             }}
           </div>
           <div class="s-p-weight">x {{ cartGetters.getItemQty(product) }}</div>
