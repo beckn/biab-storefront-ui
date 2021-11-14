@@ -271,12 +271,19 @@ export default {
       enableLoader.value = false;
     };
 
+    // Loops over the onGetQuote response and checks for error object. If any error then throws 'api fail'
+    const handleOnGetQuoteError = (onGetQuoteRes) => {
+      onGetQuoteRes.forEach((onGetQuoteRes) => {
+        if (onGetQuoteRes.error) {
+          throw 'api fail';
+        }
+      });
+    };
+
     watch(
       () => pollResults.value,
       (onGetQuoteRes) => {
-        if (onGetQuoteRes?.error) {
-          throw 'api fail';
-        }
+        handleOnGetQuoteError(onGetQuoteRes);
 
         if (!polling.value || !onGetQuoteRes) {
           return;
