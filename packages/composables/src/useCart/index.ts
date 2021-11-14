@@ -13,6 +13,7 @@ export type Cart = {
   totalItems: number;
   cartTime: string;
   quote: any;
+  quoteItem: any;
 };
 
 const cartSample = {
@@ -20,7 +21,8 @@ const cartSample = {
   totalPrice: 0,
   totalItems: 0,
   cartTime: null,
-  quote: null
+  quote: null,
+  quoteItem: {}
 };
 
 const params = {
@@ -43,9 +45,11 @@ const params = {
         totalPrice: 0,
         totalItems: 0,
         cartTime: null,
-        quote: null
+        quote: null,
+        quoteItem: {}
       };
     }
+
     const price = productGetters.getPrice(product).regular;
 
     const exisitingIndex = currentCart.items.findIndex(
@@ -66,6 +70,7 @@ const params = {
         if (currentCart.totalItems === 0) {
           currentCart.cartTime = null;
           currentCart.quote = null;
+          currentCart.quoteItem = {};
         }
       }
     } else {
@@ -111,7 +116,7 @@ const params = {
       totalPrice: 0,
       totalItems: 0,
       cartTime: null,
-      quote: null
+      quote: {}
     };
     return currentCart;
   },

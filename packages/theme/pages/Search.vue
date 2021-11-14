@@ -85,9 +85,7 @@
                 <ProductCard
                   @goToProduct="goToProduct(product, provider, bpp)"
                   :pName="productGetters.getName(product)"
-                  :pRetailer="
-                    providerGetters.getProviderBpp(bpp.bpp_descriptor)
-                  "
+                  :pProviderName="providerGetters.getProviderName(provider)"
                   :pPrice="productGetters.getPrice(product).regular"
                   :pImage="productGetters.getGallery(product)[0].small[0]"
                   :pDistance="'800m away'"

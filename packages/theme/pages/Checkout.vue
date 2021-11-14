@@ -479,7 +479,7 @@ export default {
       transactionId.value = localStorage.getItem('transactionId');
       getOrderPolicy({
         context: {
-          bpp_id: cart.value.bpp.id
+          bpp_id: cart.value.items[0].bpp.id
         }
       }).then((res) => {
         policy.value = res.message;

@@ -46,7 +46,9 @@
             v-for="(product, index) in cartGetters.getItems(cart)"
             :key="index + 'new'"
             :pName="cartGetters.getItemName(product)"
-            :pRetailer="cartGetters.getBppProviderName(product)"
+            :pProviderName="
+              providerGetters.getProviderName(product.bppProvider)
+            "
             :pPrice="cartGetters.getItemPrice(product).regular"
             :pImage="cartGetters.getItemImage(product)"
             :pCount="cartGetters.getItemQty(product)"
@@ -55,6 +57,7 @@
             :horizontalView="false"
             :deleteCard="true"
             :dropdownCouner="true"
+            :pDistance="'800m away'"
             @updateItemCount="(item) => updateItemCount(item, index)"
             @deleteItem="updateItemCount(0, index)"
             @dropdownMore="toggleModal(index)"
@@ -132,7 +135,12 @@ import {
   SfImage,
   SfInput
 } from '@storefront-ui/vue';
-import { useCart, cartGetters, useQuote } from '@vue-storefront/beckn';
+import {
+  useCart,
+  cartGetters,
+  useQuote,
+  providerGetters
+} from '@vue-storefront/beckn';
 import ProductCard from '~/components/ProductCard';
 import Footer from '~/components/Footer';
 import ModalSlide from '~/components/ModalSlide';
@@ -197,6 +205,72 @@ export default {
       }
     };
 
+    // Updates the cart with quote data received
+    const updateCart = (onGetQuoteRes) => {
+      const breakup = [];
+      let price = { value: 0 };
+
+      onGetQuoteRes.forEach((getQuoteRes) => {
+        if (getQuoteRes.message?.quote) {
+          const currentQuoteData = getQuoteRes.message.quote;
+          currentQuoteData.items.forEach((quoteItem) => {
+            const { cartItem, index } = getCartItemCorrespondingToQuoteItem(
+              quoteItem
+            );
+            if (cartItem.updatedCount) {
+              cartItem.updatedCount = null;
+            }
+
+            if (cartItem.updatedPrice) {
+              cartItem.updatedPrice = null;
+            }
+
+            if (
+              parseFloat(cartItem.price.value) !==
+              parseFloat(quoteItem.price.value)
+            ) {
+              cartItem.updatedPrice = quoteItem.price.value;
+              errPricechange.value = true;
+            }
+            if (
+              quoteItem.quantity.selected &&
+              cartItem.quantity !== quoteItem.quantity.selected.count
+            ) {
+              cartItem.updatedCount = quoteItem.quantity.selected.count;
+              if (quoteItem.quantity.selected.count === 0) {
+                errOutOfStock.value = true;
+              } else {
+                errUpdateCount.value = true;
+              }
+            }
+
+            cart.value.items[index] = cartItem;
+          });
+
+          breakup.push(...currentQuoteData.quote?.breakup);
+          price = {
+            ...currentQuoteData.quote?.price,
+            value:
+              price.value + parseFloat(currentQuoteData.quote?.price?.value)
+          };
+          cart.value.quoteItem[currentQuoteData.provider.id] = {
+            ...currentQuoteData.quote
+          };
+        }
+      });
+
+      cart.value.quote = {
+        breakup,
+        price
+      };
+      cart.value.totalPrice =
+        cart.value.quote.price.value || cart.value.totalPrice;
+
+      setCart(cart.value);
+      localStorage.setItem('cartData', JSON.stringify(cart.value));
+      enableLoader.value = false;
+    };
+
     watch(
       () => pollResults.value,
       (onGetQuoteRes) => {
@@ -204,72 +278,15 @@ export default {
           throw 'api fail';
         }
 
-        if (!polling.value) {
+        if (!polling.value || !onGetQuoteRes) {
           return;
         }
 
-        errUpdateCount.value = true;
         if (shouldStopPoolingOnGetQuote(onGetQuoteRes)) {
           stopPolling();
         }
 
-        const breakup = [];
-        let price = { value: 0 };
-        onGetQuoteRes.forEach((getQuoteRes) => {
-          if (getQuoteRes.message?.quote) {
-            const currentQuoteData = getQuoteRes.message.quote;
-            currentQuoteData.items.forEach((quoteItem) => {
-              const { cartItem, index } = getCartItemCorrespondingToQuoteItem(
-                quoteItem
-              );
-              if (cartItem.updatedCount) {
-                cartItem.updatedCount = null;
-              }
-
-              if (cartItem.updatedPrice) {
-                cartItem.updatedPrice = null;
-              }
-
-              if (
-                parseFloat(cartItem.price.value) !==
-                parseFloat(quoteItem.price.value)
-              ) {
-                cartItem.updatedPrice = quoteItem.price.value;
-                errPricechange.value = true;
-              }
-              if (
-                quoteItem.quantity.selected &&
-                cartItem.quantity !== quoteItem.quantity.selected.count
-              ) {
-                cartItem.updatedCount = quoteItem.quantity.selected.count;
-                if (quoteItem.quantity.selected.count === 0) {
-                  errOutOfStock.value = true;
-                } else {
-                  errUpdateCount.value = true;
-                }
-              }
-
-              cart.value.items[index] = cartItem;
-            });
-            // const quoteItem = currentQuoteData.items.filter(quoteItem => quote)
-
-            breakup.push(...currentQuoteData.quote?.breakup);
-            price = {
-              ...currentQuoteData.quote?.price,
-              value:
-                price.value + parseFloat(currentQuoteData.quote?.price?.value)
-            };
-          }
-        });
-
-        cart.value.quote = {
-          breakup,
-          price
-        };
-        cart.value.totalPrice =
-          cart.value.quote.price.value || cart.value.totalPrice;
-        setCart(cart.value);
-        enableLoader.value = false;
+        updateCart(onGetQuoteRes);
       }
     );
 
@@ -397,6 +414,7 @@ export default {
 
     return {
       cartGetters,
+      providerGetters,
       cart,
       openModal,
       itemNumber,

@@ -13,7 +13,7 @@
         <div>
           <div class="s-p-name">{{ _pName }}</div>
           <div class="s-p-retailer">
-            Sold by {{ _pRetailer }},
+            Sold by {{ _pProviderName }},
             <span class="s-p-retailer-distance">{{ _pDistance }}</span>
           </div>
         </div>
@@ -94,7 +94,7 @@ export default {
   props: {
     product: { type: Object },
     pName: { type: String, default: '' },
-    pRetailer: { type: String, default: '' },
+    pProviderName: { type: String, default: '' },
     pDistance: { type: String, default: '' },
     pWieght: { type: String, default: '' },
     pPrice: { type: Number, default: '' },
@@ -108,7 +108,7 @@ export default {
   },
   setup(props, { emit }) {
     const _pName = computed(() => props.pName);
-    const _pRetailer = computed(() => props.pRetailer);
+    const _pProviderName = computed(() => props.pProviderName);
     const _pDistance = computed(() => props.pDistance);
     const _pWieght = computed(() => props.pWieght);
     const _pPrice = computed(() => props.pPrice);
@@ -133,7 +133,7 @@ export default {
     return {
       productGetters,
       _pName,
-      _pRetailer,
+      _pProviderName,
       _pDistance,
       _pWieght,
       _pPrice,

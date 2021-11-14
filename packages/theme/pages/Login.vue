@@ -92,12 +92,12 @@ export default {
   name: 'Login',
   components: {
     SfIcon,
-    SfButton,
+    SfButton
   },
   setup(_, context) {
     const goBack = () => context.root.$router.back();
     return {
-      goBack,
+      goBack
     };
   },
   methods: {
@@ -119,7 +119,6 @@ export default {
     },
     googleLogin() {
       /* eslint-disable no-undef */
-      console.log('testing', $nuxt.$fireModule);
       const provider = new $nuxt.$fireModule.auth.GoogleAuthProvider();
       provider.addScope('email');
       this.$fire.auth
@@ -131,11 +130,10 @@ export default {
         .then(() => {
           // we are signed in
           // console.log("STATE1",state)
-          console.log('store', this.$store);
           $nuxt.$router.push('/');
         });
-    },
-  },
+    }
+  }
 };
 </script>
 
