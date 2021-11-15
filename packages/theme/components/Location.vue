@@ -91,9 +91,14 @@
         </div>
         <div class="user-content">
           <nuxt-link :to="localePath('/Login')">
+          <div v-if="isAuthenticatedUser">
             <SfButton class="button-pos sf-button--pure">
               <SfIcon icon="profile" />
             </SfButton>
+            </div>
+            <div class="sign-in-text" v-else>
+              sign in
+            </div>
           </nuxt-link>
         </div>
       </div>
@@ -135,6 +140,7 @@ export default {
     const isLocationdropOpen = ref(false);
     const isShow = ref(false);
     const location = ref(selectedLocation?.value?.address);
+    const currentUser = root.$store.$fire.auth.currentUser
 
     const toggleLocationDrop = () => {
       isLocationdropOpen.value = !isLocationdropOpen.value;
@@ -161,6 +167,7 @@ export default {
       toggleIsShow,
       location,
       locationSelected,
+      currentUser
     };
   },
   computed: {
@@ -170,6 +177,10 @@ export default {
     locationText() {
       return this.location !== '' ? 'Your location' : 'Set location';
     },
+    isAuthenticatedUser() {
+      console.log("currentUser",this.currentUser)
+      return this.currentUser === null ? false : true
+    }
   },
 };
 </script>
@@ -204,6 +215,9 @@ export default {
   line-height: 13px;
   letter-spacing: 0em;
   text-align: left;
+}
+.sign-in-text {
+  color: #f37a20;
 }
 .userIcon {
   background-color: #f37a20;
