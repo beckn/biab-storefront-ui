@@ -82,9 +82,7 @@
           <div class="s-p-price">
             ₹
             {{
-              cartGetters.getUpdatedPrice(product)
-                ? cartGetters.getUpdatedPrice(product)
-                : cartGetters.getItemPrice(product).regular
+           cartGetters.getItemPrice(product).regular * cartGetters.getItemQty(product)
             }}
           </div>
         </div>
@@ -170,40 +168,20 @@
         <div class="p-name">Payment</div>
       </div>
 
-      <!-- Redo it after getting the correct billing details -->
-      <Card>
-        <CardContent class="card-size flex-space-bw">
-          <div class="address-text">Subtoal</div>
-          <div class="address-text">
-            <p>₹{{ cart.quote.price.value }}</p>
-          </div>
-        </CardContent>
-        <CardContent class="card-size flex-space-bw">
-          <div class="address-text">Delivery Charges</div>
-          <div class="address-text">
-            <p>₹{{ cart.quote.price.value }}</p>
-          </div>
-        </CardContent>
-        <CardContent class="card-size flex-space-bw">
-          <div class="address-text">Taxes (CGST)</div>
-          <div class="address-text">
-            <p>₹{{ cart.quote.price.value }}</p>
-          </div>
-        </CardContent>
-        <CardContent class="card-size flex-space-bw">
-          <div class="address-text">Taxes (SGST)</div>
-          <div class="address-text">
-            <p>₹{{ cart.quote.price.value }}</p>
-          </div>
-        </CardContent>
-        <div><hr class="sf-divider divider" /></div>
-        <CardContent class="card-size flex-space-bw">
-          <div class="address-text bold">Total</div>
-          <div class="address-text bold">
-            <p>₹{{ cart.quote.price.value }}</p>
-          </div>
-        </CardContent>
-      </Card>
+      <div>
+        <Card>
+           <SfAccordion>
+             <SfAccordionItem :header="'Subtotal'">
+          <CardContent class="card-size flex-space-bw">
+            <div class="address-text">Subtoal</div>
+            <div class="address-text">
+              <p>₹{{ cart.totalPrice }}</p>
+            </div>
+          </CardContent>
+          </SfAccordionItem>
+          </SfAccordion>
+        </Card>
+      </div>
 
       <div class="sub-heading">
         <div class="p-name">Order policy</div>
@@ -296,13 +274,15 @@ import {
   SfButton,
   SfModal,
   SfCheckbox,
+  SfAccordion,
   SfImage,
   SfInput,
-  SfIcon
+  SfIcon,
 } from '@storefront-ui/vue';
 import ModalSlide from '~/components/ModalSlide.vue';
 import AddressInputs from '~/components/AddressInputs.vue';
 import LoadingCircle from '~/components/LoadingCircle';
+import SfAccordionItem from '~/components/Accordion.vue';
 import Footer from '~/components/Footer.vue';
 import {
   useCart,
@@ -310,7 +290,7 @@ import {
   providerGetters,
   useAddress,
   useInitOrder,
-  useOrderPolicy
+  useOrderPolicy,
 } from '@vue-storefront/beckn';
 
 // import { useUiState } from '~/composables';
@@ -339,11 +319,13 @@ export default {
     SfInput,
     Card,
     SfImage,
+    SfAccordion,
+    SfAccordionItem,
     CardContent,
     ProductCard,
     AddressInputs,
     SfIcon,
-    AddressCard
+    AddressCard,
   },
   setup(_, context) {
     // const isThankYou = computed(() => currentStep.value === 'thank-you');
@@ -358,12 +340,12 @@ export default {
     const { cart, load } = useCart();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     // const { selectedLocation } = useUiState();
-
+    console.log('cart', cart);
     const {
       // polling ,
       pollResults: onInitResult,
       poll: onInitOrder,
-      init
+      init,
     } = useInitOrder();
 
     const { init: getOrderPolicy } = useOrderPolicy();
@@ -373,7 +355,7 @@ export default {
       getBillngAddress,
       getShippingAddress,
       setBillingAddress,
-      setShippingAddress
+      setShippingAddress,
     } = useAddress();
     console.log(getShippingAddress());
     const shippingAddress = ref(getShippingAddress());
@@ -436,20 +418,23 @@ export default {
         shippingAsBilling.value,
         '12.9063433,77.5856825'
       );
-      const response = await init(params);
+      const response = await init(params, localStorage.getItem('token'));
       console.log(response);
-      await onInitOrder({
-        // eslint-disable-next-line camelcase
-        messageId: response.context.message_id
-      });
+      await onInitOrder(
+        {
+          // eslint-disable-next-line camelcase
+          messageId: response[0].context.message_id,
+        },
+        localStorage.getItem('token')
+      );
       console.log(onInitResult);
     };
 
     watch(
       () => onInitResult.value,
       (newValue) => {
-        if (newValue?.message?.initialized) {
-          cart.value.quote = newValue.message.initialized.quote;
+        if (newValue?.message?.order) {
+          cart.value.quote = newValue.message.order.quote;
           localStorage.setItem(
             'orderProgress',
             JSON.stringify({
@@ -458,8 +443,8 @@ export default {
               shippingAddress: shippingAddress.value,
               billingAddress: billingAddress.value,
               shippingAsBilling: shippingAsBilling.value,
-              initOrder: onInitResult.value.message.initialized,
-              transactionId: transactionId.value
+              initOrder: onInitResult.value.message.order,
+              transactionId: transactionId.value,
             })
           );
           localStorage.removeItem('transactionId');
@@ -467,8 +452,8 @@ export default {
           context.root.$router.push({
             path: '/payment',
             query: {
-              id: transactionId.value
-            }
+              id: transactionId.value,
+            },
           });
         }
       }
@@ -479,8 +464,8 @@ export default {
       transactionId.value = localStorage.getItem('transactionId');
       getOrderPolicy({
         context: {
-          bpp_id: cart.value.items[0].bpp.id
-        }
+          bpp_id: cart.value.items[0].bpp.id,
+        },
       }).then((res) => {
         policy.value = res.message;
       });
@@ -504,9 +489,9 @@ export default {
       proceedToPay,
       enableLoader,
       initOrder,
-      policy
+      policy,
     };
-  }
+  },
 };
 </script>
 
@@ -548,8 +533,8 @@ export default {
 
 .s-p-weight {
   margin-top: 6px;
-  font-size: 14px;
-  color: #8a8d8e;
+  font-size: 15px;
+  font-weight: 700;
 }
 
 .flex-space-bw {

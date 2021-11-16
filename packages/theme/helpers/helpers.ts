@@ -11,80 +11,100 @@ const helpers = {
   calculateDays
 };
 
-export const createOrderRequest = (transactionId, cart, shippingAddress, billingAddress, shippingAsBilling, gps) => {
-  const bAddress = shippingAsBilling
-    ? shippingAddress
-    : billingAddress;
+export const createOrderRequest = (
+  transactionId,
+  cart,
+  shippingAddress,
+  billingAddress,
+  shippingAsBilling,
+  gps
+) => {
+  const bAddress = shippingAsBilling ? shippingAddress : billingAddress;
 
   const items: any[] = cart.items.map((item) => {
     return {
       id: item.id,
       quantity: { count: item.quantity },
       // eslint-disable-next-line camelcase
-      bpp_id: cart.bpp.id,
+      bpp_id: item.bpp.id,
       provider: {
-        id: cart.bppProvider.id,
-        locations: [
-          item.location_id
-        ]
+        id: item.bppProvider.id,
+        locations: [item.location_id]
       }
     };
   });
 
-  const params = {
-    context: {
-      // eslint-disable-next-line camelcase
-      transaction_id: transactionId
-    },
-    message: {
-      items: items,
-
-      // eslint-disable-next-line camelcase
-      billing_info: {
-        address: {
-          door: bAddress.landmark,
-          country: 'IND',
-          city: bAddress.city,
-          street: bAddress.address,
-
-          // eslint-disable-next-line camelcase
-          area_code: bAddress.pincode,
-          state: bAddress.state,
-          building: bAddress.building
-        },
-        phone: bAddress.mobile,
-        name: bAddress.name,
-        email: ''
+  const params = [
+    {
+      context: {
+        // eslint-disable-next-line camelcase
+        transaction_id: transactionId
       },
+      message: {
+        items: items,
 
-      // eslint-disable-next-line camelcase
-      delivery_info: {
-        type: 'HOME-DELIVERY',
-        name: shippingAddress.name,
-        phone: shippingAddress.mobile,
-        email: '',
-        location: {
+        // eslint-disable-next-line camelcase
+        billing_info: {
           address: {
-            door: shippingAddress.landmark,
+            door: bAddress.landmark,
             country: 'IND',
-            city: shippingAddress.city,
-            street: shippingAddress.address,
+            city: bAddress.city,
+            street: bAddress.address,
 
             // eslint-disable-next-line camelcase
-            area_code: shippingAddress.pincode,
-            state: shippingAddress.state,
-            building: shippingAddress.building
+            area_code: bAddress.pincode,
+            state: bAddress.state,
+            building: bAddress.building
           },
-          gps: gps
+          phone: bAddress.mobile,
+          name: bAddress.name,
+          email: ''
+        },
+
+        // eslint-disable-next-line camelcase
+        delivery_info: {
+          type: 'HOME-DELIVERY',
+          name: shippingAddress.name,
+          phone: shippingAddress.mobile,
+          email: '',
+          location: {
+            address: {
+              door: shippingAddress.landmark,
+              country: 'IND',
+              city: shippingAddress.city,
+              street: shippingAddress.address,
+
+              // eslint-disable-next-line camelcase
+              area_code: shippingAddress.pincode,
+              state: shippingAddress.state,
+              building: shippingAddress.building
+            },
+            gps: gps
+          }
         }
       }
     }
-  };
+  ];
   return params;
 };
 
-export const createConfirmOrderRequest = (transactionId, cart, shippingAddress, billingAddress, shippingAsBilling, gps, paymentInfo) => {
-  const params: any = createOrderRequest(transactionId, cart, shippingAddress, billingAddress, shippingAsBilling, gps);
+export const createConfirmOrderRequest = (
+  transactionId,
+  cart,
+  shippingAddress,
+  billingAddress,
+  shippingAsBilling,
+  gps,
+  paymentInfo
+) => {
+  const params: any = createOrderRequest(
+    transactionId,
+    cart,
+    shippingAddress,
+    billingAddress,
+    shippingAsBilling,
+    gps
+  );
   params.message.payment = {
     // eslint-disable-next-line camelcase
     paid_amount: paymentInfo.amount,
