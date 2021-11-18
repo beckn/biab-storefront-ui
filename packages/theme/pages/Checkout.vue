@@ -82,7 +82,8 @@
           <div class="s-p-price">
             ₹
             {{
-           cartGetters.getItemPrice(product).regular * cartGetters.getItemQty(product)
+              cartGetters.getItemPrice(product).regular *
+              cartGetters.getItemQty(product)
             }}
           </div>
         </div>
@@ -170,15 +171,29 @@
 
       <div>
         <Card>
-           <SfAccordion>
-             <SfAccordionItem :header="'Subtotal'">
-          <CardContent class="card-size flex-space-bw">
-            <div class="address-text">Subtoal</div>
-            <div class="address-text">
-              <p>₹{{ cart.totalPrice }}</p>
-            </div>
-          </CardContent>
-          </SfAccordionItem>
+          <SfAccordion>
+            <SfAccordionItem :header="'Subtotal'">
+              <!-- <CardContent > -->
+              <div class="bpp_breakup">
+                <div
+                  :key="propertyName"
+                  v-for="(
+                    value, propertyName
+                  ) in cartGetters.getQuoteItemBreakup(cart)"
+                >
+                  <div :key="id" v-for="(breakup, id) in value.breakup">
+                    <CardContent class="flex-space-bw">
+                      <div>{{ breakup.title }}</div>
+                      <div>₹{{ breakup.price.value }}</div>
+                    </CardContent>
+                  </div>
+                  <CardContent class="flex-space-bw">
+                    <div>Subtotal :</div>
+                    <div>{{ value.price.value }}</div>
+                  </CardContent>
+                </div>
+              </div>
+            </SfAccordionItem>
           </SfAccordion>
         </Card>
       </div>
@@ -346,6 +361,7 @@ export default {
       pollResults: onInitResult,
       poll: onInitOrder,
       init,
+      stopPolling,
     } = useInitOrder();
 
     const { init: getOrderPolicy } = useOrderPolicy();
@@ -358,6 +374,17 @@ export default {
       setShippingAddress,
     } = useAddress();
     console.log(getShippingAddress());
+
+    const shouldStopPollingOnOnInit = (onInitRes) => {
+      let shouldStopPolling = true;
+      for (const initRes of onInitRes) {
+        if (!initRes.message?.order) {
+          shouldStopPolling = false;
+          break;
+        }
+      }
+      return shouldStopPolling;
+    };
     const shippingAddress = ref(getShippingAddress());
 
     const billingAddress = ref(getBillngAddress());
@@ -423,39 +450,58 @@ export default {
       await onInitOrder(
         {
           // eslint-disable-next-line camelcase
-          messageId: response[0].context.message_id,
+          messageIds: response[0].context.message_id,
         },
         localStorage.getItem('token')
       );
-      console.log(onInitResult);
+      console.log('onInitResult', onInitResult);
     };
 
     watch(
       () => onInitResult.value,
       (newValue) => {
-        if (newValue?.message?.order) {
-          cart.value.quote = newValue.message.order.quote;
-          localStorage.setItem(
-            'orderProgress',
-            JSON.stringify({
-              cart: cart.value,
-              status: 0,
-              shippingAddress: shippingAddress.value,
-              billingAddress: billingAddress.value,
-              shippingAsBilling: shippingAsBilling.value,
-              initOrder: onInitResult.value.message.order,
-              transactionId: transactionId.value,
-            })
-          );
-          localStorage.removeItem('transactionId');
-          // enableLoader.value = false;
-          context.root.$router.push({
-            path: '/payment',
-            query: {
-              id: transactionId.value,
-            },
-          });
+        if (shouldStopPollingOnOnInit(newValue)) {
+          stopPolling();
         }
+        newValue.forEach((valueItem) => {
+          if (valueItem.message?.order) {
+            const fulfillmentstart = valueItem.message.order.fulfillment.start;
+
+            let orderProviderDetails = {};
+
+            orderProviderDetails[valueItem.message?.order.provider.id] = {
+              contact: fulfillmentstart.contact,
+              location: fulfillmentstart.contact,
+              tracking: fulfillmentstart.tracking,
+              type: fulfillmentstart.type,
+            };
+
+            cart.value.quote = valueItem.message.order.quote;
+
+            localStorage.setItem(
+              'orderProgress',
+              JSON.stringify({
+                cart: cart.value,
+                status: 0,
+                shippingAddress: shippingAddress.value,
+                billingAddress: billingAddress.value,
+                shippingAsBilling: shippingAsBilling.value,
+                initOrder: valueItem.message.order,
+                transactionId: transactionId.value,
+                orderProviderDetails: orderProviderDetails,
+              })
+            );
+
+            localStorage.removeItem('transactionId');
+            // enableLoader.value = false;
+            context.root.$router.push({
+              path: '/payment',
+              query: {
+                id: transactionId.value,
+              },
+            });
+          }
+        });
       }
     );
 
@@ -660,7 +706,12 @@ export default {
     }
   }
 }
-
+.flex-space-bw {
+  justify-content: space-between;
+}
+.bpp_breakup {
+  border-bottom: 5px solid rgba(0, 0, 0, 0.3);
+}
 .loader-circle {
   width: 100%;
   position: fixed;

@@ -133,13 +133,13 @@ import {
   SfPrice,
   SfCollectedProduct,
   SfImage,
-  SfInput
+  SfInput,
 } from '@storefront-ui/vue';
 import {
   useCart,
   cartGetters,
   useQuote,
-  providerGetters
+  providerGetters,
 } from '@vue-storefront/beckn';
 import ProductCard from '~/components/ProductCard';
 import Footer from '~/components/Footer';
@@ -147,7 +147,6 @@ import ModalSlide from '~/components/ModalSlide';
 import { ref, onBeforeMount, watch } from '@vue/composition-api';
 import { useUiState } from '~/composables';
 import LoadingCircle from '~/components/LoadingCircle';
-
 export default {
   middleware: 'auth',
   name: 'Cart',
@@ -164,7 +163,7 @@ export default {
     Footer,
     ModalSlide,
     SfInput,
-    LoadingCircle
+    LoadingCircle,
   },
 
   setup(_, { root }) {
@@ -214,9 +213,8 @@ export default {
         if (getQuoteRes.message?.quote) {
           const currentQuoteData = getQuoteRes.message.quote;
           currentQuoteData.items.forEach((quoteItem) => {
-            const { cartItem, index } = getCartItemCorrespondingToQuoteItem(
-              quoteItem
-            );
+            const { cartItem, index } =
+              getCartItemCorrespondingToQuoteItem(quoteItem);
             if (cartItem.updatedCount) {
               cartItem.updatedCount = null;
             }
@@ -251,17 +249,17 @@ export default {
           price = {
             ...currentQuoteData.quote?.price,
             value:
-              price.value + parseFloat(currentQuoteData.quote?.price?.value)
+              price.value + parseFloat(currentQuoteData.quote?.price?.value),
           };
           cart.value.quoteItem[currentQuoteData.provider.id] = {
-            ...currentQuoteData.quote
+            ...currentQuoteData.quote,
           };
         }
       });
 
       cart.value.quote = {
         breakup,
-        price
+        price,
       };
       cart.value.totalPrice =
         cart.value.quote.price.value || cart.value.totalPrice;
@@ -283,8 +281,6 @@ export default {
     watch(
       () => pollResults.value,
       (onGetQuoteRes) => {
-        handleOnGetQuoteError(onGetQuoteRes);
-
         if (!polling.value || !onGetQuoteRes) {
           return;
         }
@@ -294,6 +290,7 @@ export default {
         }
 
         updateCart(onGetQuoteRes);
+        handleOnGetQuoteError(onGetQuoteRes);
       }
     );
 
@@ -310,8 +307,8 @@ export default {
           bppProvider: item.bppProvider,
           provider: {
             id: item.bppProvider.id,
-            locations: [item.location_id]
-          }
+            locations: [item.location_id],
+          },
         };
         if (getQuoteObj[item.bpp.id]) {
           getQuoteObj[item.bpp.id].push(cartItem);
@@ -335,9 +332,9 @@ export default {
               // eslint-disable-next-line camelcase
               transaction_id: transactionId,
               // eslint-disable-next-line camelcase
-              bpp_id: key
+              bpp_id: key,
             },
-            message: { cart: { items: quoteDataForEachBpp[key] } }
+            message: { cart: { items: quoteDataForEachBpp[key] } },
           };
         });
 
@@ -369,8 +366,8 @@ export default {
         customQuery: {
           bpp: cart.value.bpp,
           bppProvider: cart.value.bppProvider,
-          locations: cart.value.locations
-        }
+          locations: cart.value.locations,
+        },
       });
       if (matchQ) matchQuote();
     };
@@ -436,9 +433,9 @@ export default {
       enableLoader,
       updateAll,
       validInput,
-      onChangeInput
+      onChangeInput,
     };
-  }
+  },
 };
 </script>
 

@@ -68,9 +68,13 @@ export const getCartTotals = (cart: CartType): AgnosticTotals => {
   };
 };
 
-// export const getQuoteBreakup = (cart): AgnosticTotals => {
-//   cart
-// };
+export const getQuoteBreakup = (cart): AgnosticTotals => {
+ return cart?.quote?.breakup
+};
+
+export const getQuoteItemBreakup = (cart) : AgnosticTotals => {
+  return cart?.quoteItem
+}
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getCartShippingPrice = (cart: Cart): number => 0;
@@ -111,7 +115,9 @@ const cartGetters: CartGetters<Cart, LineItem> = {
   getBppProviderName,
   getProviderImage,
   getUpdatedPrice,
-  getUpdatedCount
+  getUpdatedCount,
+  getQuoteBreakup,
+  getQuoteItemBreakup
 };
 
 export default cartGetters;

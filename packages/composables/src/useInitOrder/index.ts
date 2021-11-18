@@ -6,7 +6,8 @@ import config from '../../beckn.config.js';
 const factoryParams = {
   poll: async (context: Context, { params, token }): Promise<any> => {
     const ackResponse: AckResponse = await context.$beckn.api.onInitializeOrder(
-      params,token
+      params,
+      token
     );
     return ackResponse;
   },
@@ -17,7 +18,7 @@ const factoryParams = {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   continuePolling: (_, { oldResults, newResults }) => {
-    if (newResults?.message?.order) {
+    if (newResults.map((newResult) => newResult.message?.order)) {
       return false;
     }
     return true;
