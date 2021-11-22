@@ -446,62 +446,66 @@ export default {
         '12.9063433,77.5856825'
       );
       const response = await init(params, localStorage.getItem('token'));
-      console.log(response);
-      await onInitOrder(
-        {
-          // eslint-disable-next-line camelcase
-          messageIds: response[0].context.message_id,
-        },
-        localStorage.getItem('token')
-      );
-      console.log('onInitResult', onInitResult);
+
+      if (response) {
+        let messageIds = '';
+        response.forEach((res) => {
+          messageIds += res.context?.message_id + ',';
+        });
+        messageIds = messageIds.substring(0, messageIds.length - 1);
+        await onInitOrder(
+          {
+            // eslint-disable-next-line camelcase
+            messageIds: messageIds,
+          },
+          localStorage.getItem('token')
+        );
+      } else {
+        enableLoader.value = false;
+      }
     };
 
     watch(
       () => onInitResult.value,
       (newValue) => {
+        if (!newValue) {
+          return;
+        }
         if (shouldStopPollingOnOnInit(newValue)) {
           stopPolling();
         }
-        newValue.forEach((valueItem) => {
-          if (valueItem.message?.order) {
-            const fulfillmentstart = valueItem.message.order.fulfillment.start;
+        let onInitArray = [];
+        let cartArray = [];
+        if (newValue.every((item) => item.hasOwnProperty('message'))) {
+          newValue.forEach((valueItem) => {
+            cart.value.quote = valueItem.message?.order?.quote;
+            cartArray.push(cart.value);
+            onInitArray.push(valueItem.message?.order);
+          });
 
-            let orderProviderDetails = {};
+          // TODO( To provide BPP Id too in the object once we start getting it)
+          localStorage.setItem(
+            'orderProgress',
+            JSON.stringify({
+              shippingAddress: shippingAddress.value,
+              billingAddress: billingAddress.value,
+              shippingAsBilling: shippingAsBilling.value,
+              transactionId: transactionId.value,
+              status: 0,
+              initOrder: onInitArray,
+              cart: cartArray,
+            })
+          );
 
-            orderProviderDetails[valueItem.message?.order.provider.id] = {
-              contact: fulfillmentstart.contact,
-              location: fulfillmentstart.contact,
-              tracking: fulfillmentstart.tracking,
-              type: fulfillmentstart.type,
-            };
-
-            cart.value.quote = valueItem.message.order.quote;
-
-            localStorage.setItem(
-              'orderProgress',
-              JSON.stringify({
-                cart: cart.value,
-                status: 0,
-                shippingAddress: shippingAddress.value,
-                billingAddress: billingAddress.value,
-                shippingAsBilling: shippingAsBilling.value,
-                initOrder: valueItem.message.order,
-                transactionId: transactionId.value,
-                orderProviderDetails: orderProviderDetails,
-              })
-            );
-
-            localStorage.removeItem('transactionId');
-            // enableLoader.value = false;
-            context.root.$router.push({
-              path: '/payment',
-              query: {
-                id: transactionId.value,
-              },
-            });
-          }
-        });
+          localStorage.removeItem('transactionId');
+          // enableLoader.value = false;
+          context.root.$router.push({
+            path: '/payment',
+            query: {
+              id: transactionId.value,
+            },
+          });
+        }
       }
     );
 
