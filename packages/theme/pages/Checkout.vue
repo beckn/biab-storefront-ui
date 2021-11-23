@@ -474,8 +474,9 @@ export default {
         if (shouldStopPollingOnOnInit(newValue)) {
           stopPolling();
         }
-        let onInitArray = [];
-        let cartArray = [];
+        const onInitArray = [];
+        const cartArray = [];
+        // eslint-disable-next-line no-prototype-builtins
         if (newValue.every((item) => item.hasOwnProperty('message'))) {
           newValue.forEach((valueItem) => {
             cart.value.quote = valueItem.message?.order?.quote;
@@ -493,7 +494,7 @@ export default {
               transactionId: transactionId.value,
               status: 0,
               initOrder: onInitArray,
-              cart: cartArray,
+              cart: cart.value,
             })
           );
 
