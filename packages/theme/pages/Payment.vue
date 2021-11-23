@@ -22,12 +22,16 @@
           class="flex-space-bw"
         >
           <div class="address-text">{{ breakup.title }}</div>
-          <div class="address-text">₹{{ parseFloat(breakup.price.value).toFixed( 2 ) }}</div>
+          <div class="address-text">
+            ₹{{ parseFloat(breakup.price.value).toFixed(2) }}
+          </div>
         </CardContent>
         <div><hr class="sf-divider divider" /></div>
         <CardContent class="flex-space-bw">
           <div class="address-text bold">Total</div>
-          <div class="address-text bold">₹{{ order.cart.quote.price.value }}</div>
+          <div class="address-text bold">
+            ₹{{ order.cart.quote.price.value }}
+          </div>
         </CardContent>
       </Card>
       <div class="sub-heading">
@@ -52,7 +56,7 @@
       class="footer-fixed"
       :buttonText="'Pay & Confirm'"
       :buttonEnable="isPayConfirmActive"
-      :totalPrice="parseFloat(order.cart.quote.price.value) "
+      :totalPrice="parseFloat(order.cart.quote.price.value)"
       :totalItem="cartGetters.getTotalItems(order.cart)"
       @buttonClick="proceedToConfirm"
     >
@@ -83,7 +87,6 @@ import { useUiState } from '~/composables';
 import { ref, computed, onBeforeMount, watch } from '@vue/composition-api';
 
 import LoadingCircle from '~/components/LoadingCircle';
-// import helpers from '../helpers/helpers';
 import { useCart, useConfirmOrder, cartGetters } from '@vue-storefront/beckn';
 
 import Card from '~/components/Card.vue';
@@ -102,12 +105,12 @@ export default {
     CardContent,
     SfRadio,
     Footer,
-    LoadingCircle
+    LoadingCircle,
   },
   methods: {
     openCart() {
       toggleCartSidebar();
-    }
+    },
   },
   setup(_, context) {
     const paymentMethod = ref('');
@@ -141,18 +144,26 @@ export default {
         {
           amount: cartGetters.getTotals(order.value.cart).total,
           status: 'PAID',
-          transactionId: order.value.transactionId
         }
       );
-      const response = await init(params);
-      await poll({ messageId: response.context.message_id });
+      const confirmResponses = await init(
+        params,
+        localStorage.getItem('token')
+      );
+
+      let messageIds = '';
+      confirmResponses.forEach((confirmResponse) => {
+        messageIds += confirmResponse.context?.message_id + ',';
+      });
+      messageIds = messageIds.substring(0, messageIds.length - 1);
+      await poll({ messageIds: messageIds }, localStorage.getItem('token'));
     };
 
     watch(
       () => pollResults.value,
       (newValue) => {
-        if (newValue?.message?.order) {
-          order.value.order = newValue?.message?.order;
+        if (newValue[0]?.message?.order) {
+          order.value.order = newValue[0]?.message?.order;
 
           const orderHistory =
             JSON.parse(localStorage.getItem('orderHistory')) ?? [];
@@ -164,8 +175,8 @@ export default {
           context.root.$router.push({
             path: '/ordersuccess',
             query: {
-              id: order.value.transactionId
-            }
+              id: order.value.transactionId,
+            },
           });
         }
       }
@@ -187,23 +198,12 @@ export default {
       isPayConfirmActive,
       proceedToConfirm,
       isTransactionMatching,
-      enableLoader
+      enableLoader,
     };
-  }
+  },
 };
 </script>
 <style lang="scss" scoped>
-// .header-top{
-//     position: fixed;
-//     width: 100%;
-//     top: 45px;
-//     z-index: 9;
-// }
-// .header-push{
-//     top: 107px;
-//     position: relative;
-//     padding-bottom: 107px;
-// }
 .top-bar {
   align-items: center;
   display: flex;

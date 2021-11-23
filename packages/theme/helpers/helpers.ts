@@ -1,3 +1,7 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+/* eslint-disable camelcase */
+import { cartGetters } from '@vue-storefront/beckn';
+
 export const calculateDays = (_date1, _date2) => {
   const date1 = new Date(_date1);
   const date2 = new Date(_date2);
@@ -9,6 +13,65 @@ export const calculateDays = (_date1, _date2) => {
 
 const helpers = {
   calculateDays
+};
+
+/**
+ * Returns the Billing address Info in a format required for the api
+ * @param billingAddress Billing Address object
+ */
+export const getBillingInfo = (billingAddress): any => {
+  if (!billingAddress) {
+    return {};
+  }
+
+  const billingInfo = {
+    billingAddress: {
+      door: billingAddress.landmark,
+      country: 'IND',
+      city: billingAddress.city,
+      street: billingAddress.billingAddress,
+      area_code: billingAddress.pincode,
+      state: billingAddress.state,
+      building: billingAddress.building
+    },
+    phone: billingAddress.mobile,
+    name: billingAddress.name,
+    email: ''
+  };
+
+  return billingInfo;
+};
+
+/**
+ * Returns the Delivery address info in a format required for the api
+ * @param shippingAddress Shipping Address object
+ * @param gps Gps co-ordinates
+ */
+const getDeliveryInfo = (shippingAddress, gps): any => {
+  if (!shippingAddress) {
+    return {};
+  }
+
+  const deliveryInfo = {
+    type: 'HOME-DELIVERY',
+    name: shippingAddress.name,
+    phone: shippingAddress.mobile,
+    email: '',
+    location: {
+      address: {
+        door: shippingAddress.landmark,
+        country: 'IND',
+        city: shippingAddress.city,
+        street: shippingAddress.address,
+        area_code: shippingAddress.pincode,
+        state: shippingAddress.state,
+        building: shippingAddress.building
+      },
+      gps: gps
+    }
+  };
+
+  return deliveryInfo;
 };
 
 export const createOrderRequest = (
@@ -25,7 +88,6 @@ export const createOrderRequest = (
     return {
       id: item.id,
       quantity: { count: item.quantity },
-      // eslint-disable-next-line camelcase
       bpp_id: item.bpp.id,
       provider: {
         id: item.bppProvider.id,
@@ -37,13 +99,11 @@ export const createOrderRequest = (
   const params = [
     {
       context: {
-        // eslint-disable-next-line camelcase
         transaction_id: transactionId
       },
       message: {
         items: items,
 
-        // eslint-disable-next-line camelcase
         billing_info: {
           address: {
             door: bAddress.landmark,
@@ -51,7 +111,6 @@ export const createOrderRequest = (
             city: bAddress.city,
             street: bAddress.address,
 
-            // eslint-disable-next-line camelcase
             area_code: bAddress.pincode,
             state: bAddress.state,
             building: bAddress.building
@@ -61,7 +120,6 @@ export const createOrderRequest = (
           email: ''
         },
 
-        // eslint-disable-next-line camelcase
         delivery_info: {
           type: 'HOME-DELIVERY',
           name: shippingAddress.name,
@@ -74,7 +132,6 @@ export const createOrderRequest = (
               city: shippingAddress.city,
               street: shippingAddress.address,
 
-              // eslint-disable-next-line camelcase
               area_code: shippingAddress.pincode,
               state: shippingAddress.state,
               building: shippingAddress.building
@@ -89,30 +146,40 @@ export const createOrderRequest = (
 };
 
 export const createConfirmOrderRequest = (
-  transactionId,
+  transactionId: string,
   cart,
   shippingAddress,
   billingAddress,
-  shippingAsBilling,
+  shippingAsBilling: boolean,
   gps,
   paymentInfo
 ) => {
-  const params: any = createOrderRequest(
-    transactionId,
-    cart,
-    shippingAddress,
-    billingAddress,
-    shippingAsBilling,
-    gps
+  const billingInfo = getBillingInfo(
+    shippingAddress ? shippingAddress : billingAddress
   );
-  params.message.payment = {
-    // eslint-disable-next-line camelcase
-    paid_amount: paymentInfo.amount,
-    status: paymentInfo.status,
-    // eslint-disable-next-line camelcase
-    transaction_id: paymentInfo.transactionId
-  };
-  return params;
+  const deliveryInfo = getDeliveryInfo(shippingAddress, gps);
+
+  const cartItemsForEachBpp = cartGetters.getCartItemsForEachBpp(cart);
+  const confirmOrderRequest = Object.keys(cartItemsForEachBpp).map((key) => {
+    return {
+      context: {
+        transaction_id: transactionId,
+        bpp_id: key
+      },
+      message: {
+        items: cartItemsForEachBpp[key],
+        billing_info: billingInfo,
+        delivery_info: deliveryInfo,
+        payment: {
+          paid_amount: paymentInfo.amount,
+          status: paymentInfo.status,
+          transaction_id: transactionId
+        }
+      }
+    };
+  });
+
+  return confirmOrderRequest;
 };
 
 export default helpers;

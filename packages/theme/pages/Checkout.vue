@@ -177,9 +177,9 @@
               <div class="bpp_breakup">
                 <div
                   :key="propertyName"
-                  v-for="(
-                    value, propertyName
-                  ) in cartGetters.getQuoteItemBreakup(cart)"
+                  v-for="(value, propertyName) in cartGetters.getQuoteItem(
+                    cart
+                  )"
                 >
                   <div :key="id" v-for="(breakup, id) in value.breakup">
                     <CardContent class="flex-space-bw">

@@ -3,8 +3,11 @@ import { Context } from '@vue-storefront/core';
 import usePollerFactory from '../usePoller';
 
 const factoryParams = {
-  poll: async (context: Context, { params }): Promise<any> => {
-    const ackResponse: AckResponse = await context.$beckn.api.onConfirmOrder(params);
+  poll: async (context: Context, { params, token }): Promise<any> => {
+    const ackResponse: AckResponse = await context.$beckn.api.onConfirmOrder(
+      params,
+      token
+    );
     if (ackResponse.error?.code) {
       throw ackResponse.error;
     }
@@ -22,8 +25,11 @@ const factoryParams = {
     }
     return true;
   },
-  init: async (context: Context, { params }) => {
-    const ackResponse: AckResponse = await context.$beckn.api.confirmOrder(params);
+  init: async (context: Context, { params, token }) => {
+    const ackResponse: AckResponse = await context.$beckn.api.confirmOrder(
+      params,
+      token
+    );
     if (ackResponse.error?.code) {
       throw ackResponse.error;
     }
@@ -31,7 +37,6 @@ const factoryParams = {
   },
   pollTime: () => 60000,
   intervalTime: () => 2000
-
 };
 
 export default usePollerFactory(factoryParams);

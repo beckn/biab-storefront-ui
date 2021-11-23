@@ -5,7 +5,7 @@ import usePollerFactory from '../usePoller';
 import config from '../../beckn.config.js';
 
 const factoryParams = {
-  poll: async (context: Context, { params,token }): Promise<any> => {
+  poll: async (context: Context, { params, token }): Promise<any> => {
     const ackResponse: AckResponse = await context.$beckn.api.onGetQuote(
       params,
       token

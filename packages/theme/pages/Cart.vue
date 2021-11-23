@@ -285,48 +285,25 @@ export default {
           return;
         }
 
+        handleOnGetQuoteError(onGetQuoteRes);
+
         if (shouldStopPoolingOnGetQuote(onGetQuoteRes)) {
           stopPolling();
         }
 
         updateCart(onGetQuoteRes);
-        handleOnGetQuoteError(onGetQuoteRes);
       }
     );
-
-    const getQuoteDataForEachBpp = () => {
-      const getQuoteObj = {};
-
-      cart.value.items.map((item) => {
-        const cartItem = {
-          ...item,
-          id: item.id,
-          quantity: { count: item.quantity },
-          // eslint-disable-next-line camelcase
-          bpp_id: item.bpp.id,
-          bppProvider: item.bppProvider,
-          provider: {
-            id: item.bppProvider.id,
-            locations: [item.location_id],
-          },
-        };
-        if (getQuoteObj[item.bpp.id]) {
-          getQuoteObj[item.bpp.id].push(cartItem);
-        } else {
-          getQuoteObj[item.bpp.id] = [cartItem];
-        }
-      });
-
-      return getQuoteObj;
-    };
 
     const matchQuote = async () => {
       if (cart.value.totalItems > 0 && localStorage.getItem('transactionId')) {
         enableLoader.value = true;
         const transactionId = localStorage.getItem('transactionId');
 
-        const quoteDataForEachBpp = getQuoteDataForEachBpp();
-        const getQuoteRequest = Object.keys(quoteDataForEachBpp).map((key) => {
+        const cartItemsForEachBpp = cartGetters.getCartItemsForEachBpp(
+          cart.value
+        );
+        const getQuoteRequest = Object.keys(cartItemsForEachBpp).map((key) => {
           return {
             context: {
               // eslint-disable-next-line camelcase
@@ -334,7 +311,7 @@ export default {
               // eslint-disable-next-line camelcase
               bpp_id: key,
             },
-            message: { cart: { items: quoteDataForEachBpp[key] } },
+            message: { cart: { items: cartItemsForEachBpp[key] } },
           };
         });
 

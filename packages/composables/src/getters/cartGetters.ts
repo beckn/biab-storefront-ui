@@ -68,13 +68,13 @@ export const getCartTotals = (cart: CartType): AgnosticTotals => {
   };
 };
 
-export const getQuoteBreakup = (cart): AgnosticTotals => {
- return cart?.quote?.breakup
+export const getQuoteBreakup = (cart: CartType): AgnosticTotals => {
+  return cart?.quote?.breakup;
 };
 
-export const getQuoteItemBreakup = (cart) : AgnosticTotals => {
-  return cart?.quoteItem
-}
+export const getQuoteItem = (cart: CartType): AgnosticTotals => {
+  return cart?.quoteItem;
+};
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getCartShippingPrice = (cart: Cart): number => 0;
@@ -97,6 +97,37 @@ export const getUpdatedPrice = (product: CartProduct): number =>
 export const getUpdatedCount = (product: CartProduct): number =>
   product.updatedCount ?? null;
 
+/**
+ * Returns an object which contains cart items mapped as per bppId
+ * @param cart Cart Object
+ */
+export const getCartItemsForEachBpp = (cart: CartType): any => {
+  const itemsPerBpp = {};
+
+  cart.items.map((item) => {
+    const bppId = item.bpp.id;
+    const cartItem = {
+      ...item,
+      id: item.id,
+      quantity: { count: item.quantity },
+      // eslint-disable-next-line camelcase
+      bpp_id: bppId,
+      bppProvider: item.bppProvider,
+      provider: {
+        id: item.bppProvider.id,
+        locations: [item.location_id]
+      }
+    };
+    if (itemsPerBpp[bppId]) {
+      itemsPerBpp[bppId].push(cartItem);
+    } else {
+      itemsPerBpp[bppId] = [cartItem];
+    }
+  });
+
+  return itemsPerBpp;
+};
+
 const cartGetters: CartGetters<Cart, LineItem> = {
   getTotals: getCartTotals,
   getShippingPrice: getCartShippingPrice,
@@ -117,7 +148,8 @@ const cartGetters: CartGetters<Cart, LineItem> = {
   getUpdatedPrice,
   getUpdatedCount,
   getQuoteBreakup,
-  getQuoteItemBreakup
+  getQuoteItem,
+  getCartItemsForEachBpp
 };
 
 export default cartGetters;
