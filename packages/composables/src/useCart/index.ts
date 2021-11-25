@@ -30,6 +30,8 @@ const params = {
     let cartData = { ...cartSample };
     if (localStorage.getItem('cartData')) {
       cartData = JSON.parse(localStorage.getItem('cartData'));
+    } else {
+      localStorage.setItem('cartData', JSON.stringify(cartData));
     }
     return cartData;
   },
@@ -87,6 +89,10 @@ const params = {
       currentCart.totalItems += quantity;
       currentCart.items.push(product);
       currentCart.cartTime = new Date();
+    }
+
+    if (!currentCart.quoteItem) {
+      currentCart.quoteItem = {};
     }
 
     localStorage.setItem('cartData', JSON.stringify(currentCart));
