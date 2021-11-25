@@ -147,6 +147,7 @@ import ModalSlide from '~/components/ModalSlide';
 import { ref, onBeforeMount, watch } from '@vue/composition-api';
 import { useUiState } from '~/composables';
 import LoadingCircle from '~/components/LoadingCircle';
+import helpers from '../helpers/helpers';
 export default {
   middleware: 'auth',
   name: 'Cart',
@@ -164,6 +165,7 @@ export default {
     ModalSlide,
     SfInput,
     LoadingCircle,
+    helpers,
   },
 
   setup(_, { root }) {
@@ -204,7 +206,7 @@ export default {
       }
     };
 
-    // Updates the cart with quote data received
+    // Updates the cart with quote data received. If any mismatch in the quote data received and the current cart data, sets the required error to true.
     const updateCart = (onGetQuoteRes) => {
       const breakup = [];
       let price = { value: 0 };
@@ -300,34 +302,39 @@ export default {
         enableLoader.value = true;
         const transactionId = localStorage.getItem('transactionId');
 
-        const cartItemsForEachBpp = cartGetters.getCartItemsForEachBpp(
-          cart.value
-        );
-        const getQuoteRequest = Object.keys(cartItemsForEachBpp).map((key) => {
-          return {
-            context: {
-              // eslint-disable-next-line camelcase
-              transaction_id: transactionId,
-              // eslint-disable-next-line camelcase
-              bpp_id: key,
-            },
-            message: { cart: { items: cartItemsForEachBpp[key] } },
-          };
+        const getQuoteRequest = [];
+        const cartItemsPerBppPerProvider =
+          cartGetters.getCartItemsPerBppPerProvider(cart.value);
+
+        // Creating request array unique to a Provider and its corresponding Bpp by pushing the list of items for each Provider in each of the Bpp.
+        Object.keys(cartItemsPerBppPerProvider).forEach((bppId) => {
+          Object.keys(cartItemsPerBppPerProvider[bppId]).forEach(
+            (providerId) => {
+              const cartItem = {
+                context: {
+                  // eslint-disable-next-line camelcase
+                  transaction_id: transactionId,
+                  // eslint-disable-next-line camelcase
+                  bpp_id: bppId,
+                },
+                message: {
+                  cart: {
+                    items: cartItemsPerBppPerProvider[bppId][providerId],
+                  },
+                },
+              };
+
+              getQuoteRequest.push(cartItem);
+            }
+          );
         });
 
-        const cartData = await init(
+        const getQuoteResponse = await init(
           getQuoteRequest,
           localStorage.getItem('token')
         );
-
-        if (cartData) {
-          let messageIds = '';
-          cartData.forEach((cartItem) => {
-            messageIds += cartItem.context?.message_id + ',';
-          });
-          messageIds = messageIds.substring(0, messageIds.length - 1);
-          await poll({ messageIds: messageIds }, localStorage.getItem('token'));
-        }
+        const messageIds = helpers.getMessageIdsFromResponse(getQuoteResponse);
+        await poll({ messageIds: messageIds }, localStorage.getItem('token'));
       } else {
         enableLoader.value = false;
       }

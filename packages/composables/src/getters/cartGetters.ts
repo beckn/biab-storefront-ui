@@ -98,26 +98,45 @@ export const getUpdatedCount = (product: CartProduct): number =>
   product.updatedCount ?? null;
 
 /**
+ * Returns the cart item with additional fields formatted for sending in api requests.
+ * @param item Cart Prodcut item
+ */
+const getCartItemFormatted = (item: CartProduct) => {
+  const bppId = item.bpp.id;
+  const providerId = item.bppProvider.id;
+  const cartItemFormatted = {
+    ...item,
+    id: item.id,
+    quantity: { count: item.quantity },
+    // eslint-disable-next-line camelcase
+    bpp_id: bppId,
+    bppProvider: item.bppProvider,
+    provider: {
+      id: providerId,
+      locations: [item.location_id]
+    }
+  };
+
+  return cartItemFormatted;
+};
+
+/**
  * Returns an object which contains cart items mapped as per bppId
+ * Similar to the below structure:
+ * {
+ *  [bppId]:[
+ *     { // item1 of bppid },
+ *     { // item2 of bppid },
+ *   ],
+ * }
  * @param cart Cart Object
  */
-export const getCartItemsForEachBpp = (cart: CartType): any => {
+export const getCartItemsPerBpp = (cart: CartType): any => {
   const itemsPerBpp = {};
 
   cart.items.map((item) => {
     const bppId = item.bpp.id;
-    const cartItem = {
-      ...item,
-      id: item.id,
-      quantity: { count: item.quantity },
-      // eslint-disable-next-line camelcase
-      bpp_id: bppId,
-      bppProvider: item.bppProvider,
-      provider: {
-        id: item.bppProvider.id,
-        locations: [item.location_id]
-      }
-    };
+    const cartItem = getCartItemFormatted(item);
     if (itemsPerBpp[bppId]) {
       itemsPerBpp[bppId].push(cartItem);
     } else {
@@ -126,6 +145,43 @@ export const getCartItemsForEachBpp = (cart: CartType): any => {
   });
 
   return itemsPerBpp;
+};
+
+/**
+ * Returns an object which contains cart items mapped as per bppId and for each bpp provider
+ * Similar to the below structure:
+ * {
+ *  [bppId]: {
+ *    [providerId]: [
+ *      { // item1 of bppid and providerId },
+ *      { // item2 of bppid and providerId },
+ *    ]
+ *  },
+ * }
+ * @param cart Cart Object
+ */
+const getCartItemsPerBppPerProvider = (cart: CartType): any => {
+  const itemsPerBppPerProvider = {};
+
+  cart.items.map((item) => {
+    const bppId = item.bpp.id;
+    const providerId = item.bppProvider.id;
+    const cartItem = getCartItemFormatted(item);
+
+    if (itemsPerBppPerProvider[bppId]) {
+      if (itemsPerBppPerProvider[bppId][providerId]) {
+        itemsPerBppPerProvider[bppId][providerId].push(cartItem);
+      } else {
+        itemsPerBppPerProvider[bppId][providerId] = [cartItem];
+      }
+    } else {
+      itemsPerBppPerProvider[bppId] = {
+        [providerId]: [cartItem]
+      };
+    }
+  });
+
+  return itemsPerBppPerProvider;
 };
 
 const cartGetters: CartGetters<Cart, LineItem> = {
@@ -149,7 +205,8 @@ const cartGetters: CartGetters<Cart, LineItem> = {
   getUpdatedCount,
   getQuoteBreakup,
   getQuoteItem,
-  getCartItemsForEachBpp
+  getCartItemsPerBpp,
+  getCartItemsPerBppPerProvider
 };
 
 export default cartGetters;

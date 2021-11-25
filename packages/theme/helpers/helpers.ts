@@ -11,10 +11,6 @@ export const calculateDays = (_date1, _date2) => {
   return diffDays;
 };
 
-const helpers = {
-  calculateDays
-};
-
 /**
  * Returns the Billing address Info in a format required for the api
  * @param billingAddress Billing Address object
@@ -155,11 +151,11 @@ export const createConfirmOrderRequest = (
   paymentInfo
 ) => {
   const billingInfo = getBillingInfo(
-    shippingAddress ? shippingAddress : billingAddress
+    shippingAsBilling ? shippingAddress : billingAddress
   );
   const deliveryInfo = getDeliveryInfo(shippingAddress, gps);
 
-  const cartItemsForEachBpp = cartGetters.getCartItemsForEachBpp(cart);
+  const cartItemsForEachBpp = cartGetters.getCartItemsPerBpp(cart);
   const confirmOrderRequest = Object.keys(cartItemsForEachBpp).map((key) => {
     return {
       context: {
@@ -180,6 +176,30 @@ export const createConfirmOrderRequest = (
   });
 
   return confirmOrderRequest;
+};
+
+/**
+ * Returns a comma separated string of message_id,extracted from each of the response context.
+ * @param responseArr Array of response which is of the form responseArr[i].context.message_id
+ * @returns messageIds
+ */
+export const getMessageIdsFromResponse = (responseArr) => {
+  let messageIds = '';
+  if (responseArr) {
+    responseArr.forEach((response) => {
+      if (response.context?.message_id) {
+        messageIds += response.context?.message_id + ',';
+      }
+    });
+    messageIds = messageIds.substring(0, messageIds.length - 1);
+  }
+
+  return messageIds;
+};
+
+const helpers = {
+  calculateDays,
+  getMessageIdsFromResponse
 };
 
 export default helpers;
