@@ -141,10 +141,7 @@ export default {
         order.value.billingAddress,
         order.value.shippingAsBilling,
         '12.9063433,77.5856825',
-        {
-          amount: cartGetters.getTotals(order.value.cart).total,
-          status: 'PAID',
-        }
+        order.value.initOrder
       );
       const confirmResponses = await init(
         params,

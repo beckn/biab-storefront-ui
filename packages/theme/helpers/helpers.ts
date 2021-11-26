@@ -85,21 +85,21 @@ export const createOrderRequest = (
 
   const deliveryInfo = getDeliveryInfo(shippingAddress, gps);
 
-  const cartItemsPerEachBppPerProvider = cartGetters.getCartItemsPerBppPerProvider(
+  const cartItemsPerBppPerProvider = cartGetters.getCartItemsPerBppPerProvider(
     cart
   );
 
   const initOrderRequest = [];
 
-  Object.keys(cartItemsPerEachBppPerProvider).forEach((bppId) => {
-    Object.keys(cartItemsPerEachBppPerProvider[bppId]).forEach((providerId) => {
+  Object.keys(cartItemsPerBppPerProvider).forEach((bppId) => {
+    Object.keys(cartItemsPerBppPerProvider[bppId]).forEach((providerId) => {
       const initItems = {
         context: {
           transaction_id: transactionId,
           bpp_id: bppId
         },
         message: {
-          items: cartItemsPerEachBppPerProvider[bppId][providerId],
+          items: cartItemsPerBppPerProvider[bppId][providerId],
           billing_info: bAddress,
           delivery_info: deliveryInfo
         }
@@ -118,7 +118,7 @@ export const createConfirmOrderRequest = (
   billingAddress,
   shippingAsBilling: boolean,
   gps,
-  paymentInfo
+  initOrderData
 ) => {
   const billingInfo = getBillingInfo(
     shippingAsBilling ? shippingAddress : billingAddress,
@@ -126,24 +126,32 @@ export const createConfirmOrderRequest = (
   );
   const deliveryInfo = getDeliveryInfo(shippingAddress, gps);
 
-  const cartItemsForEachBpp = cartGetters.getCartItemsPerBpp(cart);
-  const confirmOrderRequest = Object.keys(cartItemsForEachBpp).map((key) => {
-    return {
-      context: {
-        transaction_id: transactionId,
-        bpp_id: key
-      },
-      message: {
-        items: cartItemsForEachBpp[key],
-        billing_info: billingInfo,
-        delivery_info: deliveryInfo,
-        payment: {
-          paid_amount: paymentInfo.amount,
-          status: paymentInfo.status,
-          transaction_id: transactionId
+  const cartItemsPerBppPerProvider = cartGetters.getCartItemsPerBppPerProvider(
+    cart
+  );
+  const confirmOrderRequest = [];
+
+  Object.keys(cartItemsPerBppPerProvider).forEach((bppId) => {
+    Object.keys(cartItemsPerBppPerProvider[bppId]).forEach((providerId) => {
+      const initItems = {
+        context: {
+          transaction_id: transactionId,
+          bpp_id: bppId
+        },
+        message: {
+          items: cartItemsPerBppPerProvider[bppId][providerId],
+          billing_info: billingInfo,
+          delivery_info: deliveryInfo,
+          payment: {
+            paid_amount:
+              initOrderData[bppId][providerId]?.payment?.params?.amount,
+            status: 'PAID',
+            transaction_id: transactionId
+          }
         }
-      }
-    };
+      };
+      confirmOrderRequest.push(initItems);
+    });
   });
 
   return confirmOrderRequest;

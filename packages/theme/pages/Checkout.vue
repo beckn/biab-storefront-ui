@@ -467,20 +467,34 @@ export default {
 
     watch(
       () => onInitResult.value,
-      (newValue) => {
-        if (!newValue) {
+      (onInitResponse) => {
+        if (!onInitResponse) {
           return;
         }
-        if (shouldStopPollingOnOnInit(newValue)) {
+        if (shouldStopPollingOnOnInit(onInitResponse)) {
           stopPolling();
         }
-        const onInitArray = [];
+        const initOrderPerBppPerProvider = {};
         // eslint-disable-next-line no-prototype-builtins
-        if (newValue.every((item) => item.hasOwnProperty('message'))) {
-          newValue.forEach((valueItem) => {
-            cart.value.quote = valueItem.message?.order?.quote;
-            valueItem.message.order.bpp_id = valueItem.context?.bpp_id;
-            onInitArray.push(valueItem.message?.order);
+        if (onInitResponse.every((item) => item.hasOwnProperty('message'))) {
+          onInitResponse.forEach((initResponse) => {
+            const { order: currentOnInitData } = initResponse.message;
+            if (!currentOnInitData) {
+              return;
+            }
+
+            cart.value.quote = currentOnInitData.quote;
+            const { bpp_id: bppId } = initResponse.context;
+            const { id: providerId } = currentOnInitData.provider;
+            if (initOrderPerBppPerProvider[bppId]) {
+              initOrderPerBppPerProvider[bppId][providerId] = {
+                ...currentOnInitData,
+              };
+            } else {
+              initOrderPerBppPerProvider[bppId] = {
+                [providerId]: { ...currentOnInitData },
+              };
+            }
           });
 
           // TODO( To provide BPP Id too in the object once we start getting it)
@@ -492,13 +506,12 @@ export default {
               shippingAsBilling: shippingAsBilling.value,
               transactionId: transactionId.value,
               status: 0,
-              initOrder: onInitArray,
+              initOrder: initOrderPerBppPerProvider,
               cart: cart.value,
             })
           );
 
           localStorage.removeItem('transactionId');
-          // enableLoader.value = false;
           context.root.$router.push({
             path: '/payment',
             query: {
