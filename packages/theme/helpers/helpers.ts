@@ -15,13 +15,13 @@ export const calculateDays = (_date1, _date2) => {
  * Returns the Billing address Info in a format required for the api
  * @param billingAddress Billing Address object
  */
-export const getBillingInfo = (billingAddress): any => {
+export const getBillingInfo = (billingAddress, addresskey: string): any => {
   if (!billingAddress) {
     return {};
   }
 
   const billingInfo = {
-    billingAddress: {
+    [addresskey]: {
       door: billingAddress.landmark,
       country: 'IND',
       city: billingAddress.city,
@@ -78,67 +78,37 @@ export const createOrderRequest = (
   shippingAsBilling,
   gps
 ) => {
-  const bAddress = shippingAsBilling ? shippingAddress : billingAddress;
+  const bAddress = getBillingInfo(
+    shippingAsBilling ? shippingAddress : billingAddress,
+    'address'
+  );
 
-  const items: any[] = cart.items.map((item) => {
-    return {
-      id: item.id,
-      quantity: { count: item.quantity },
-      bpp_id: item.bpp.id,
-      provider: {
-        id: item.bppProvider.id,
-        locations: [item.location_id]
-      }
-    };
+  const deliveryInfo = getDeliveryInfo(shippingAddress, gps);
+
+  const cartItemsPerEachBppPerProvider = cartGetters.getCartItemsPerBppPerProvider(
+    cart
+  );
+
+  const initOrderRequest = [];
+
+  Object.keys(cartItemsPerEachBppPerProvider).forEach((bppId) => {
+    Object.keys(cartItemsPerEachBppPerProvider[bppId]).forEach((providerId) => {
+      const initItems = {
+        context: {
+          transaction_id: transactionId,
+          bpp_id: bppId
+        },
+        message: {
+          items: cartItemsPerEachBppPerProvider[bppId][providerId],
+          billing_info: bAddress,
+          delivery_info: deliveryInfo
+        }
+      };
+      initOrderRequest.push(initItems);
+    });
   });
 
-  const params = [
-    {
-      context: {
-        transaction_id: transactionId
-      },
-      message: {
-        items: items,
-
-        billing_info: {
-          address: {
-            door: bAddress.landmark,
-            country: 'IND',
-            city: bAddress.city,
-            street: bAddress.address,
-
-            area_code: bAddress.pincode,
-            state: bAddress.state,
-            building: bAddress.building
-          },
-          phone: bAddress.mobile,
-          name: bAddress.name,
-          email: ''
-        },
-
-        delivery_info: {
-          type: 'HOME-DELIVERY',
-          name: shippingAddress.name,
-          phone: shippingAddress.mobile,
-          email: '',
-          location: {
-            address: {
-              door: shippingAddress.landmark,
-              country: 'IND',
-              city: shippingAddress.city,
-              street: shippingAddress.address,
-
-              area_code: shippingAddress.pincode,
-              state: shippingAddress.state,
-              building: shippingAddress.building
-            },
-            gps: gps
-          }
-        }
-      }
-    }
-  ];
-  return params;
+  return initOrderRequest;
 };
 
 export const createConfirmOrderRequest = (
@@ -151,7 +121,8 @@ export const createConfirmOrderRequest = (
   paymentInfo
 ) => {
   const billingInfo = getBillingInfo(
-    shippingAsBilling ? shippingAddress : billingAddress
+    shippingAsBilling ? shippingAddress : billingAddress,
+    'billingInfo'
   );
   const deliveryInfo = getDeliveryInfo(shippingAddress, gps);
 

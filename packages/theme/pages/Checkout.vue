@@ -475,12 +475,11 @@ export default {
           stopPolling();
         }
         const onInitArray = [];
-        const cartArray = [];
         // eslint-disable-next-line no-prototype-builtins
         if (newValue.every((item) => item.hasOwnProperty('message'))) {
           newValue.forEach((valueItem) => {
             cart.value.quote = valueItem.message?.order?.quote;
-            cartArray.push(cart.value);
+            valueItem.message.order.bpp_id = valueItem.context?.bpp_id;
             onInitArray.push(valueItem.message?.order);
           });
 
