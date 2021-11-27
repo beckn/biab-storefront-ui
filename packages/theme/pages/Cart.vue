@@ -214,6 +214,7 @@ export default {
       onGetQuoteRes.forEach((getQuoteRes) => {
         if (getQuoteRes.message?.quote) {
           const currentQuoteData = getQuoteRes.message.quote;
+          const bppId = getQuoteRes.context.bpp_id;
           currentQuoteData.items.forEach((quoteItem) => {
             const { cartItem, index } =
               getCartItemCorrespondingToQuoteItem(quoteItem);
@@ -253,9 +254,15 @@ export default {
             value:
               price.value + parseFloat(currentQuoteData.quote?.price?.value),
           };
-          cart.value.quoteItem[currentQuoteData.provider.id] = {
-            ...currentQuoteData.quote,
-          };
+          if (cart.value.quoteItem[bppId]) {
+            cart.value.quoteItem[bppId][currentQuoteData.provider.id] = {
+              ...currentQuoteData.quote,
+            };
+          } else {
+            cart.value.quoteItem[bppId] = {
+              [currentQuoteData.provider.id]: { ...currentQuoteData.quote },
+            };
+          }
         }
       });
 

@@ -176,21 +176,27 @@
               <!-- <CardContent > -->
               <div class="bpp_breakup">
                 <div
-                  :key="propertyName"
-                  v-for="(value, propertyName) in cartGetters.getQuoteItem(
-                    cart
-                  )"
+                  :key="bppId"
+                  v-for="(value, bppId) in cartGetters.getQuoteItem(cart)"
                 >
-                  <div :key="id" v-for="(breakup, id) in value.breakup">
+                  <div
+                    :key="providerId"
+                    v-for="(valuePerProvider, providerId) in value"
+                  >
+                    <div
+                      :key="id"
+                      v-for="(breakup, id) in valuePerProvider.breakup"
+                    >
+                      <CardContent class="flex-space-bw">
+                        <div>{{ breakup.title }}</div>
+                        <div>₹{{ breakup.price.value }}</div>
+                      </CardContent>
+                    </div>
                     <CardContent class="flex-space-bw">
-                      <div>{{ breakup.title }}</div>
-                      <div>₹{{ breakup.price.value }}</div>
+                      <div>Subtotal :</div>
+                      <div>{{ valuePerProvider.price.value }}</div>
                     </CardContent>
                   </div>
-                  <CardContent class="flex-space-bw">
-                    <div>Subtotal :</div>
-                    <div>{{ value.price.value }}</div>
-                  </CardContent>
                 </div>
               </div>
             </SfAccordionItem>
@@ -483,9 +489,11 @@ export default {
               return;
             }
 
-            cart.value.quote = currentOnInitData.quote;
             const { bpp_id: bppId } = initResponse.context;
             const { id: providerId } = currentOnInitData.provider;
+            cart.value.quoteItem[bppId][providerId] = {
+              ...currentOnInitData.quote,
+            };
             if (initOrderPerBppPerProvider[bppId]) {
               initOrderPerBppPerProvider[bppId][providerId] = {
                 ...currentOnInitData,

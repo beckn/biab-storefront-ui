@@ -16,23 +16,30 @@
         <div class="p-name">Payment</div>
       </div>
       <Card v-if="order.cart">
-        <CardContent
-          v-for="breakup in order.cart.quote.breakup"
-          :key="breakup.title"
-          class="flex-space-bw"
-        >
-          <div class="address-text">{{ breakup.title }}</div>
-          <div class="address-text">
-            ₹{{ parseFloat(breakup.price.value).toFixed(2) }}
+        <div v-for="(value, bppId) in order.cart.quoteItem" :key="bppId">
+          <div
+            :key="providerId"
+            v-for="(valuePerProvider, providerId) in value"
+            class="address-text bold"
+          >
+            <div :key="id" v-for="(breakup, id) in valuePerProvider.breakup">
+              <CardContent class="flex-space-bw">
+                <div class="address-text">
+                  {{ breakup.title }}
+                </div>
+                <div class="address-text">
+                  ₹{{ parseFloat(breakup.price.value).toFixed(2) }}
+                </div>
+              </CardContent>
+            </div>
+            <div><hr class="sf-divider divider" /></div>
+            <CardContent class="flex-space-bw">
+              <div>Subtotal :</div>
+              ₹{{ valuePerProvider.price.value }}
+            </CardContent>
           </div>
-        </CardContent>
+        </div>
         <div><hr class="sf-divider divider" /></div>
-        <CardContent class="flex-space-bw">
-          <div class="address-text bold">Total</div>
-          <div class="address-text bold">
-            ₹{{ order.cart.quote.price.value }}
-          </div>
-        </CardContent>
       </Card>
       <div class="sub-heading">
         <div class="p-name">Other</div>
