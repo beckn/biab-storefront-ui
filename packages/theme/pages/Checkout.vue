@@ -491,9 +491,16 @@ export default {
 
             const { bpp_id: bppId } = initResponse.context;
             const { id: providerId } = currentOnInitData.provider;
-            cart.value.quoteItem[bppId][providerId] = {
-              ...currentOnInitData.quote,
-            };
+            if (cart.value.quoteItem[bppId]) {
+              cart.value.quoteItem[bppId][providerId] = {
+                ...currentOnInitData.quote,
+              };
+            } else {
+              cart.value.quoteItem[bppId] = {
+                [providerId]: { ...currentOnInitData.quote },
+              };
+            }
+
             if (initOrderPerBppPerProvider[bppId]) {
               initOrderPerBppPerProvider[bppId][providerId] = {
                 ...currentOnInitData,
