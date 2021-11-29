@@ -176,9 +176,22 @@ export const getMessageIdsFromResponse = (responseArr) => {
   return messageIds;
 };
 
+export const getOrderPlacementTimeline = (timeStamp: string) => {
+  const localDateAndTime = new Date(timeStamp);
+  const localTime = localDateAndTime.toLocaleTimeString();
+  const localDate = localDateAndTime.toDateString();
+  const localDateWithoutDay = localDate
+    .split(' ')
+    .slice(1)
+    .join(' ');
+
+  return `${localDateWithoutDay}, ${localTime}`;
+};
+
 const helpers = {
   calculateDays,
-  getMessageIdsFromResponse
+  getMessageIdsFromResponse,
+  getOrderPlacementTimeline
 };
 
 export default helpers;
