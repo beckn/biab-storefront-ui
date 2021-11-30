@@ -188,10 +188,45 @@ export const getOrderPlacementTimeline = (timeStamp: string) => {
   return `${localDateWithoutDay}, ${localTime}`;
 };
 
+/**
+ * Checks each object in the array if data present or not. If data is present in all of the objects,
+ * then the UI should stop polling for data and so the function will return true or else will return false
+ * and UI should continue polling the data.
+ * @param responseArr Response array received from the api call
+ * @param stopObjectKey the 'key' of the object which we need to check for value present or not
+ * @returns true if all the objects have data or else false
+ */
+const shouldStopPooling = (responseArr, stopObjectKey) => {
+  let shouldStopPolling = true;
+  for (const response of responseArr) {
+    if (!response.message?.[stopObjectKey]) {
+      shouldStopPolling = false;
+      break;
+    }
+  }
+
+  return shouldStopPolling;
+};
+
+/**
+ * Generates a unique order id starting with '1' and therby incrementing the id by one.
+ * Temporary hack until the api returns a unique Orderid for entire order.
+ * @returns string as the id number
+ */
+const generateUniqueOrderId = () => {
+  const currentOrderId = localStorage.getItem('currentOrderId') || '0';
+
+  const updatedOrderId = String(parseInt(currentOrderId) + 1);
+  localStorage.setItem('currentOrderId', updatedOrderId);
+  return updatedOrderId;
+};
+
 const helpers = {
   calculateDays,
   getMessageIdsFromResponse,
-  getOrderPlacementTimeline
+  getOrderPlacementTimeline,
+  shouldStopPooling,
+  generateUniqueOrderId
 };
 
 export default helpers;

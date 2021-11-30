@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="top-bar">
-      <div @clic='goBack' class="sf-chevron--left sf-chevron icon_back">
+      <div @clic="goBack" class="sf-chevron--left sf-chevron icon_back">
         <span class="sf-search-bar__icon">
           <SfIcon color="var(--c-primary)" size="20px" icon="chevron_left" />
         </span>
@@ -189,9 +189,9 @@
               <div class="address-text">Placed at</div>
               <div class="address-text">{{ order.order.created_at }}</div>
             </CardContent>
-            <CardContent v-if='isFulfillmentAvailable' class="flex-space-bw">
+            <CardContent v-if="isFulfillmentAvailable" class="flex-space-bw">
               <div class="address-text">Status</div>
-              <div class="address-text">{{isFulfillmentAvailable.state}}</div>
+              <div class="address-text">{{ isFulfillmentAvailable.state }}</div>
             </CardContent>
           </SfAccordionItem>
         </SfAccordion>
@@ -200,7 +200,7 @@
       <div class="sub-heading">
         <!-- <div class="p-name">Order</div> -->
       </div>
-      <div v-if='isFulfillmentAvailable'>
+      <div v-if="isFulfillmentAvailable">
         <Card>
           <SfAccordion>
             <SfAccordionItem :header="'Fulfillment'">
@@ -270,7 +270,11 @@
         <div class="f-btn-text">Contact Support</div>
         <img class="btn-img" src="/icons/support.svg" />
       </button>
-      <button v-if="false" class="color-light sf-button cancel-order-btn" @click="onCancel">
+      <button
+        v-if="false"
+        class="color-light sf-button cancel-order-btn"
+        @click="onCancel"
+      >
         <div class="btn-text">Cancel Order</div>
       </button>
       <ModalSlide :visible="openSupportModal" @close="openSupportModal = false">
@@ -352,7 +356,7 @@ import {
   SfAccordion,
   SfImage,
   SfInput,
-  SfIcon
+  SfIcon,
 } from '@storefront-ui/vue';
 import ModalSlide from '~/components/ModalSlide.vue';
 import LoadingCircle from '~/components/LoadingCircle';
@@ -364,10 +368,15 @@ import {
   providerGetters,
   useTrack,
   useOrderStatus,
-  useSupport
+  useSupport,
 } from '@vue-storefront/beckn';
 
-import { ref, onBeforeMount, computed, onBeforeUnmount } from '@vue/composition-api';
+import {
+  ref,
+  onBeforeMount,
+  computed,
+  onBeforeUnmount,
+} from '@vue/composition-api';
 import Card from '~/components/Card.vue';
 import CardContent from '~/components/CardContent.vue';
 
@@ -395,7 +404,7 @@ export default {
     SfAccordionItem,
     SfIcon,
     LoadingCircle,
-    AddressCard
+    AddressCard,
   },
   setup(_, context) {
     // const isThankYou = computed(() => currentStep.value === 'thank-you');
@@ -405,19 +414,19 @@ export default {
     const {
       poll: onTrack,
       init: track,
-      pollResults: trackResult
+      pollResults: trackResult,
     } = useTrack('track');
     const {
       poll: onSupport,
       init: support,
-      pollResults: supportResult
+      pollResults: supportResult,
     } = useSupport('support');
 
     const {
       poll: onStatus,
       init: status,
       pollResults: statusResult,
-      stopPolling: stopStatusPolling
+      stopPolling: stopStatusPolling,
     } = useOrderStatus('status');
     const isTrackingAvailable = computed(() => {
       return trackResult.value?.message?.tracking?.url;
@@ -429,7 +438,7 @@ export default {
     const isSupportAvailable = computed(() => {
       return supportResult.value?.message;
     });
-    const transactionId = context.root.$route.query.id;
+    const parentOrderId = context.root.$route.query.id;
     const fulfillmentStep = [
       { status: 'Items Packed', time: 'May 2021, 2021 12:40 PM' },
       { status: 'Delivery agent assigned', time: 'May 2021, 2021 12:40 PM' },
@@ -437,12 +446,12 @@ export default {
       null,
       null,
       null,
-      null
+      null,
     ];
     const fulfillmentSteps = [
       { status: 'Items Packed', time: 'May 2021, 2021 12:40 PM' },
       { status: 'Delivery agent assigned', time: 'May 2021, 2021 12:40 PM' },
-      { status: 'Agent enroute to store', time: 'May 2021, 2021 12:40 PM' }
+      { status: 'Agent enroute to store', time: 'May 2021, 2021 12:40 PM' },
     ];
     const openSupportModal = ref(false);
     const openTrackModal = ref(false);
@@ -450,35 +459,37 @@ export default {
     const goBack = () => context.root.$router.push('/orders');
     const onCancel = () => context.root.$router.push('/cancelorder');
 
+    // eslint-disable-next-line no-unused-vars
     const callSupport = async () => {
       const params = {
         context: {
           // eslint-disable-next-line camelcase
           transaction_id: order.value.transactionId,
           // eslint-disable-next-line camelcase
-          bpp_id: order.value.cart.bpp.id
+          bpp_id: order.value.cart.bpp.id,
         },
         message: {
           // eslint-disable-next-line camelcase
-          ref_id: order.value.order.id
-        }
+          ref_id: order.value.order.id,
+        },
       };
       const response = await support(params);
       await onSupport({ messageId: response.context.message_id });
     };
 
+    // eslint-disable-next-line no-unused-vars
     const callStatus = async () => {
       const params = {
         context: {
           // eslint-disable-next-line camelcase
           transaction_id: order.value.transactionId,
           // eslint-disable-next-line camelcase
-          bpp_id: order.value.cart.bpp.id
+          bpp_id: order.value.cart.bpp.id,
         },
         message: {
           // eslint-disable-next-line camelcase
-          order_id: order.value.order.id
-        }
+          order_id: order.value.order.id,
+        },
       };
       const response = await status(params);
       await onStatus({ messageId: response.context.message_id });
@@ -490,12 +501,12 @@ export default {
           // eslint-disable-next-line camelcase
           transaction_id: order.value.transactionId,
           // eslint-disable-next-line camelcase
-          bpp_id: order.value.cart.bpp.id
+          bpp_id: order.value.cart.bpp.id,
         },
         message: {
           // eslint-disable-next-line camelcase
-          order_id: order.value.order.id
-        }
+          order_id: order.value.order.id,
+        },
       };
       const response = await track(params);
       await onTrack({ messageId: response.context.message_id });
@@ -504,11 +515,11 @@ export default {
       const orders = JSON.parse(localStorage.getItem('orderHistory')) ?? [];
 
       order.value = orders.find((ord) => {
-        return ord.transactionId === transactionId;
+        return ord.parentOrderId === parentOrderId;
       });
-      await callTrack();
-      await callSupport();
-      await callStatus();
+      // await callTrack();
+      // await callSupport();
+      // await callStatus();
       enableLoader.value = false;
     });
 
@@ -537,9 +548,9 @@ export default {
       trackResult,
       openWindow,
       isFulfillmentAvailable,
-      isSupportAvailable
+      isSupportAvailable,
     };
-  }
+  },
 };
 </script>
 
@@ -731,7 +742,7 @@ export default {
   top: 40px;
 }
 
-.order-id{
+.order-id {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

@@ -322,7 +322,7 @@ import CardContent from '~/components/CardContent.vue';
 
 import ProductCard from '~/components/ProductCard';
 import AddressCard from '~/components/AddressCard';
-import { createOrderRequest } from '../helpers/helpers';
+import helpers, { createOrderRequest } from '../helpers/helpers';
 /* eslint camelcase: 0 */
 
 export default {
@@ -361,7 +361,6 @@ export default {
     const { cart, load } = useCart();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     // const { selectedLocation } = useUiState();
-    console.log('cart', cart);
     const {
       // polling ,
       pollResults: onInitResult,
@@ -379,25 +378,12 @@ export default {
       setBillingAddress,
       setShippingAddress,
     } = useAddress();
-    console.log(getShippingAddress());
-
-    const shouldStopPollingOnOnInit = (onInitRes) => {
-      let shouldStopPolling = true;
-      for (const initRes of onInitRes) {
-        if (!initRes.message?.order) {
-          shouldStopPolling = false;
-          break;
-        }
-      }
-      return shouldStopPolling;
-    };
     const shippingAddress = ref(getShippingAddress());
 
     const billingAddress = ref(getBillngAddress());
     const transactionId = ref('');
 
     const isShippingAddressFilled = computed(() => {
-      // debugger;
       return (
         shippingAddress.value.name !== '' &&
         shippingAddress.value.mobile !== '' &&
@@ -431,10 +417,6 @@ export default {
     const goBack = () => context.root.$router.back();
 
     const proceedToPay = computed(() => {
-      console.log(
-        isShippingAddressFilled.value &&
-          (isBillingAddressFilled.value || shippingAsBilling.value)
-      );
       return (
         isShippingAddressFilled.value &&
         (isBillingAddressFilled.value || shippingAsBilling.value)
@@ -477,7 +459,7 @@ export default {
         if (!onInitResponse) {
           return;
         }
-        if (shouldStopPollingOnOnInit(onInitResponse)) {
+        if (helpers.shouldStopPooling(onInitResponse, 'order')) {
           stopPolling();
         }
         const initOrderPerBppPerProvider = {};

@@ -100,7 +100,7 @@ import Card from '~/components/Card.vue';
 
 import Footer from '~/components/Footer.vue';
 import CardContent from '~/components/CardContent.vue';
-import { createConfirmOrderRequest } from '../helpers/helpers';
+import helpers, { createConfirmOrderRequest } from '../helpers/helpers';
 const { toggleCartSidebar } = useUiState();
 export default {
   middleware: 'auth',
@@ -128,7 +128,8 @@ export default {
     });
 
     const { clear } = useCart();
-    const { init, poll, pollResults } = useConfirmOrder('confirm-order');
+    const { init, poll, pollResults, stopPolling, polling } =
+      useConfirmOrder('confirm-order');
 
     const changePaymentMethod = (value) => {
       paymentMethod.value = value;
@@ -163,25 +164,46 @@ export default {
       await poll({ messageIds: messageIds }, localStorage.getItem('token'));
     };
 
+    const setOrderHistory = (onConfirmResponse) => {
+      // Next Line: To be removed after orderData flow is set
+      order.value.order = onConfirmResponse[0].message.order;
+      const parentOrderId = helpers.generateUniqueOrderId();
+      const orderData = {};
+
+      onConfirmResponse.forEach((onConfirmData) => {
+        const currentOrderData = onConfirmData.message?.order;
+        if (currentOrderData) {
+          orderData[currentOrderData.id] = currentOrderData;
+        }
+      });
+
+      order.value.parentOrderId = parentOrderId;
+      order.value.orderData = orderData;
+      const orderHistory =
+        JSON.parse(localStorage.getItem('orderHistory')) ?? [];
+      orderHistory.push(order.value);
+      localStorage.setItem('orderHistory', JSON.stringify(orderHistory));
+      localStorage.removeItem('orderProgress');
+      localStorage.removeItem('transactionId');
+
+      context.root.$router.push({
+        path: '/ordersuccess',
+        query: {
+          id: parentOrderId,
+        },
+      });
+    };
+
     watch(
       () => pollResults.value,
-      (newValue) => {
-        if (newValue[0]?.message?.order) {
-          order.value.order = newValue[0]?.message?.order;
+      (onConfirmResponse) => {
+        if (!polling.value || !onConfirmResponse) {
+          return;
+        }
 
-          const orderHistory =
-            JSON.parse(localStorage.getItem('orderHistory')) ?? [];
-          orderHistory.push(order.value);
-          localStorage.setItem('orderHistory', JSON.stringify(orderHistory));
-          localStorage.removeItem('orderProgress');
-          localStorage.removeItem('transactionId');
-
-          context.root.$router.push({
-            path: '/ordersuccess',
-            query: {
-              id: order.value.transactionId,
-            },
-          });
+        if (helpers.shouldStopPooling(onConfirmResponse, 'order')) {
+          stopPolling();
+          setOrderHistory(onConfirmResponse);
         }
       }
     );

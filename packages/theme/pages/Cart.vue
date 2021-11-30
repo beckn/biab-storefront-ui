@@ -184,19 +184,6 @@ export default {
 
     toggleSearchVisible(false);
 
-    // Loops over each onGetQuote response array. If quote present in each object then return true else false.
-    const shouldStopPoolingOnGetQuote = (onGetQuoteRes) => {
-      let shouldStopPolling = true;
-      for (const getQuoteRes of onGetQuoteRes) {
-        if (!getQuoteRes.message?.quote) {
-          shouldStopPolling = false;
-          break;
-        }
-      }
-
-      return shouldStopPolling;
-    };
-
     // Gets the respective cart item and its index corresponding to the quote item.
     const getCartItemCorrespondingToQuoteItem = (quoteItem) => {
       for (const [index, cartItem] of cart.value.items.entries()) {
@@ -296,7 +283,7 @@ export default {
 
         handleOnGetQuoteError(onGetQuoteRes);
 
-        if (shouldStopPoolingOnGetQuote(onGetQuoteRes)) {
+        if (helpers.shouldStopPooling(onGetQuoteRes, 'quote')) {
           stopPolling();
         }
 
