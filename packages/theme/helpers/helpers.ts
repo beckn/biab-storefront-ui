@@ -157,6 +157,26 @@ export const createConfirmOrderRequest = (
   return confirmOrderRequest;
 };
 
+export const createStatusTrackAndSupportOrderRequest = (orderValue, idKey) => {
+  const transactionId = orderValue.transactionId;
+  const supportOrderArray = [];
+  Object.keys(orderValue.orderData).forEach((orderId) => {
+    const supportItems = {
+      context: {
+        // eslint-disable-next-line camelcase
+        transaction_id: transactionId,
+        // eslint-disable-next-line camelcase
+        bpp_id: orderValue.orderData[orderId].bppId
+      },
+      message: {
+        [idKey]: orderId
+      }
+    };
+    supportOrderArray.push(supportItems);
+  });
+  return supportOrderArray;
+};
+
 /**
  * Returns a comma separated string of message_id,extracted from each of the response context.
  * @param responseArr Array of response which is of the form responseArr[i].context.message_id

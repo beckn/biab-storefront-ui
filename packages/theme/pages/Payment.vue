@@ -172,6 +172,7 @@ export default {
 
       onConfirmResponse.forEach((onConfirmData) => {
         const currentOrderData = onConfirmData.message?.order;
+        currentOrderData.bppId = onConfirmData.context?.bpp_id;
         if (currentOrderData) {
           orderData[currentOrderData.id] = currentOrderData;
         }

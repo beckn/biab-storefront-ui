@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="top-bar">
-      <div @clic="goBack" class="sf-chevron--left sf-chevron icon_back">
+      <div @click="goBack" class="sf-chevron--left sf-chevron icon_back">
         <span class="sf-search-bar__icon">
           <SfIcon color="var(--c-primary)" size="20px" icon="chevron_left" />
         </span>
@@ -21,47 +21,11 @@
     </div>
 
     <div v-if="!enableLoader" class="details">
-      <div class="provider-head p-0">
-        <div class="provide-img">
-          <img
-            :src="
-              cartGetters.getProviderImage(
-                cartGetters.getBppProvider(order.cart)
-              )
-                ? cartGetters.getProviderImage(
-                    cartGetters.getBppProvider(order.cart)
-                  )
-                : require('~/assets/images/store-placeholder.png')
-            "
-          />
-        </div>
-        <div class="p-name">
-          {{
-            providerGetters.getProviderName(
-              cartGetters.getBppProvider(order.cart)
-            )
-          }}
-        </div>
-        <div class="text-padding">
-          <!-- <span class="p-distance"> by </span> {{ order.cart.bpp.descriptor.name }} -->
-        </div>
-
-        <!-- <div class="text-padding">
-            <div class="flexy-center">
-              <div class="p-name">Abc</div>
-              <div class="text-padding">
-                <span class="p-distance"> by </span>
-                <span>BCA</span>
-              </div>
-            </div>
-          </div> -->
-      </div>
-
-      <div class="sub-heading">
+      <!-- <div class="sub-heading">
         <div class="p-name">Items</div>
-      </div>
+      </div> -->
 
-      <div
+      <!-- <div
         :key="index + 'new'"
         v-for="(product, index) in cartGetters.getItems(order.cart)"
         class="checkout-product"
@@ -81,7 +45,63 @@
             ₹ {{ cartGetters.getItemPrice(product).regular }}
           </div>
         </div>
-      </div>
+      </div> -->
+      <Card>
+        <SfAccordion>
+          <SfAccordionItem :header="'Order'">
+            <CardContent class="flex-space-bw">
+              <div class="address-text"><span>Placed at</span></div>
+              <div class="address-text order-id">
+                <span>{{ orderPlacementTime }}</span>
+              </div>
+            </CardContent>
+            <div><hr class="sf-divider divider" /></div>
+            <div :key="orderId" v-for="(order, orderId) in order.orderData">
+              <CardContent class="flex-space-bw">
+                <div class="address-text"><span>Shipment 1</span></div>
+                <div class="address-text">
+                  <span>Id - {{ orderId }}</span>
+                </div>
+              </CardContent>
+              <CardContent class="flex-space-bw">
+                <div class="address-text"><span>Status</span></div>
+                <div class="address-text">
+                  <span>{{ order.state }}</span>
+                </div>
+              </CardContent>
+            </div>
+            <CardContent v-if="isFulfillmentAvailable" class="flex-space-bw">
+              <div class="address-text"><span>Status</span></div>
+              <div class="address-text">
+                <span>{{ isFulfillmentAvailable.state }}</span>
+              </div>
+            </CardContent>
+            <div class="order-track">
+              <div class="cancel-link">
+                <span>
+                  <a
+                    class="cancel-target"
+                    target="_blank"
+                    href="http://www.google.com"
+                    >Cancel Shipment</a
+                  >
+                </span>
+              </div>
+              <div class="track-link">
+                <span>
+                  <a
+                    class="track-target"
+                    target="_blank"
+                    href="http://www.google.com"
+                    >Track Shipment</a
+                  >
+                </span>
+              </div>
+            </div>
+            <div><hr class="sf-divider divider" /></div>
+          </SfAccordionItem>
+        </SfAccordion>
+      </Card>
 
       <div class="sub-heading"></div>
 
@@ -124,7 +144,16 @@
       <Card>
         <SfAccordion>
           <SfAccordionItem :header="'Payment'">
-            <!-- <CardContent class="flex-space-bw">
+            <div :key="bppId" v-for="(value, bppId) in order.cart.quoteItem">
+              <div
+                :key="providerId"
+                v-for="(valuePerProvider, providerId) in value"
+              >
+                <div
+                  :key="id"
+                  v-for="(breakup, id) in valuePerProvider.breakup"
+                >
+                  <!-- <CardContent class="flex-space-bw">
               <div class="address-text">SubTotal</div>
               <div class="address-text">
                 ₹{{ cartGetters.getTotals(order.cart).total }}
@@ -142,57 +171,38 @@
               <div class="address-text">Taxes(SGST)</div>
               <div class="address-text">₹0.00</div>
             </CardContent> -->
-            <CardContent
-              v-for="breakup in order.cart.quote.breakup"
-              :key="breakup.title"
-              class="flex-space-bw"
-            >
-              <div class="address-text">{{ breakup.title }}</div>
-              <div class="address-text">₹{{ breakup.price.value }}</div>
-            </CardContent>
-            <div><hr class="sf-divider divider" /></div>
-            <CardContent class="flex-space-bw">
-              <div class="address-text bold">Total</div>
-              <div class="address-text bold">
-                ₹{{ order.cart.quote.price.value }}
-              </div>
-            </CardContent>
-            <CardContent class="flex-space-bw">
-              <div class="address-text">Method</div>
-              <div class="address-text">{{ order.paymentMethod }}</div>
-            </CardContent>
-            <CardContent class="flex-space-bw">
-              <div class="address-text">Status</div>
-              <div class="address-text">{{ order.order.payment.status }}</div>
-            </CardContent>
-            <CardContent v-if="false" class="flex-space-bw">
-              <div class="address-text">Transaction Id</div>
-              <div class="address-text">
-                <!-- {{ order.order.payment.params.transaction_id }} -->
-              </div>
-            </CardContent>
-          </SfAccordionItem>
-        </SfAccordion>
-      </Card>
+                  <CardContent class="flex-space-bw">
+                    <div class="address-text">{{ breakup.title }}</div>
+                    <div class="address-text">₹{{ breakup.price.value }}</div>
+                  </CardContent>
+                  <div><hr class="sf-divider divider" /></div>
 
-      <div class="sub-heading">
-        <!-- <div class="p-name">Order</div> -->
-      </div>
-      <Card>
-        <SfAccordion>
-          <SfAccordionItem :header="'Order'">
-            <CardContent class="flex-space-bw">
-              <div class="address-text">ID</div>
-              <div class="address-text order-id">{{ order.order.id }}</div>
-            </CardContent>
-            <CardContent class="flex-space-bw">
-              <div class="address-text">Placed at</div>
-              <div class="address-text">{{ order.order.created_at }}</div>
-            </CardContent>
-            <CardContent v-if="isFulfillmentAvailable" class="flex-space-bw">
-              <div class="address-text">Status</div>
-              <div class="address-text">{{ isFulfillmentAvailable.state }}</div>
-            </CardContent>
+                  <CardContent class="flex-space-bw">
+                    <div class="address-text bold">Total</div>
+                    <div class="address-text bold">
+                      ₹{{ valuePerProvider.price.value }}
+                    </div>
+                  </CardContent>
+                  <CardContent class="flex-space-bw">
+                    <div class="address-text">Method</div>
+                    <div class="address-text">{{ order.paymentMethod }}</div>
+                  </CardContent>
+                  <CardContent class="flex-space-bw">
+                    <div class="address-text">Status</div>
+                    <div class="address-text">
+                      {{ order.order.payment.status }}
+                    </div>
+                  </CardContent>
+                  <div><hr /></div>
+                  <CardContent v-if="false" class="flex-space-bw">
+                    <div class="address-text">Transaction Id</div>
+                    <div class="address-text">
+                      <!-- {{ order.order.payment.params.transaction_id }} -->
+                    </div>
+                  </CardContent>
+                </div>
+              </div>
+            </div>
           </SfAccordionItem>
         </SfAccordion>
       </Card>
@@ -382,6 +392,9 @@ import CardContent from '~/components/CardContent.vue';
 
 import ProductCard from '~/components/ProductCard';
 import AddressCard from '~/components/AddressCard';
+import helpers, {
+  createStatusTrackAndSupportOrderRequest,
+} from '../helpers/helpers';
 
 export default {
   middleware: 'auth',
@@ -405,11 +418,13 @@ export default {
     SfIcon,
     LoadingCircle,
     AddressCard,
+    helpers,
   },
   setup(_, context) {
     // const isThankYou = computed(() => currentStep.value === 'thank-you');
 
     const order = ref(null);
+    const orderPlacementTime = ref(null);
     const enableLoader = ref(true);
     const {
       poll: onTrack,
@@ -435,6 +450,7 @@ export default {
     const isFulfillmentAvailable = computed(() => {
       return statusResult.value?.message?.order;
     });
+
     const isSupportAvailable = computed(() => {
       return supportResult.value?.message;
     });
@@ -461,55 +477,40 @@ export default {
 
     // eslint-disable-next-line no-unused-vars
     const callSupport = async () => {
-      const params = {
-        context: {
-          // eslint-disable-next-line camelcase
-          transaction_id: order.value.transactionId,
-          // eslint-disable-next-line camelcase
-          bpp_id: order.value.cart.bpp.id,
-        },
-        message: {
-          // eslint-disable-next-line camelcase
-          ref_id: order.value.order.id,
-        },
-      };
-      const response = await support(params);
-      await onSupport({ messageId: response.context.message_id });
+      const params = createStatusTrackAndSupportOrderRequest(
+        order.value,
+        'ref_id'
+      );
+      const response = await support(params, localStorage.getItem('token'));
+      await onSupport(
+        { messageIds: helpers.getMessageIdsFromResponse(response) },
+        localStorage.getItem('token')
+      );
     };
 
     // eslint-disable-next-line no-unused-vars
     const callStatus = async () => {
-      const params = {
-        context: {
-          // eslint-disable-next-line camelcase
-          transaction_id: order.value.transactionId,
-          // eslint-disable-next-line camelcase
-          bpp_id: order.value.cart.bpp.id,
-        },
-        message: {
-          // eslint-disable-next-line camelcase
-          order_id: order.value.order.id,
-        },
-      };
-      const response = await status(params);
-      await onStatus({ messageId: response.context.message_id });
+      const params = createStatusTrackAndSupportOrderRequest(
+        order.value,
+        'order_id'
+      );
+      const response = await status(params, localStorage.getItem('token'));
+      await onStatus(
+        { messageIds: helpers.getMessageIdsFromResponse(response) },
+        localStorage.getItem('token')
+      );
     };
 
     const callTrack = async () => {
-      const params = {
-        context: {
-          // eslint-disable-next-line camelcase
-          transaction_id: order.value.transactionId,
-          // eslint-disable-next-line camelcase
-          bpp_id: order.value.cart.bpp.id,
-        },
-        message: {
-          // eslint-disable-next-line camelcase
-          order_id: order.value.order.id,
-        },
-      };
-      const response = await track(params);
-      await onTrack({ messageId: response.context.message_id });
+      const params = createStatusTrackAndSupportOrderRequest(
+        order.value,
+        'order_id'
+      );
+      const response = await track(params, localStorage.getItem('token'));
+      await onTrack(
+        { messageIds: helpers.getMessageIdsFromResponse(response) },
+        localStorage.getItem('token')
+      );
     };
     onBeforeMount(async () => {
       const orders = JSON.parse(localStorage.getItem('orderHistory')) ?? [];
@@ -517,9 +518,14 @@ export default {
       order.value = orders.find((ord) => {
         return ord.parentOrderId === parentOrderId;
       });
-      // await callTrack();
-      // await callSupport();
-      // await callStatus();
+
+      orderPlacementTime.value = helpers.getOrderPlacementTimeline(
+        order.value.order?.created_at
+      );
+
+      await callTrack();
+      await callSupport();
+      await callStatus();
       enableLoader.value = false;
     });
 
@@ -549,6 +555,7 @@ export default {
       openWindow,
       isFulfillmentAvailable,
       isSupportAvailable,
+      orderPlacementTime,
     };
   },
 };
@@ -561,6 +568,15 @@ export default {
 //     top: 45px;
 //     z-index: 9;
 // }
+.track-link {
+  padding-left: 98px;
+}
+.cancel-target {
+  color: #ce0400;
+}
+.track-target {
+  color: #f37a20;
+}
 .support-btns {
   width: 100%;
   border-radius: 3px;
@@ -615,6 +631,9 @@ export default {
 .address-text {
   align-self: center;
   margin-left: 6px;
+  span {
+    font-weight: 500;
+  }
 }
 
 .sub-heading {
@@ -660,6 +679,10 @@ export default {
     max-width: 1240px;
     margin: 0 auto;
   }
+}
+.order-track {
+  padding-top: 20px !important;
+  display: flex;
 }
 .checkout-product:first-child {
   border-top: 0px solid rgba(0, 0, 0, 0.3);
