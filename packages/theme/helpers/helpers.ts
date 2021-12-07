@@ -157,24 +157,28 @@ export const createConfirmOrderRequest = (
   return confirmOrderRequest;
 };
 
+/**
+ * Generic method for creating the Request Body for status, track and support api's.
+ * @param orderValue The orderData stored in Localstorage
+ * @param idKey String Key which we need to set with the orderId in each request
+ * @returns Request body for the api
+ */
 export const createStatusTrackAndSupportOrderRequest = (orderValue, idKey) => {
-  const transactionId = orderValue.transactionId;
-  const supportOrderArray = [];
-  Object.keys(orderValue.orderData).forEach((orderId) => {
+  const { transactionId, orderData } = orderValue;
+  const request = [];
+  Object.keys(orderData).forEach((orderId) => {
     const supportItems = {
       context: {
-        // eslint-disable-next-line camelcase
         transaction_id: transactionId,
-        // eslint-disable-next-line camelcase
-        bpp_id: orderValue.orderData[orderId].bppId
+        bpp_id: orderData[orderId].bppId
       },
       message: {
         [idKey]: orderId
       }
     };
-    supportOrderArray.push(supportItems);
+    request.push(supportItems);
   });
-  return supportOrderArray;
+  return request;
 };
 
 /**

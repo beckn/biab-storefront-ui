@@ -7,13 +7,6 @@
         </span>
       </div>
       <div class="header-push">Order Details</div>
-      <SfButton
-        v-if="isTrackingAvailable"
-        class="sf-button--pure top-button"
-        @click="openTrackModal = true"
-      >
-        <div class="color-def">Track Order</div>
-      </SfButton>
     </div>
 
     <div v-if="enableLoader" key="loadingCircle" class="loader-circle">
@@ -56,7 +49,11 @@
               </div>
             </CardContent>
             <div><hr class="sf-divider divider" /></div>
-            <div :key="orderId" v-for="(order, orderId) in order.orderData">
+
+            <div
+              :key="orderId"
+              v-for="(order, orderId, index) in order.orderData"
+            >
               <CardContent class="flex-space-bw">
                 <div class="address-text"><span>Shipment 1</span></div>
                 <div class="address-text">
@@ -69,6 +66,30 @@
                   <span>{{ order.state }}</span>
                 </div>
               </CardContent>
+
+              <div class="order-track">
+                <div class="cancel-link">
+                  <span>
+                    <a
+                      class="cancel-target"
+                      target="_blank"
+                      href="http://www.google.com"
+                      >Cancel Shipment</a
+                    >
+                  </span>
+                </div>
+                <div class="track-link">
+                  <SfButton
+                    class="sf-button--pure top-button"
+                    @click="
+                      openTrackModal = true;
+                      selectedTrackingId = index;
+                    "
+                  >
+                    <div class="color-def">Track Order</div>
+                  </SfButton>
+                </div>
+              </div>
             </div>
             <CardContent v-if="isFulfillmentAvailable" class="flex-space-bw">
               <div class="address-text"><span>Status</span></div>
@@ -76,28 +97,7 @@
                 <span>{{ isFulfillmentAvailable.state }}</span>
               </div>
             </CardContent>
-            <div class="order-track">
-              <div class="cancel-link">
-                <span>
-                  <a
-                    class="cancel-target"
-                    target="_blank"
-                    href="http://www.google.com"
-                    >Cancel Shipment</a
-                  >
-                </span>
-              </div>
-              <div class="track-link">
-                <span>
-                  <a
-                    class="track-target"
-                    target="_blank"
-                    href="http://www.google.com"
-                    >Track Shipment</a
-                  >
-                </span>
-              </div>
-            </div>
+
             <div><hr class="sf-divider divider" /></div>
           </SfAccordionItem>
         </SfAccordion>
@@ -324,11 +324,17 @@
         </div>
       </ModalSlide>
 
-      <ModalSlide :visible="openTrackModal" @close="openTrackModal = false">
+      <ModalSlide
+        :visible="openTrackModal"
+        @close="
+          openTrackModal = false;
+          selectedTrackingId = null;
+        "
+      >
         <div class="modal-heading">Track</div>
         <div><hr class="sf-divider" /></div>
         <div class="modal-body">
-          <div v-if="!isTrackingAvailable" class="support-text">
+          <div v-if="!trackingData[selectedTrackingId]" class="support-text">
             No Tracking details available
             <!-- {{
               providerGetters.getProviderName(
@@ -341,7 +347,7 @@
               class="support-btns"
               aria-label="Close modal"
               type="button"
-              @click="openWindow(isTrackingAvailable)"
+              @click="openWindow(trackingData[selectedTrackingId])"
               >open Link</SfButton
             >
           </div>
@@ -426,10 +432,13 @@ export default {
     const order = ref(null);
     const orderPlacementTime = ref(null);
     const enableLoader = ref(true);
+    const selectedTrackingId = ref(null);
+
     const {
       poll: onTrack,
       init: track,
       pollResults: trackResult,
+      stopPolling: stopPollingOnTrack,
     } = useTrack('track');
     const {
       poll: onSupport,
@@ -443,8 +452,27 @@ export default {
       pollResults: statusResult,
       stopPolling: stopStatusPolling,
     } = useOrderStatus('status');
-    const isTrackingAvailable = computed(() => {
-      return trackResult.value?.message?.tracking?.url;
+
+    const trackingData = computed(() => {
+      if (!trackResult.value) {
+        return null;
+      }
+
+      let shouldStopPooling = true;
+      const trackingData = {};
+      trackResult.value.forEach((currentTrackData, index) => {
+        if (currentTrackData.message?.tracking?.url) {
+          trackingData[index] = currentTrackData.message.tracking.url;
+        } else {
+          shouldStopPooling = false;
+        }
+      });
+
+      if (shouldStopPooling) {
+        stopPollingOnTrack();
+      }
+
+      return trackingData;
     });
 
     const isFulfillmentAvailable = computed(() => {
@@ -542,7 +570,8 @@ export default {
       goBack,
       order,
       cartGetters,
-      isTrackingAvailable,
+      trackingData,
+      selectedTrackingId,
       providerGetters,
       fulfillmentStep,
       fulfillmentSteps,
