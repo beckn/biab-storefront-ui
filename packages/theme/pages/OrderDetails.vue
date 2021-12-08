@@ -60,10 +60,13 @@
                   <span>Id - {{ orderId }}</span>
                 </div>
               </CardContent>
-              <CardContent class="flex-space-bw">
+              <CardContent
+                v-if="fulfillmentData && fulfillmentData[index]"
+                class="flex-space-bw"
+              >
                 <div class="address-text"><span>Status</span></div>
                 <div class="address-text">
-                  <span>{{ order.state }}</span>
+                  <span>{{ fulfillmentData[index].state }}</span>
                 </div>
               </CardContent>
 
@@ -91,13 +94,6 @@
                 </div>
               </div>
             </div>
-            <CardContent v-if="isFulfillmentAvailable" class="flex-space-bw">
-              <div class="address-text"><span>Status</span></div>
-              <div class="address-text">
-                <span>{{ isFulfillmentAvailable.state }}</span>
-              </div>
-            </CardContent>
-
             <div><hr class="sf-divider divider" /></div>
           </SfAccordionItem>
         </SfAccordion>
@@ -153,24 +149,6 @@
                   :key="id"
                   v-for="(breakup, id) in valuePerProvider.breakup"
                 >
-                  <!-- <CardContent class="flex-space-bw">
-              <div class="address-text">SubTotal</div>
-              <div class="address-text">
-                ₹{{ cartGetters.getTotals(order.cart).total }}
-              </div>
-            </CardContent>
-            <CardContent class="flex-space-bw">
-              <div class="address-text">Delivery Charges</div>
-              <div class="address-text">₹0.00</div>
-            </CardContent>
-            <CardContent class="flex-space-bw">
-              <div class="address-text">Taxes (CGST)</div>
-              <div class="address-text">₹0.00</div>
-            </CardContent>
-            <CardContent class="flex-space-bw">
-              <div class="address-text">Taxes(SGST)</div>
-              <div class="address-text">₹0.00</div>
-            </CardContent> -->
                   <CardContent class="flex-space-bw">
                     <div class="address-text">{{ breakup.title }}</div>
                     <div class="address-text">₹{{ breakup.price.value }}</div>
@@ -479,6 +457,21 @@ export default {
       return statusResult.value?.message?.order;
     });
 
+    const fulfillmentData = computed(() => {
+      if (!statusResult.value) {
+        return null;
+      }
+
+      const fulfillmentData = {};
+      statusResult.value.forEach((currentStatusData, index) => {
+        if (currentStatusData.message?.order) {
+          fulfillmentData[index] = currentStatusData.message.order;
+        }
+      });
+
+      return fulfillmentData;
+    });
+
     const isSupportAvailable = computed(() => {
       return supportResult.value?.message;
     });
@@ -503,7 +496,6 @@ export default {
     const goBack = () => context.root.$router.push('/orders');
     const onCancel = () => context.root.$router.push('/cancelorder');
 
-    // eslint-disable-next-line no-unused-vars
     const callSupport = async () => {
       const params = createStatusTrackAndSupportOrderRequest(
         order.value,
@@ -516,7 +508,6 @@ export default {
       );
     };
 
-    // eslint-disable-next-line no-unused-vars
     const callStatus = async () => {
       const params = createStatusTrackAndSupportOrderRequest(
         order.value,
@@ -583,6 +574,7 @@ export default {
       trackResult,
       openWindow,
       isFulfillmentAvailable,
+      fulfillmentData,
       isSupportAvailable,
       orderPlacementTime,
     };
