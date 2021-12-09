@@ -70,28 +70,37 @@
                 </div>
               </CardContent>
 
-              <div class="order-track">
+              <div class="order-buttons-wrapper">
                 <div class="cancel-link">
                   <span>
                     <a
                       class="cancel-target"
                       target="_blank"
                       href="http://www.google.com"
-                      >Cancel Shipment</a
+                      >Cancel</a
                     >
                   </span>
                 </div>
-                <div class="track-link">
-                  <SfButton
-                    class="sf-button--pure top-button"
-                    @click="
-                      openTrackModal = true;
-                      selectedTrackingId = index;
-                    "
-                  >
-                    <div class="color-def">Track Order</div>
-                  </SfButton>
-                </div>
+
+                <SfButton
+                  class="sf-button--pure"
+                  @click="
+                    openTrackModal = true;
+                    selectedTrackingId = index;
+                  "
+                >
+                  <div class="color-def">Track</div>
+                </SfButton>
+
+                <SfButton
+                  class="sf-button--pure"
+                  @click="
+                    openSupportModal = true;
+                    selectedSupportId = index;
+                  "
+                >
+                  <div class="color-def">Support</div>
+                </SfButton>
               </div>
             </div>
             <div><hr class="sf-divider divider" /></div>
@@ -265,40 +274,57 @@
       >
         <div class="btn-text">Cancel Order</div>
       </button>
-      <ModalSlide :visible="openSupportModal" @close="openSupportModal = false">
+
+      <ModalSlide
+        :visible="openSupportModal"
+        @close="
+          openSupportModal = false;
+          selectedSupportId = null;
+        "
+      >
         <div class="modal-heading">Contact Support</div>
         <div><hr class="sf-divider" /></div>
         <div class="modal-body">
-          <div class="support-text">
-            You can reach out to one of our customer support executives for any
-            help, queries or feedback to
-            {{
-              providerGetters.getProviderName(
-                cartGetters.getBppProvider(order.cart)
-              )
-            }}
+          <div v-if="supportData && supportData[selectedSupportId]">
+            <div class="support-text">
+              You can reach out to one of our customer support executives for
+              any help, queries or feedback to
+              {{
+                providerGetters.getProviderName(
+                  cartGetters.getBppProvider(order.cart)
+                )
+              }}
+            </div>
+            <SfButton
+              class="support-btns"
+              v-if="supportData[selectedSupportId].phone"
+              @click="openWindow('tel:' + supportData[selectedSupportId].phone)"
+              aria-label="Close modal"
+              type="button"
+              >Call us</SfButton
+            >
+            <SfButton
+              class="support-btns"
+              v-if="supportData[selectedSupportId].email"
+              @click="
+                openWindow('mailto:' + supportData[selectedSupportId].email)
+              "
+              aria-label="Close modal"
+              type="button"
+              >Email us</SfButton
+            >
+            <SfButton
+              class="support-btns"
+              v-if="supportData[selectedSupportId].uri"
+              @click="openWindow(supportData[selectedSupportId].uri)"
+              aria-label="Close modal"
+              type="button"
+              >Chat with us</SfButton
+            >
           </div>
-          <SfButton
-            class="support-btns"
-            @click="openWindow('tel:' + isSupportAvailable.phone)"
-            aria-label="Close modal"
-            type="button"
-            >Call us</SfButton
-          >
-          <SfButton
-            class="support-btns"
-            @click="openWindow('mailto:' + isSupportAvailable.email)"
-            aria-label="Close modal"
-            type="button"
-            >Email us</SfButton
-          >
-          <SfButton
-            class="support-btns"
-            @click="openWindow(isSupportAvailable.uri)"
-            aria-label="Close modal"
-            type="button"
-            >Chat with us</SfButton
-          >
+          <div v-else class="support-text">
+            No Support available at the moment
+          </div>
         </div>
       </ModalSlide>
 
@@ -411,6 +437,7 @@ export default {
     const orderPlacementTime = ref(null);
     const enableLoader = ref(true);
     const selectedTrackingId = ref(null);
+    const selectedSupportId = ref(null);
 
     const {
       poll: onTrack,
@@ -422,6 +449,7 @@ export default {
       poll: onSupport,
       init: support,
       pollResults: supportResult,
+      stopPolling: stopPollingSupport,
     } = useSupport('support');
 
     const {
@@ -472,9 +500,31 @@ export default {
       return fulfillmentData;
     });
 
-    const isSupportAvailable = computed(() => {
-      return supportResult.value?.message;
+    const supportData = computed(() => {
+      if (!supportResult.value) {
+        return null;
+      }
+
+      let shouldStopPooling = true;
+      const supportData = {};
+      supportResult.value.forEach((currentSupportData, index) => {
+        if (
+          currentSupportData.message &&
+          Object.keys(currentSupportData.message).length !== 0
+        ) {
+          supportData[index] = currentSupportData.message;
+        } else {
+          shouldStopPooling = false;
+        }
+      });
+
+      if (shouldStopPooling) {
+        stopPollingSupport();
+      }
+
+      return supportData;
     });
+
     const parentOrderId = context.root.$route.query.id;
     const fulfillmentStep = [
       { status: 'Items Packed', time: 'May 2021, 2021 12:40 PM' },
@@ -575,7 +625,8 @@ export default {
       openWindow,
       isFulfillmentAvailable,
       fulfillmentData,
-      isSupportAvailable,
+      supportData,
+      selectedSupportId,
       orderPlacementTime,
     };
   },
@@ -583,15 +634,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-// .header-top{
-//     position: fixed;
-//     width: 100%;
-//     top: 45px;
-//     z-index: 9;
-// }
-.track-link {
-  padding-left: 98px;
-}
 .cancel-target {
   color: #ce0400;
 }
@@ -701,9 +743,10 @@ export default {
     margin: 0 auto;
   }
 }
-.order-track {
-  padding-top: 20px !important;
+.order-buttons-wrapper {
+  padding-top: 20px;
   display: flex;
+  justify-content: space-around;
 }
 .checkout-product:first-child {
   border-top: 0px solid rgba(0, 0, 0, 0.3);
@@ -767,10 +810,6 @@ export default {
   color: #f37a20;
 }
 
-.top-button {
-  position: absolute;
-  right: 6vw;
-}
 .modal-body {
   padding: 28px;
   .support-text {
