@@ -58,14 +58,12 @@
       <div
         :key="bppId"
         v-for="(
-          itemsPerBpp, bppId
+          itemsPerBpp, bppId, shipmentNumber
         ) in cartGetters.getCartItemsPerBppPerProvider(cart)"
         class="cart-shipment-wrapper"
       >
         <div
-          v-for="(
-            itemsPerProvider, bppProviderId, shipmentNumber
-          ) in itemsPerBpp"
+          v-for="(itemsPerProvider, bppProviderId) in itemsPerBpp"
           :key="bppProviderId"
           class="shipment-wrapper"
         >

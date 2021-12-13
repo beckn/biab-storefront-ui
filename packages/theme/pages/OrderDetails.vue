@@ -53,20 +53,23 @@
             <div
               :key="orderId"
               v-for="(order, orderId, index) in order.orderData"
+              class="shipment-wrapper"
             >
               <CardContent class="flex-space-bw">
-                <div class="address-text"><span>Shipment 1</span></div>
+                <div class="address-text">
+                  <span>Shipment {{ index + 1 }}</span>
+                </div>
                 <div class="address-text">
                   <span>Id - {{ orderId }}</span>
                 </div>
               </CardContent>
               <CardContent
-                v-if="fulfillmentData && fulfillmentData[index]"
+                v-if="orderStatusData && orderStatusData[index]"
                 class="flex-space-bw"
               >
                 <div class="address-text"><span>Status</span></div>
                 <div class="address-text">
-                  <span>{{ fulfillmentData[index].state }}</span>
+                  <span>{{ orderStatusData[index].state }}</span>
                 </div>
               </CardContent>
 
@@ -102,11 +105,74 @@
                   <div class="color-def">Support</div>
                 </SfButton>
               </div>
+              <div><hr class="sf-divider divider" /></div>
             </div>
-            <div><hr class="sf-divider divider" /></div>
           </SfAccordionItem>
         </SfAccordion>
       </Card>
+
+      <div class="sub-heading"></div>
+
+      <div v-if="showFulfillmentProgress">
+        <Card>
+          <SfAccordion>
+            <SfAccordionItem :header="'Fulfillment Progress'">
+              <CardContent class="flex-space-bw">
+                <div class="fulfillment-progress">
+                  <div
+                    v-for="(
+                      currFulfillment, fulfillmentId, index
+                    ) in fulfillmentData"
+                    class="track-details"
+                    :class="{
+                      first: index === 0,
+                      last: index === Object.keys(fulfillmentData).length - 1,
+                    }"
+                    :key="index"
+                  >
+                    <template
+                      v-if="
+                        currFulfillment.state &&
+                        currFulfillment.state.descriptor
+                      "
+                    >
+                      <div class="check-container">
+                        <div v-if="index !== 0" class="dot"></div>
+                        <div v-if="index !== 0" class="dot"></div>
+                        <div v-if="index !== 0" class="dot"></div>
+                        <div class="check">
+                          <img src="/icons/check.svg" alt="" />
+                        </div>
+                        <div
+                          v-if="
+                            index !== Object.keys(fulfillmentData).length - 1
+                          "
+                          class="dot"
+                        ></div>
+                        <div
+                          v-if="
+                            index !== Object.keys(fulfillmentData).length - 1
+                          "
+                          class="dot"
+                        ></div>
+                      </div>
+                      <div class="step-details">
+                        <div class="step-number">Shipment {{ index + 1 }}</div>
+                        <div class="step-name">
+                          {{ currFulfillment.state.descriptor.name }}
+                        </div>
+                        <div class="step-time">
+                          {{ currFulfillment.state.descriptor.updated_at }}
+                        </div>
+                      </div>
+                    </template>
+                  </div>
+                </div>
+              </CardContent>
+            </SfAccordionItem>
+          </SfAccordion>
+        </Card>
+      </div>
 
       <div class="sub-heading"></div>
 
@@ -194,85 +260,41 @@
         </SfAccordion>
       </Card>
 
-      <div class="sub-heading">
-        <!-- <div class="p-name">Order</div> -->
-      </div>
-      <div v-if="isFulfillmentAvailable">
+      <div class="sub-heading"></div>
+
+      <div v-if="orderStatusData">
         <Card>
           <SfAccordion>
             <SfAccordionItem :header="'Fulfillment'">
-              <CardContent class="flex-space-bw">
-                <div class="address-text">ID</div>
-                <div class="address-text">#99J787jL</div>
-              </CardContent>
-              <CardContent class="flex-space-bw">
-                <div class="address-text">Provider</div>
-                <div class="address-text">₹0.00</div>
-              </CardContent>
-              <!-- <CardContent class="flex-space-bw">
-                <div class="address-text">Status</div>
-                <div class="address-text">{{isFulfillmentAvailable.state}}</div>
-              </CardContent> -->
+              <div
+                v-for="(currOrderStatus, orderStatusId) in orderStatusData"
+                :key="orderStatusId"
+              >
+                <CardContent class="flex-space-bw">
+                  <div class="address-text">ID</div>
+                  <div class="address-text">
+                    {{ currOrderStatus.provider.id }}
+                  </div>
+                </CardContent>
+                <CardContent class="flex-space-bw">
+                  <div class="address-text">Status</div>
+                  <div class="address-text">{{ currOrderStatus.state }}</div>
+                </CardContent>
+
+                <div><hr class="sf-divider divider" /></div>
+              </div>
             </SfAccordionItem>
           </SfAccordion>
         </Card>
-        <div class="fulfillment-progress" v-if="false">
-          <div class="head">
-            <span>Fulfillment Progress</span>
-          </div>
-          <div class="sub-head">
-            <img src="/icons/calendar.svg" alt="" />
-            <span>ETA</span>
-            <span class="time">Today, 1.30pm</span>
-          </div>
-          <div
-            class="track-details"
-            :class="{
-              first: index === 0,
-              last: index === fulfillmentSteps.length - 1,
-            }"
-            v-for="(step, index) in fulfillmentSteps"
-            :key="index"
-          >
-            <div class="check-container">
-              <div v-if="index !== 0" class="dot"></div>
-              <div v-if="index !== 0" class="dot"></div>
-              <div class="check"><img src="/icons/check.svg" alt="" /></div>
-              <div
-                v-if="index !== fulfillmentSteps.length - 1"
-                class="dot"
-              ></div>
-              <div
-                v-if="index !== fulfillmentSteps.length - 1"
-                class="dot"
-              ></div>
-            </div>
-            <div class="step-details">
-              <div class="step-name">{{ step.status }}</div>
-              <div class="step-time">{{ step.time }}</div>
-            </div>
-          </div>
-        </div>
       </div>
+
+      <div class="sub-heading"></div>
+
       <button
         class="sf-button color-primary support-btns card-checkbox"
         @click="goHome"
       >
         <div class="f-btn-text">Home</div>
-      </button>
-      <button
-        class="sf-button color-primary support-btns"
-        @click="openSupportModal = true"
-      >
-        <div class="f-btn-text">Contact Support</div>
-        <img class="btn-img" src="/icons/support.svg" />
-      </button>
-      <button
-        v-if="false"
-        class="color-light sf-button cancel-order-btn"
-        @click="onCancel"
-      >
-        <div class="btn-text">Cancel Order</div>
       </button>
 
       <ModalSlide
@@ -481,8 +503,34 @@ export default {
       return trackingData;
     });
 
-    const isFulfillmentAvailable = computed(() => {
-      return statusResult.value?.message?.order;
+    const orderStatusData = computed(() => {
+      if (!statusResult.value) {
+        return null;
+      }
+
+      const orderStatusData = {};
+      statusResult.value.forEach((currentStatusData, index) => {
+        if (currentStatusData.message?.order) {
+          orderStatusData[index] = currentStatusData.message.order;
+        }
+      });
+
+      return orderStatusData;
+    });
+
+    const showFulfillmentProgress = computed(() => {
+      if (!statusResult.value) {
+        return null;
+      }
+
+      let showFulfillmentProgress = false;
+      statusResult.value.forEach((currentStatusData) => {
+        if (currentStatusData.message?.order?.fulfillment?.state) {
+          showFulfillmentProgress = true;
+        }
+      });
+
+      return showFulfillmentProgress;
     });
 
     const fulfillmentData = computed(() => {
@@ -493,7 +541,7 @@ export default {
       const fulfillmentData = {};
       statusResult.value.forEach((currentStatusData, index) => {
         if (currentStatusData.message?.order) {
-          fulfillmentData[index] = currentStatusData.message.order;
+          fulfillmentData[index] = currentStatusData.message.order.fulfillment;
         }
       });
 
@@ -623,8 +671,9 @@ export default {
       callTrack,
       trackResult,
       openWindow,
-      isFulfillmentAvailable,
+      orderStatusData,
       fulfillmentData,
+      showFulfillmentProgress,
       supportData,
       selectedSupportId,
       orderPlacementTime,
@@ -745,6 +794,7 @@ export default {
 }
 .order-buttons-wrapper {
   padding-top: 20px;
+  margin-bottom: 10px;
   display: flex;
   justify-content: space-around;
 }
@@ -829,5 +879,13 @@ export default {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.shipment-wrapper {
+  margin-top: 20px;
+}
+
+.step-number {
+  line-height: 1;
 }
 </style>
