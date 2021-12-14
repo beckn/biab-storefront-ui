@@ -507,8 +507,6 @@ import {
 } from '@vue/composition-api';
 import Card from '~/components/Card.vue';
 import CardContent from '~/components/CardContent.vue';
-
-import ProductCard from '~/components/ProductCard';
 import AddressCard from '~/components/AddressCard';
 import helpers, {
   createStatusTrackAndSupportOrderRequest,
