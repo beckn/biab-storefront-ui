@@ -72,6 +72,28 @@
                   <span>{{ orderStatusData[index].state }}</span>
                 </div>
               </CardContent>
+              <CardContent class="flex-space-bw">
+                <div class="address-text-items"><span>Item (s)</span></div>
+              </CardContent>
+              <CardContent class="flex-space-bw">
+                <div>
+                  {{ order.quote.breakup[0].title }} x
+                  {{ order.items[0].quantity.count }}
+                </div>
+                <div>
+                  <div
+                    @click="
+                      openItemsModal = true;
+                      selectMoreItemsId = orderId;
+                    "
+                    class="more-items-button"
+                  >
+                    <span class="more-items-text"
+                      >{{ order.items.length - 1 }} more items</span
+                    >
+                  </div>
+                </div>
+              </CardContent>
 
               <div class="order-buttons-wrapper">
                 <div class="cancel-link">
@@ -385,6 +407,70 @@
           > -->
         </div>
       </ModalSlide>
+
+      <ModalSlide
+        :visible="openItemsModal"
+        @close="
+          openItemsModal = false;
+          selectMoreItemsId = null;
+        "
+      >
+        <div class="modal-heading">Ordered Items</div>
+        <div><hr class="sf-divider" /></div>
+        <div class="modal-body">
+          <CardContent class="flex-space-bw">
+            <div class="address-text">
+              <span>Shipment 1</span>
+            </div>
+            <div class="address-text order-id">
+              <span>Id - {{selectMoreItemsId}}</span>
+            </div>
+          </CardContent>
+          <div v-if="selectMoreItemsId !== null">
+               <CardContent  class="more-items-flex">
+            <div v-for="(product,index) in getMoreItems(order,selectMoreItemsId)" :key="index" class="item-wrapper">
+            <div class="s-p-image">
+              <SfImage
+                :src="cartGetters.getItemImage(product)"
+                alt="product img"
+                :width="85"
+                :height="90"
+              />
+            </div>
+            <div class="s-p-details">
+              <div class="s-p-name">{{ cartGetters.getItemName(product) }}</div>
+              <div class="s-p-retailer">
+                sold by
+                {{
+                  providerGetters.getProviderName(
+                    cartGetters.getBppProvider(product)
+                  )
+                }}
+              </div>
+              <div class="s-p-weight">
+                x {{ product.quantity }}
+              </div>
+              <div class="s-p-price">
+                ₹
+                {{log( "regular",cartGetters.getItemPrice(product).regular)}}
+                {{log("count",cartGetters.getItemQty(product).count)}}
+                {{
+                  cartGetters.getItemPrice(product).regular *
+                  product.quantity
+                }}
+              </div>
+            </div>
+            </div>
+               </CardContent>
+          </div>
+           <button
+        class="sf-button color-primary support-btns"
+        @click="openItemsModal = false;"
+      >
+        <div class="f-btn-text">Okay</div>
+      </button>
+        </div>
+      </ModalSlide>
     </div>
   </div>
 </template>
@@ -443,7 +529,6 @@ export default {
     Card,
     SfImage,
     CardContent,
-    ProductCard,
     AddressInputs,
     SfAccordion,
     SfAccordionItem,
@@ -460,6 +545,7 @@ export default {
     const enableLoader = ref(true);
     const selectedTrackingId = ref(null);
     const selectedSupportId = ref(null);
+    const selectMoreItemsId = ref(null);
 
     const {
       poll: onTrack,
@@ -590,6 +676,7 @@ export default {
     ];
     const openSupportModal = ref(false);
     const openTrackModal = ref(false);
+    const openItemsModal = ref(false);
     const goHome = () => context.root.$router.push('/');
     const goBack = () => context.root.$router.push('/orders');
     const onCancel = () => context.root.$router.push('/cancelorder');
@@ -654,6 +741,7 @@ export default {
       // debugger
       window.open(link);
     };
+    const getMoreItems = helpers.getMoreItemsOfOrderFromcartItems;
     return {
       goHome,
       goBack,
@@ -668,6 +756,7 @@ export default {
       onCancel,
       enableLoader,
       openTrackModal,
+      openItemsModal,
       callTrack,
       trackResult,
       openWindow,
@@ -677,6 +766,8 @@ export default {
       supportData,
       selectedSupportId,
       orderPlacementTime,
+      selectMoreItemsId,
+      getMoreItems,
     };
   },
 };
@@ -746,6 +837,26 @@ export default {
   span {
     font-weight: 500;
   }
+}
+
+.address-text-items {
+  display: flex;
+  align-self: center;
+  margin-left: 6px;
+  span {
+    font-weight: 500;
+  }
+}
+
+.more-items-button {
+  border: 1px solid #f37a20;
+  border-radius: 6px;
+  width: 100%;
+}
+
+.more-items-text {
+  padding: 9px;
+  color: #f37a20;
 }
 
 .sub-heading {
@@ -823,6 +934,27 @@ export default {
     color: #f37a20;
   }
 }
+.item-wrapper {
+  display: flex;
+  margin: 20px 0;
+
+  .s-p-image {
+    margin-right: 25px;
+  }
+  .s-p-name {
+    font-weight: 700;
+    font-size: 15px;
+  }
+  .s-p-retailer {
+    padding-top: 5px;
+    font-size: 13px;
+  }
+  .s-p-price {
+    font-size: 16px;
+    margin-top: 10px;
+    color: #f37a20;
+  }
+}
 .checkout {
   @include for-desktop {
     display: flex;
@@ -849,6 +981,10 @@ export default {
       --steps-step-color: #e8e4e4;
     }
   }
+}
+.more-items-flex {
+  display: flex;
+  flex-direction: column;
 }
 .modal-heading {
   margin: 20px;

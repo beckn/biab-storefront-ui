@@ -245,11 +245,20 @@ const generateUniqueOrderId = () => {
   return updatedOrderId;
 };
 
+export const getMoreItemsOfOrderFromcartItems = (order, selectMoreItemsId) => {
+  order.cart.items.forEach((item) => {
+    order.orderData[selectMoreItemsId].items.filter((i) => item.id === i.id);
+  });
+
+  return order.cart.items;
+};
+
 const helpers = {
   calculateDays,
   getMessageIdsFromResponse,
   getOrderPlacementTimeline,
   shouldStopPooling,
+  getMoreItemsOfOrderFromcartItems,
   generateUniqueOrderId
 };
 
