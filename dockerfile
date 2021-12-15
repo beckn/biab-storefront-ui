@@ -7,7 +7,7 @@ RUN --mount=type=secret,id=MAPS_API_KEY
 RUN export MAPS_KEY=$(cat /run/secrets/MAPS_API_KEY)
 RUN apk update
 RUN apk add nginx
-RUN apk add g++ make python
+RUN apk add g++ make python3
 WORKDIR /app
 ENV PATH /app/node_modules/.bin:$PATH
 COPY . ./
