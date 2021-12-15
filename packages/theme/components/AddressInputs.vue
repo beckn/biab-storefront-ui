@@ -55,7 +55,7 @@
         v-e2e="'landmark-input'"
         v-model="address.landmark"
         :type="'text'"
-        :label="'Landmark (Optional)'"
+        :label="'Landmark'"
         :name="'locality'"
         @change="() => {}"
       />
