@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="top-bar">
-      <div @clic='goBack' class="sf-chevron--left sf-chevron icon_back">
+      <div @clic="goBack" class="sf-chevron--left sf-chevron icon_back">
         <span class="sf-search-bar__icon">
           <SfIcon color="var(--c-primary)" size="20px" icon="chevron_left" />
         </span>
@@ -189,9 +189,9 @@
               <div class="address-text">Placed at</div>
               <div class="address-text">{{ order.order.created_at }}</div>
             </CardContent>
-            <CardContent v-if='isFulfillmentAvailable' class="flex-space-bw">
+            <CardContent v-if="isFulfillmentAvailable" class="flex-space-bw">
               <div class="address-text">Status</div>
-              <div class="address-text">{{isFulfillmentAvailable.state}}</div>
+              <div class="address-text">{{ isFulfillmentAvailable.state }}</div>
             </CardContent>
           </SfAccordionItem>
         </SfAccordion>
@@ -200,17 +200,36 @@
       <div class="sub-heading">
         <!-- <div class="p-name">Order</div> -->
       </div>
-      <div v-if='isFulfillmentAvailable'>
+      <div v-if="isFulfillmentAvailable">
         <Card>
           <SfAccordion>
             <SfAccordionItem :header="'Fulfillment'">
-              <CardContent class="flex-space-bw">
-                <div class="address-text">ID</div>
-                <div class="address-text">#99J787jL</div>
+              <CardContent
+                v-if="order.order.fulfillment.state"
+                class="flex-space-bw"
+              >
+                <div class="address-text">State</div>
+                <div class="address-text">
+                  {{ order.order.fulfillment.state.descriptor.name }}
+                </div>
               </CardContent>
-              <CardContent class="flex-space-bw">
+              <CardContent
+                v-if="order.order.fulfillment.id"
+                class="flex-space-bw"
+              >
+                <div class="address-text">Id</div>
+                <div class="address-text">
+                  {{ order.order.fulfillment.id }}
+                </div>
+              </CardContent>
+              <CardContent
+                v-if="order.order.provider.descriptor"
+                class="flex-space-bw"
+              >
                 <div class="address-text">Provider</div>
-                <div class="address-text">₹0.00</div>
+                <div class="address-text">
+                  {{ order.order.provider.descriptor.name }}
+                </div>
               </CardContent>
               <!-- <CardContent class="flex-space-bw">
                 <div class="address-text">Status</div>
@@ -270,7 +289,11 @@
         <div class="f-btn-text">Contact Support</div>
         <img class="btn-img" src="/icons/support.svg" />
       </button>
-      <button v-if="false" class="color-light sf-button cancel-order-btn" @click="onCancel">
+      <button
+        v-if="false"
+        class="color-light sf-button cancel-order-btn"
+        @click="onCancel"
+      >
         <div class="btn-text">Cancel Order</div>
       </button>
       <ModalSlide :visible="openSupportModal" @close="openSupportModal = false">
@@ -367,7 +390,12 @@ import {
   useSupport
 } from '@vue-storefront/beckn';
 
-import { ref, onBeforeMount, computed, onBeforeUnmount } from '@vue/composition-api';
+import {
+  ref,
+  onBeforeMount,
+  computed,
+  onBeforeUnmount
+} from '@vue/composition-api';
 import Card from '~/components/Card.vue';
 import CardContent from '~/components/CardContent.vue';
 
@@ -730,7 +758,7 @@ export default {
   top: 40px;
 }
 
-.order-id{
+.order-id {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
