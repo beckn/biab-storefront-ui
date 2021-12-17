@@ -1,7 +1,7 @@
 <template>
   <div id="payment">
     <div class="top-bar header-top">
-      <div class="sf-chevron--left sf-chevron icon_back">
+      <div @click="goBack" class="sf-chevron--left sf-chevron icon_back">
         <span class="sf-search-bar__icon">
           <SfIcon color="var(--c-primary)" size="20px" icon="chevron_left" />
         </span>
@@ -22,12 +22,16 @@
           class="flex-space-bw"
         >
           <div class="address-text">{{ breakup.title }}</div>
-          <div class="address-text">₹{{ parseFloat(breakup.price.value).toFixed( 2 ) }}</div>
+          <div class="address-text">
+            ₹{{ parseFloat(breakup.price.value).toFixed(2) }}
+          </div>
         </CardContent>
         <div><hr class="sf-divider divider" /></div>
         <CardContent class="flex-space-bw">
           <div class="address-text bold">Total</div>
-          <div class="address-text bold">₹{{ order.cart.quote.price.value }}</div>
+          <div class="address-text bold">
+            ₹{{ order.cart.quote.price.value }}
+          </div>
         </CardContent>
       </Card>
       <div class="sub-heading">
@@ -52,7 +56,7 @@
       class="footer-fixed"
       :buttonText="'Pay & Confirm'"
       :buttonEnable="isPayConfirmActive"
-      :totalPrice="parseFloat(order.cart.quote.price.value) "
+      :totalPrice="parseFloat(order.cart.quote.price.value)"
       :totalItem="cartGetters.getTotalItems(order.cart)"
       @buttonClick="proceedToConfirm"
     >
@@ -84,7 +88,7 @@ import { ref, computed, onBeforeMount, watch } from '@vue/composition-api';
 
 import LoadingCircle from '~/components/LoadingCircle';
 // import helpers from '../helpers/helpers';
-import { useCart, useConfirmOrder, cartGetters } from '@vue-storefront/beckn';
+import { useConfirmOrder, cartGetters } from '@vue-storefront/beckn';
 
 import Card from '~/components/Card.vue';
 
@@ -116,7 +120,6 @@ export default {
       return order.value?.transactionId === context.root.$route.query.id;
     });
 
-    const { clear } = useCart();
     const { init, poll, pollResults } = useConfirmOrder('confirm-order');
 
     const changePaymentMethod = (value) => {
@@ -147,6 +150,8 @@ export default {
       await poll({ messageId: response.context.message_id });
     };
 
+    const goBack = () => context.root.$router.back();
+
     watch(
       () => pollResults.value,
       (newValue) => {
@@ -176,13 +181,13 @@ export default {
         context.root.$router.push('/');
       }
       console.log(order.value);
-      clear();
     });
     return {
       paymentMethod,
       changePaymentMethod,
       order,
       cartGetters,
+      goBack,
       isPayConfirmActive,
       proceedToConfirm,
       isTransactionMatching,

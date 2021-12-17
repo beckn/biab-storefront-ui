@@ -70,7 +70,12 @@
           <div class="s-p-name">{{ cartGetters.getItemName(product) }}</div>
           <div class="s-p-weight">x {{ cartGetters.getItemQty(product) }}</div>
           <div class="s-p-price">
-            ₹ {{ cartGetters.getUpdatedPrice(product) ? cartGetters.getUpdatedPrice(product) : cartGetters.getItemPrice(product).regular }}
+            ₹
+            {{
+              cartGetters.getUpdatedPrice(product)
+                ? cartGetters.getUpdatedPrice(product)
+                : cartGetters.getItemPrice(product).regular
+            }}
           </div>
         </div>
       </div>
@@ -183,12 +188,12 @@
             <div class="">{{ policyObj.descriptor.name }}</div>
             <div class="address-text">{{ policyObj.descriptor.code }}</div>
           </CardContent> -->
-          <!-- <div><hr class="sf-divider divider" /></div>
+      <!-- <div><hr class="sf-divider divider" /></div>
           <CardContent class="flex-space-bw">
             <div class="address-text bold">Total</div>
             <div class="address-text bold">₹{{ cart.quote.price.value }}</div>
           </CardContent> -->
-        <!-- </template>
+      <!-- </template>
       </Card> -->
     </div>
     <Footer
@@ -318,7 +323,7 @@ export default {
 
     const { init: getOrderPolicy } = useOrderPolicy();
 
-    const policy = ref({cancellation_reasons: []});
+    const policy = ref({ cancellation_reasons: [] });
     const {
       getBillngAddress,
       getShippingAddress,
@@ -412,7 +417,6 @@ export default {
               transactionId: transactionId.value
             })
           );
-          localStorage.removeItem('transactionId');
           // enableLoader.value = false;
           context.root.$router.push({
             path: '/payment',
@@ -431,7 +435,7 @@ export default {
         context: {
           bpp_id: cart.value.bpp.id
         }
-      }).then((res)=>{
+      }).then((res) => {
         policy.value = res.message;
       });
     });
