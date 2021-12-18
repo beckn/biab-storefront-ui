@@ -283,6 +283,7 @@
         <div class="f-btn-text">Home</div>
       </button>
       <button
+        v-if="isSupportAvailable"
         class="sf-button color-primary support-btns"
         @click="openSupportModal = true"
       >
@@ -490,8 +491,13 @@ export default {
           ref_id: order.value.order.id
         }
       };
-      const response = await support(params);
-      await onSupport({ messageId: response.context.message_id });
+
+      try {
+        const response = await support(params);
+        await onSupport({ messageId: response.context.message_id });
+      } catch (error) {
+        console.log('Error calling support apis - ', error);
+      }
     };
 
     const callStatus = async () => {
@@ -507,8 +513,13 @@ export default {
           order_id: order.value.order.id
         }
       };
-      const response = await status(params);
-      await onStatus({ messageId: response.context.message_id });
+
+      try {
+        const response = await status(params);
+        await onStatus({ messageId: response.context.message_id });
+      } catch (error) {
+        console.log('Error calling status apis - ', error);
+      }
     };
 
     const callTrack = async () => {
@@ -524,8 +535,13 @@ export default {
           order_id: order.value.order.id
         }
       };
-      const response = await track(params);
-      await onTrack({ messageId: response.context.message_id });
+
+      try {
+        const response = await track(params);
+        await onTrack({ messageId: response.context.message_id });
+      } catch (error) {
+        console.log('Error calling track apis - ', error);
+      }
     };
     onBeforeMount(async () => {
       const orders = JSON.parse(localStorage.getItem('orderHistory')) ?? [];
