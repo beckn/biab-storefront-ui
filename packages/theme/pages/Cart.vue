@@ -224,30 +224,34 @@ export default {
             if (newValue?.message?.quote && polling.value) {
               stopPolling();
               const updatedCartData = cart.value.items.map((cartItem) => {
-                if (cartItem.updatedCount) cartItem.updatedCount = null;
-                if (cartItem.updatedPrice) cartItem.updatedPrice = null;
                 const quoteItem = newValue.message.quote?.items.filter(
                   (quoteItem) => quoteItem.id === cartItem.id
                 )[0];
+
+                const updatedCartItem = { ...quoteItem, ...cartItem };
+                if (updatedCartItem.updatedCount) updatedCartItem.updatedCount = null;
+                if (updatedCartItem.updatedPrice) updatedCartItem.updatedPrice = null;
+
                 if (
-                  parseFloat(cartItem.price.value) !==
+                  parseFloat(updatedCartItem.price.value) !==
                   parseFloat(quoteItem.price.value)
                 ) {
-                  cartItem.updatedPrice = quoteItem.price.value;
+                  updatedCartItem.updatedPrice = quoteItem.price.value;
                   errPricechange.value = true;
                 }
-                if (cartItem.quantity !== quoteItem.quantity.selected.count) {
-                  cartItem.updatedCount = quoteItem.quantity.selected.count;
+                if (updatedCartItem.quantity !== quoteItem.quantity.selected.count) {
+                  updatedCartItem.updatedCount = quoteItem.quantity.selected.count;
                   if (quoteItem.quantity.selected.count === 0)
                     errOutOfStock.value = true;
                   else errUpdateCount.value = true;
                 }
-                return cartItem;
+                return updatedCartItem;
               });
               cart.value.items = updatedCartData;
               cart.value.quote = newValue?.message?.quote.quote;
               cart.value.totalPrice = parseFloat(newValue?.message?.quote?.quote?.price?.value);
               setCart(cart.value);
+              localStorage.setItem('cartData', JSON.stringify(cart.value));
               enableLoader.value = false;
             }
           }
