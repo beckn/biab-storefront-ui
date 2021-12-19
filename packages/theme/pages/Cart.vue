@@ -52,11 +52,7 @@
       </div>
     </div>
     <transition name="sf-fade" mode="out-in">
-      <div
-        v-if="cartGetters.getTotalItems(cart)"
-        key="my-cart"
-        class="my-cart"
-      >
+      <div v-if="cartGetters.getTotalItems(cart)" key="my-cart" class="my-cart">
         <div class="collected-product-list">
           <transition-group name="sf-fade" tag="div">
             <ProductCard
@@ -123,12 +119,12 @@
             label="Enter Quantity"
             name="locality"
             errorMessage="Maximum limit on cart quantity is 10."
-           @input="onChangeInput"
+            @input="onChangeInput"
           />
         </div>
         <SfButton
           class="add-quantity"
-          :class="{'is-disabled--button':!validInput}"
+          :class="{ 'is-disabled--button': !validInput }"
           aria-label="Close modal"
           type="button"
           @click="addQuantity"
@@ -150,7 +146,7 @@ import {
   SfPrice,
   SfCollectedProduct,
   SfImage,
-  SfInput
+  SfInput,
 } from '@storefront-ui/vue';
 import { useCart, cartGetters, useQuote } from '@vue-storefront/beckn';
 import ProductCard from '~/components/ProductCard';
@@ -175,7 +171,7 @@ export default {
     Footer,
     ModalSlide,
     SfInput,
-    LoadingCircle
+    LoadingCircle,
   },
   setup(_, { root }) {
     const { cart, addItem, load, setCart } = useCart();
@@ -205,14 +201,14 @@ export default {
             bpp_id: cart.value.bpp.id,
             provider: {
               id: cart.value.bppProvider.id,
-              locations: [item.location_id]
-            }
+              locations: [item.location_id],
+            },
           };
         });
         const cartData = await init({
           // eslint-disable-next-line camelcase
           context: { transaction_id: transactionId },
-          message: { cart: { items: cartItems } }
+          message: { cart: { items: cartItems } },
         });
 
         watch(
@@ -246,7 +242,9 @@ export default {
               });
               cart.value.items = updatedCartData;
               cart.value.quote = newValue?.message?.quote.quote;
-              cart.value.totalPrice = parseFloat(newValue?.message?.quote?.quote?.price?.value);
+              cart.value.totalPrice = parseFloat(
+                newValue?.message?.quote?.quote?.price?.value
+              );
               setCart(cart.value);
               enableLoader.value = false;
             }
@@ -270,8 +268,8 @@ export default {
         customQuery: {
           bpp: cart.value.bpp,
           bppProvider: cart.value.bppProvider,
-          locations: cart.value.locations
-        }
+          locations: cart.value.locations,
+        },
       });
       if (matchQ) matchQuote();
     };
@@ -336,14 +334,14 @@ export default {
       enableLoader,
       updateAll,
       validInput,
-      onChangeInput
+      onChangeInput,
     };
-  }
+  },
 };
 </script>
 
 <style lang="scss" scoped>
-.sf-sidebar__aside{
+.sf-sidebar__aside {
   top: 45px;
 }
 .sf-bar {
