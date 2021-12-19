@@ -6,7 +6,7 @@
           <SfIcon color="var(--c-primary)" size="20px" icon="chevron_left" />
         </span>
       </div>
-      <div>Checkout</div>
+      <div>Billing and Shipping</div>
     </div>
     <div v-if="enableLoader" key="loadingCircle" class="loader-circle">
       <LoadingCircle :enable="enableLoader" />
@@ -198,10 +198,10 @@
     </div>
     <Footer
       class="footer-fixed"
-      @buttonClick="initOrder"
+      @buttonClick="paymentProceed"
       :totalPrice="cartGetters.getTotals(cart).total"
       :totalItem="cartGetters.getTotalItems(cart)"
-      :buttonText="'Proceed To Pay'"
+      :buttonText="'Proceed'"
       :buttonEnable="proceedToPay"
     >
       <template v-slot:buttonIcon>
@@ -228,6 +228,7 @@
         :headingText="'Shipping Details'"
         :addressDetails="shippingAddress"
         @getAddress="toggleShippingModal"
+        @initCall="initOrder"
       />
     </ModalSlide>
     <ModalSlide :visible="billingAddressModal" @close="toggleBillingModal">
@@ -237,6 +238,7 @@
         :headingText="'Billing Details'"
         :addressDetails="billingAddress"
         @getAddress="toggleBillingModal"
+        @initCall="initOrder"
       />
     </ModalSlide>
 
@@ -400,6 +402,15 @@ export default {
       console.log(onInitResult);
     };
 
+    const paymentProceed = () => {
+      context.root.$router.push({
+        path: '/payment',
+        query: {
+          id: transactionId.value
+        }
+      });
+    };
+
     watch(
       () => onInitResult.value,
       (newValue) => {
@@ -417,13 +428,7 @@ export default {
               transactionId: transactionId.value
             })
           );
-          // enableLoader.value = false;
-          context.root.$router.push({
-            path: '/payment',
-            query: {
-              id: transactionId.value
-            }
-          });
+          enableLoader.value = false;
         }
       }
     );
@@ -458,7 +463,8 @@ export default {
       proceedToPay,
       enableLoader,
       initOrder,
-      policy
+      policy,
+      paymentProceed
     };
   }
 };

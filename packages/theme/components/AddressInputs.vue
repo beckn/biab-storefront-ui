@@ -207,6 +207,7 @@ export default {
 
     const saveDetails = () => {
       emit('getAddress', isFieldsValid.value);
+      emit('initCall');
     };
 
     return {
