@@ -79,16 +79,16 @@ export default {
   name: 'AddressInputs',
   components: {
     SfButton,
-    SfInput
+    SfInput,
   },
   props: {
     buttonText: {
       type: String,
-      default: ''
+      default: '',
     },
     headingText: {
       type: String,
-      default: ''
+      default: '',
     },
     addressDetails: {
       type: Object,
@@ -97,9 +97,9 @@ export default {
         mobile: '',
         building: '',
         landmark: '',
-        address: ''
-      }
-    }
+        address: '',
+      },
+    },
   },
   setup(props, { emit }) {
     const address = ref(props.addressDetails);
@@ -109,7 +109,7 @@ export default {
       pincode: false,
       mobile: false,
       name: false,
-      building: false
+      building: false,
     });
 
     const validateInput = (field) => {
@@ -154,7 +154,7 @@ export default {
           autoComplete.getPlacePredictions(
             {
               input: newValue,
-              types: ['geocode']
+              types: ['geocode'],
             },
             (predictions, status) => {
               if (status === window.google.maps.places.PlacesServiceStatus.OK) {
@@ -207,6 +207,7 @@ export default {
 
     const saveDetails = () => {
       emit('getAddress', isFieldsValid.value);
+      emit('initCall');
     };
 
     return {
@@ -214,9 +215,9 @@ export default {
       saveDetails,
       valid,
       isFieldsValid,
-      validateInput
+      validateInput,
     };
-  }
+  },
 };
 </script>
 
