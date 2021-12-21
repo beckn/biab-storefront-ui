@@ -6,7 +6,7 @@
           <SfIcon color="var(--c-primary)" size="20px" icon="chevron_left" />
         </span>
       </div>
-      <div>Checkout</div>
+      <div>Billing and Shipping</div>
     </div>
     <div v-if="enableLoader" key="loadingCircle" class="loader-circle">
       <LoadingCircle :enable="enableLoader" />
@@ -198,10 +198,10 @@
     </div>
     <Footer
       class="footer-fixed"
-      @buttonClick="initOrder"
+      @buttonClick="paymentProceed"
       :totalPrice="cartGetters.getTotals(cart).total"
       :totalItem="cartGetters.getTotalItems(cart)"
-      :buttonText="'Proceed To Pay'"
+      :buttonText="'Proceed'"
       :buttonEnable="proceedToPay"
     >
       <template v-slot:buttonIcon>
@@ -228,6 +228,7 @@
         :headingText="'Shipping Details'"
         :addressDetails="shippingAddress"
         @getAddress="toggleShippingModal"
+        @initCall="initOrder"
       />
     </ModalSlide>
     <ModalSlide :visible="billingAddressModal" @close="toggleBillingModal">
@@ -237,6 +238,7 @@
         :headingText="'Billing Details'"
         :addressDetails="billingAddress"
         @getAddress="toggleBillingModal"
+        @initCall="initOrder"
       />
     </ModalSlide>
 
@@ -254,7 +256,7 @@ import {
   SfCheckbox,
   SfImage,
   SfInput,
-  SfIcon
+  SfIcon,
 } from '@storefront-ui/vue';
 import ModalSlide from '~/components/ModalSlide.vue';
 import AddressInputs from '~/components/AddressInputs.vue';
@@ -266,7 +268,7 @@ import {
   providerGetters,
   useAddress,
   useInitOrder,
-  useOrderPolicy
+  useOrderPolicy,
 } from '@vue-storefront/beckn';
 
 // import { useUiState } from '~/composables';
@@ -298,7 +300,7 @@ export default {
     ProductCard,
     AddressInputs,
     SfIcon,
-    AddressCard
+    AddressCard,
   },
   setup(_, context) {
     // const isThankYou = computed(() => currentStep.value === 'thank-you');
@@ -318,7 +320,7 @@ export default {
       // polling ,
       pollResults: onInitResult,
       poll: onInitOrder,
-      init
+      init,
     } = useInitOrder();
 
     const { init: getOrderPolicy } = useOrderPolicy();
@@ -328,7 +330,7 @@ export default {
       getBillngAddress,
       getShippingAddress,
       setBillingAddress,
-      setShippingAddress
+      setShippingAddress,
     } = useAddress();
     console.log(getShippingAddress());
     const shippingAddress = ref(getShippingAddress());
@@ -395,9 +397,17 @@ export default {
       console.log(response);
       await onInitOrder({
         // eslint-disable-next-line camelcase
-        messageId: response.context.message_id
+        messageId: response.context.message_id,
       });
       console.log(onInitResult);
+    };
+    const paymentProceed = () => {
+      context.root.$router.push({
+        path: '/payment',
+        query: {
+          id: transactionId.value,
+        },
+      });
     };
 
     watch(
@@ -414,16 +424,10 @@ export default {
               billingAddress: billingAddress.value,
               shippingAsBilling: shippingAsBilling.value,
               initOrder: onInitResult.value.message.order,
-              transactionId: transactionId.value
+              transactionId: transactionId.value,
             })
           );
-          // enableLoader.value = false;
-          context.root.$router.push({
-            path: '/payment',
-            query: {
-              id: transactionId.value
-            }
-          });
+          enableLoader.value = false;
         }
       }
     );
@@ -433,8 +437,8 @@ export default {
       transactionId.value = localStorage.getItem('transactionId');
       getOrderPolicy({
         context: {
-          bpp_id: cart.value.bpp.id
-        }
+          bpp_id: cart.value.bpp.id,
+        },
       }).then((res) => {
         policy.value = res.message;
       });
@@ -458,9 +462,10 @@ export default {
       proceedToPay,
       enableLoader,
       initOrder,
-      policy
+      policy,
+      paymentProceed,
     };
-  }
+  },
 };
 </script>
 
