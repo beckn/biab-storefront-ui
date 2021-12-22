@@ -1,7 +1,7 @@
 <template>
   <div id="payment">
     <div class="top-bar header-top"></div>
-    <div class="content  header-push">
+    <div class="content header-push">
       <div class="sub-heading">
         <img src="~/assets/images/success-order.svg" />
       </div>
@@ -27,11 +27,7 @@
   </div>
 </template>
 <script>
-import {
-  SfButton,
-  SfRadio,
-  SfIcon
-} from '@storefront-ui/vue';
+import { SfButton, SfRadio, SfIcon } from '@storefront-ui/vue';
 
 // import { ref, computed } from '@vue/composition-api';
 // import { onMounted } from '@vue/composition-api';
@@ -43,6 +39,7 @@ import Card from '~/components/Card.vue';
 import Footer from '~/components/Footer.vue';
 import CardContent from '~/components/CardContent.vue';
 export default {
+  middleware: 'auth',
   name: 'OrderSuccess',
   components: {
     SfButton,
@@ -50,24 +47,23 @@ export default {
     Card,
     CardContent,
     SfRadio,
-    Footer
+    Footer,
   },
   setup(_, context) {
-    const transactionId = context.root.$route.query.id;
+    const parentOrderId = context.root.$route.query.id;
 
-    const goToOrderDetails = ()=>{
-
+    const goToOrderDetails = () => {
       context.root.$router.push({
         path: '/orderdetails',
         query: {
-          id: transactionId
-        }
+          id: parentOrderId,
+        },
       });
     };
     return {
-      goToOrderDetails
+      goToOrderDetails,
     };
-  }
+  },
 };
 </script>
 <style lang="scss" scoped>
@@ -93,8 +89,8 @@ export default {
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.07);
 }
 
-.dis-block{
-    display: block !important;
+.dis-block {
+  display: block !important;
 }
 
 .details {

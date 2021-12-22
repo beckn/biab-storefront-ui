@@ -94,9 +94,13 @@ export default {
   border-radius: 20px 20px 0px 0px;
 }
 
-.content{
-  margin:0;
-  padding:0;
+.sf-overlay {
+  background: black;
+  opacity: 60%;
+}
+
+.content {
+  margin: 0;
+  padding: 0;
 }
 </style>
-

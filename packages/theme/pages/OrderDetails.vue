@@ -1,19 +1,12 @@
 <template>
   <div>
     <div class="top-bar">
-      <div @clic="goBack" class="sf-chevron--left sf-chevron icon_back">
+      <div @click="goBack" class="sf-chevron--left sf-chevron icon_back">
         <span class="sf-search-bar__icon">
           <SfIcon color="var(--c-primary)" size="20px" icon="chevron_left" />
         </span>
       </div>
       <div class="header-push">Order Details</div>
-      <SfButton
-        v-if="isTrackingAvailable"
-        class="sf-button--pure top-button"
-        @click="openTrackModal = true"
-      >
-        <div class="color-def">Track Order</div>
-      </SfButton>
     </div>
 
     <div v-if="enableLoader" key="loadingCircle" class="loader-circle">
@@ -21,47 +14,11 @@
     </div>
 
     <div v-if="!enableLoader" class="details">
-      <div class="provider-head p-0">
-        <div class="provide-img">
-          <img
-            :src="
-              cartGetters.getProviderImage(
-                cartGetters.getBppProvider(order.cart)
-              )
-                ? cartGetters.getProviderImage(
-                    cartGetters.getBppProvider(order.cart)
-                  )
-                : require('~/assets/images/store-placeholder.png')
-            "
-          />
-        </div>
-        <div class="p-name">
-          {{
-            providerGetters.getProviderName(
-              cartGetters.getBppProvider(order.cart)
-            )
-          }}
-        </div>
-        <div class="text-padding">
-          <!-- <span class="p-distance"> by </span> {{ order.cart.bpp.descriptor.name }} -->
-        </div>
-
-        <!-- <div class="text-padding">
-            <div class="flexy-center">
-              <div class="p-name">Abc</div>
-              <div class="text-padding">
-                <span class="p-distance"> by </span>
-                <span>BCA</span>
-              </div>
-            </div>
-          </div> -->
-      </div>
-
-      <div class="sub-heading">
+      <!-- <div class="sub-heading">
         <div class="p-name">Items</div>
-      </div>
+      </div> -->
 
-      <div
+      <!-- <div
         :key="index + 'new'"
         v-for="(product, index) in cartGetters.getItems(order.cart)"
         class="checkout-product"
@@ -81,6 +38,162 @@
             ₹ {{ cartGetters.getItemPrice(product).regular }}
           </div>
         </div>
+      </div> -->
+      <Card>
+        <SfAccordion>
+          <SfAccordionItem :header="'Order'">
+            <CardContent class="flex-space-bw">
+              <div class="address-text"><span>Placed at</span></div>
+              <div class="address-text order-id">
+                <span>{{ orderPlacementTime }}</span>
+              </div>
+            </CardContent>
+            <div><hr class="sf-divider divider" /></div>
+
+            <div
+              :key="orderId"
+              v-for="(order, orderId, index) in order.orderData"
+              class="shipment-wrapper"
+            >
+              <CardContent class="flex-space-bw">
+                <div class="address-text">
+                  <span>Shipment {{ index + 1 }}</span>
+                </div>
+                <div class="address-text">
+                  <span>Id - {{ orderId }}</span>
+                </div>
+              </CardContent>
+              <CardContent
+                v-if="orderStatusData && orderStatusData[index]"
+                class="flex-space-bw"
+              >
+                <div class="address-text"><span>Status</span></div>
+                <div class="address-text">
+                  <span>{{ orderStatusData[index].state }}</span>
+                </div>
+              </CardContent>
+              <CardContent class="flex-space-bw">
+                <div class="address-text-items"><span>Item (s)</span></div>
+              </CardContent>
+              <CardContent class="flex-space-bw">
+                <div>
+                  {{ order.quote.breakup[0].title }} x
+                  {{ order.items[0].quantity.count }}
+                </div>
+                <div>
+                  <div
+                    @click="
+                      openItemsModal = true;
+                      selectMoreItemsId = orderId;
+                    "
+                    class="more-items-button"
+                  >
+                    <span class="more-items-text"
+                      >{{ order.items.length - 1 }} more items</span
+                    >
+                  </div>
+                </div>
+              </CardContent>
+
+              <div class="order-buttons-wrapper">
+                <div class="cancel-link">
+                  <span>
+                    <a
+                      class="cancel-target"
+                      target="_blank"
+                      href="http://www.google.com"
+                      >Cancel</a
+                    >
+                  </span>
+                </div>
+
+                <SfButton
+                  class="sf-button--pure"
+                  @click="
+                    openTrackModal = true;
+                    selectedTrackingId = index;
+                  "
+                >
+                  <div class="color-def">Track</div>
+                </SfButton>
+
+                <SfButton
+                  class="sf-button--pure"
+                  @click="
+                    openSupportModal = true;
+                    selectedSupportId = index;
+                  "
+                >
+                  <div class="color-def">Support</div>
+                </SfButton>
+              </div>
+              <div><hr class="sf-divider divider" /></div>
+            </div>
+          </SfAccordionItem>
+        </SfAccordion>
+      </Card>
+
+      <div class="sub-heading"></div>
+
+      <div v-if="showFulfillmentProgress">
+        <Card>
+          <SfAccordion>
+            <SfAccordionItem :header="'Fulfillment Progress'">
+              <CardContent class="flex-space-bw">
+                <div class="fulfillment-progress">
+                  <div
+                    v-for="(
+                      currFulfillment, fulfillmentId, index
+                    ) in fulfillmentData"
+                    class="track-details"
+                    :class="{
+                      first: index === 0,
+                      last: index === Object.keys(fulfillmentData).length - 1,
+                    }"
+                    :key="index"
+                  >
+                    <template
+                      v-if="
+                        currFulfillment.state &&
+                        currFulfillment.state.descriptor
+                      "
+                    >
+                      <div class="check-container">
+                        <div v-if="index !== 0" class="dot"></div>
+                        <div v-if="index !== 0" class="dot"></div>
+                        <div v-if="index !== 0" class="dot"></div>
+                        <div class="check">
+                          <img src="/icons/check.svg" alt="" />
+                        </div>
+                        <div
+                          v-if="
+                            index !== Object.keys(fulfillmentData).length - 1
+                          "
+                          class="dot"
+                        ></div>
+                        <div
+                          v-if="
+                            index !== Object.keys(fulfillmentData).length - 1
+                          "
+                          class="dot"
+                        ></div>
+                      </div>
+                      <div class="step-details">
+                        <div class="step-number">Shipment {{ index + 1 }}</div>
+                        <div class="step-name">
+                          {{ currFulfillment.state.descriptor.name }}
+                        </div>
+                        <div class="step-time">
+                          {{ currFulfillment.state.descriptor.updated_at }}
+                        </div>
+                      </div>
+                    </template>
+                  </div>
+                </div>
+              </CardContent>
+            </SfAccordionItem>
+          </SfAccordion>
+        </Card>
       </div>
 
       <div class="sub-heading"></div>
@@ -124,221 +237,139 @@
       <Card>
         <SfAccordion>
           <SfAccordionItem :header="'Payment'">
-            <!-- <CardContent class="flex-space-bw">
-              <div class="address-text">SubTotal</div>
-              <div class="address-text">
-                ₹{{ cartGetters.getTotals(order.cart).total }}
+            <div :key="orderId" v-for="(value, orderId) in order.orderData">
+              <div :key="id" v-for="(breakup, id) in value.quote.breakup">
+                <CardContent class="flex-space-bw">
+                  <div class="address-text">{{ breakup.title }}</div>
+                  <div class="address-text-value">
+                    ₹{{ breakup.price.value }}
+                  </div>
+                </CardContent>
               </div>
-            </CardContent>
-            <CardContent class="flex-space-bw">
-              <div class="address-text">Delivery Charges</div>
-              <div class="address-text">₹0.00</div>
-            </CardContent>
-            <CardContent class="flex-space-bw">
-              <div class="address-text">Taxes (CGST)</div>
-              <div class="address-text">₹0.00</div>
-            </CardContent>
-            <CardContent class="flex-space-bw">
-              <div class="address-text">Taxes(SGST)</div>
-              <div class="address-text">₹0.00</div>
-            </CardContent> -->
-            <CardContent
-              v-for="breakup in order.cart.quote.breakup"
-              :key="breakup.title"
-              class="flex-space-bw"
-            >
-              <div class="address-text">{{ breakup.title }}</div>
-              <div class="address-text">₹{{ breakup.price.value }}</div>
-            </CardContent>
-            <div><hr class="sf-divider divider" /></div>
-            <CardContent class="flex-space-bw">
-              <div class="address-text bold">Total</div>
-              <div class="address-text bold">
-                ₹{{ order.cart.quote.price.value }}
-              </div>
-            </CardContent>
+              <div><hr class="sf-divider divider" /></div>
+              <CardContent class="flex-space-bw">
+                <div class="address-text">Total</div>
+                <div class="address-text-value">
+                  ₹{{ value.quote.price.value }}
+                </div>
+              </CardContent>
+              <CardContent class="flex-space-bw">
+                <div class="address-text">Status</div>
+                <div class="address-text-value">
+                  {{ value.payment.status }}
+                </div>
+              </CardContent>
+            </div>
             <CardContent class="flex-space-bw">
               <div class="address-text">Method</div>
-              <div class="address-text">{{ order.paymentMethod }}</div>
+              <div class="address-text-value">{{ order.paymentMethod }}</div>
             </CardContent>
-            <CardContent class="flex-space-bw">
-              <div class="address-text">Status</div>
-              <div class="address-text">{{ order.order.payment.status }}</div>
-            </CardContent>
-            <CardContent v-if="false" class="flex-space-bw">
-              <div class="address-text">Transaction Id</div>
-              <div class="address-text">
-                <!-- {{ order.order.payment.params.transaction_id }} -->
-              </div>
-            </CardContent>
+            <div><hr /></div>
           </SfAccordionItem>
         </SfAccordion>
       </Card>
 
-      <div class="sub-heading">
-        <!-- <div class="p-name">Order</div> -->
-      </div>
-      <Card>
-        <SfAccordion>
-          <SfAccordionItem :header="'Order'">
-            <CardContent class="flex-space-bw">
-              <div class="address-text">ID</div>
-              <div class="address-text order-id">{{ order.order.id }}</div>
-            </CardContent>
-            <CardContent class="flex-space-bw">
-              <div class="address-text">Placed at</div>
-              <div class="address-text">{{ order.order.created_at }}</div>
-            </CardContent>
-            <CardContent v-if="isFulfillmentAvailable" class="flex-space-bw">
-              <div class="address-text">Status</div>
-              <div class="address-text">{{ isFulfillmentAvailable.state }}</div>
-            </CardContent>
-          </SfAccordionItem>
-        </SfAccordion>
-      </Card>
+      <div class="sub-heading"></div>
 
-      <div class="sub-heading">
-        <!-- <div class="p-name">Order</div> -->
-      </div>
-      <div v-if="isFulfillmentAvailable">
+      <div v-if="orderStatusData">
         <Card>
           <SfAccordion>
             <SfAccordionItem :header="'Fulfillment'">
-              <CardContent
-                v-if="fulfillmentData.fulfillment.state"
-                class="flex-space-bw"
+              <div
+                v-for="(currOrderStatus, orderStatusId) in orderStatusData"
+                :key="orderStatusId"
               >
-                <div class="address-text">State</div>
-                <div class="address-text">
-                  {{ fulfillmentData.fulfillment.state.descriptor.name }}
-                </div>
-              </CardContent>
-              <CardContent
-                v-if="fulfillmentData.fulfillment.id"
-                class="flex-space-bw"
-              >
-                <div class="address-text">Id</div>
-                <div class="address-text">
-                  {{ fulfillmentData.fulfillment.id }}
-                </div>
-              </CardContent>
-              <CardContent
-                v-if="fulfillmentData.provider.descriptor"
-                class="flex-space-bw"
-              >
-                <div class="address-text">Provider</div>
-                <div class="address-text">
-                  {{ fulfillmentData.provider.descriptor.name }}
-                </div>
-              </CardContent>
-              <!-- <CardContent class="flex-space-bw">
-                <div class="address-text">Status</div>
-                <div class="address-text">{{isFulfillmentAvailable.state}}</div>
-              </CardContent> -->
+                <CardContent class="flex-space-bw">
+                  <div class="address-text">ID</div>
+                  <div class="address-text">
+                    {{ currOrderStatus.provider.id }}
+                  </div>
+                </CardContent>
+                <CardContent class="flex-space-bw">
+                  <div class="address-text">Status</div>
+                  <div class="address-text">{{ currOrderStatus.state }}</div>
+                </CardContent>
+
+                <div><hr class="sf-divider divider" /></div>
+              </div>
             </SfAccordionItem>
           </SfAccordion>
         </Card>
-        <div class="fulfillment-progress" v-if="false">
-          <div class="head">
-            <span>Fulfillment Progress</span>
-          </div>
-          <div class="sub-head">
-            <img src="/icons/calendar.svg" alt="" />
-            <span>ETA</span>
-            <span class="time">Today, 1.30pm</span>
-          </div>
-          <div
-            class="track-details"
-            :class="{
-              first: index === 0,
-              last: index === fulfillmentSteps.length - 1,
-            }"
-            v-for="(step, index) in fulfillmentSteps"
-            :key="index"
-          >
-            <div class="check-container">
-              <div v-if="index !== 0" class="dot"></div>
-              <div v-if="index !== 0" class="dot"></div>
-              <div class="check"><img src="/icons/check.svg" alt="" /></div>
-              <div
-                v-if="index !== fulfillmentSteps.length - 1"
-                class="dot"
-              ></div>
-              <div
-                v-if="index !== fulfillmentSteps.length - 1"
-                class="dot"
-              ></div>
-            </div>
-            <div class="step-details">
-              <div class="step-name">{{ step.status }}</div>
-              <div class="step-time">{{ step.time }}</div>
-            </div>
-          </div>
-        </div>
       </div>
+
+      <div class="sub-heading"></div>
+
       <button
         class="sf-button color-primary support-btns card-checkbox"
         @click="goHome"
       >
         <div class="f-btn-text">Home</div>
       </button>
-      <button
-        v-if="isSupportAvailable"
-        class="sf-button color-primary support-btns"
-        @click="openSupportModal = true"
+
+      <ModalSlide
+        :visible="openSupportModal"
+        @close="
+          openSupportModal = false;
+          selectedSupportId = null;
+        "
       >
-        <div class="f-btn-text">Contact Support</div>
-        <img class="btn-img" src="/icons/support.svg" />
-      </button>
-      <button
-        v-if="false"
-        class="color-light sf-button cancel-order-btn"
-        @click="onCancel"
-      >
-        <div class="btn-text">Cancel Order</div>
-      </button>
-      <ModalSlide :visible="openSupportModal" @close="openSupportModal = false">
         <div class="modal-heading">Contact Support</div>
         <div><hr class="sf-divider" /></div>
         <div class="modal-body">
-          <div class="support-text">
-            You can reach out to one of our customer support executives for any
-            help, queries or feedback to
-            {{
-              providerGetters.getProviderName(
-                cartGetters.getBppProvider(order.cart)
-              )
-            }}
+          <div v-if="supportData && supportData[selectedSupportId]">
+            <div class="support-text">
+              You can reach out to one of our customer support executives for
+              any help, queries or feedback to
+              {{
+                providerGetters.getProviderName(
+                  cartGetters.getBppProvider(order.cart)
+                )
+              }}
+            </div>
+            <SfButton
+              class="support-btns"
+              v-if="supportData[selectedSupportId].phone"
+              @click="openWindow('tel:' + supportData[selectedSupportId].phone)"
+              aria-label="Close modal"
+              type="button"
+              >Call us</SfButton
+            >
+            <SfButton
+              class="support-btns"
+              v-if="supportData[selectedSupportId].email"
+              @click="
+                openWindow('mailto:' + supportData[selectedSupportId].email)
+              "
+              aria-label="Close modal"
+              type="button"
+              >Email us</SfButton
+            >
+            <SfButton
+              class="support-btns"
+              v-if="supportData[selectedSupportId].uri"
+              @click="openWindow(supportData[selectedSupportId].uri)"
+              aria-label="Close modal"
+              type="button"
+              >Chat with us</SfButton
+            >
           </div>
-          <SfButton
-            class="support-btns"
-            @click="openWindow('tel:' + isSupportAvailable.phone)"
-            aria-label="Close modal"
-            type="button"
-            >Call us</SfButton
-          >
-          <SfButton
-            class="support-btns"
-            @click="openWindow('mailto:' + isSupportAvailable.email)"
-            aria-label="Close modal"
-            type="button"
-            >Email us</SfButton
-          >
-          <SfButton
-            class="support-btns"
-            @click="openWindow(isSupportAvailable.uri)"
-            aria-label="Close modal"
-            type="button"
-            >Chat with us</SfButton
-          >
+          <div v-else class="support-text">
+            No Support available at the moment
+          </div>
         </div>
       </ModalSlide>
 
-      <ModalSlide :visible="openTrackModal" @close="openTrackModal = false">
+      <ModalSlide
+        :visible="openTrackModal"
+        @close="
+          openTrackModal = false;
+          selectedTrackingId = null;
+        "
+      >
         <div class="modal-heading">Track</div>
         <div><hr class="sf-divider" /></div>
         <div class="modal-body">
-          <div v-if="!isTrackingAvailable" class="support-text">
+          <div v-if="!trackingData[selectedTrackingId]" class="support-text">
             No Tracking details available
             <!-- {{
               providerGetters.getProviderName(
@@ -351,7 +382,7 @@
               class="support-btns"
               aria-label="Close modal"
               type="button"
-              @click="openWindow(isTrackingAvailable)"
+              @click="openWindow(trackingData[selectedTrackingId])"
               >open Link</SfButton
             >
           </div>
@@ -361,6 +392,75 @@
           <SfButton class="support-btns" aria-label="Close modal" type="button"
             >Chat with us</SfButton
           > -->
+        </div>
+      </ModalSlide>
+
+      <ModalSlide
+        :visible="openItemsModal"
+        @close="
+          openItemsModal = false;
+          selectMoreItemsId = null;
+        "
+      >
+        <div class="modal-heading">Ordered Items</div>
+        <div><hr class="sf-divider" /></div>
+        <div class="modal-body">
+          <CardContent class="flex-space-bw">
+            <div class="address-text">
+              <span>Shipment 1</span>
+            </div>
+            <div class="address-text order-id">
+              <span>Id - {{ selectMoreItemsId }}</span>
+            </div>
+          </CardContent>
+          <div v-if="selectMoreItemsId !== null">
+            <CardContent class="more-items-flex">
+              <div
+                v-for="(product, index) in getMoreItems(
+                  order,
+                  selectMoreItemsId
+                )"
+                :key="index"
+                class="item-wrapper"
+              >
+                <div class="s-p-image">
+                  <SfImage
+                    :src="cartGetters.getItemImage(product)"
+                    alt="product img"
+                    :width="85"
+                    :height="90"
+                  />
+                </div>
+                <div class="s-p-details">
+                  <div class="s-p-name">
+                    {{ cartGetters.getItemName(product) }}
+                  </div>
+                  <div class="s-p-retailer">
+                    sold by
+                    {{
+                      providerGetters.getProviderName(
+                        cartGetters.getBppProvider(product)
+                      )
+                    }}
+                  </div>
+                  <div class="s-p-weight">x {{ product.quantity }}</div>
+                  <div class="s-p-price">
+                    ₹
+                    {{
+                      cartGetters.getItemPrice(product).regular *
+                      product.quantity
+                    }}
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </div>
+          <button
+            class="sf-button color-primary support-btns"
+            @click="openItemsModal = false"
+          >
+            <div class="f-btn-text">Okay</div>
+          </button>
         </div>
       </ModalSlide>
     </div>
@@ -399,11 +499,13 @@ import {
 } from '@vue/composition-api';
 import Card from '~/components/Card.vue';
 import CardContent from '~/components/CardContent.vue';
-
-import ProductCard from '~/components/ProductCard';
 import AddressCard from '~/components/AddressCard';
+import helpers, {
+  createStatusTrackAndSupportOrderRequest,
+} from '../helpers/helpers';
 
 export default {
+  middleware: 'auth',
   name: 'OrderDetails',
   components: {
     SfButton,
@@ -417,29 +519,35 @@ export default {
     Card,
     SfImage,
     CardContent,
-    ProductCard,
     AddressInputs,
     SfAccordion,
     SfAccordionItem,
     SfIcon,
     LoadingCircle,
     AddressCard,
+    helpers,
   },
   setup(_, context) {
     // const isThankYou = computed(() => currentStep.value === 'thank-you');
 
     const order = ref(null);
+    const orderPlacementTime = ref(null);
     const enableLoader = ref(true);
-    const fulfillmentData = ref(null);
+    const selectedTrackingId = ref(null);
+    const selectedSupportId = ref(null);
+    const selectMoreItemsId = ref(null);
+
     const {
       poll: onTrack,
       init: track,
       pollResults: trackResult,
+      stopPolling: stopPollingOnTrack,
     } = useTrack('track');
     const {
       poll: onSupport,
       init: support,
       pollResults: supportResult,
+      stopPolling: stopPollingSupport,
     } = useSupport('support');
 
     const {
@@ -448,18 +556,100 @@ export default {
       pollResults: statusResult,
       stopPolling: stopStatusPolling,
     } = useOrderStatus('status');
-    const isTrackingAvailable = computed(() => {
-      return trackResult.value?.message?.tracking?.url;
+
+    const trackingData = computed(() => {
+      if (!trackResult.value) {
+        return null;
+      }
+
+      let shouldStopPooling = true;
+      const trackingData = {};
+      trackResult.value.forEach((currentTrackData, index) => {
+        if (currentTrackData.message?.tracking?.url) {
+          trackingData[index] = currentTrackData.message.tracking.url;
+        } else {
+          shouldStopPooling = false;
+        }
+      });
+
+      if (shouldStopPooling) {
+        stopPollingOnTrack();
+      }
+
+      return trackingData;
     });
 
-    const isFulfillmentAvailable = computed(() => {
-      fulfillmentData.value = statusResult.value?.message?.order;
-      return statusResult.value?.message?.order;
+    const orderStatusData = computed(() => {
+      if (!statusResult.value) {
+        return null;
+      }
+
+      const orderStatusData = {};
+      statusResult.value.forEach((currentStatusData, index) => {
+        if (currentStatusData.message?.order) {
+          orderStatusData[index] = currentStatusData.message.order;
+        }
+      });
+
+      return orderStatusData;
     });
-    const isSupportAvailable = computed(() => {
-      return supportResult.value?.message;
+
+    const showFulfillmentProgress = computed(() => {
+      if (!statusResult.value) {
+        return null;
+      }
+
+      let showFulfillmentProgress = false;
+      statusResult.value.forEach((currentStatusData) => {
+        if (currentStatusData.message?.order?.fulfillment?.state) {
+          showFulfillmentProgress = true;
+        }
+      });
+
+      return showFulfillmentProgress;
     });
-    const transactionId = context.root.$route.query.id;
+
+    const fulfillmentData = computed(() => {
+      if (!statusResult.value) {
+        return null;
+      }
+
+      const fulfillmentData = {};
+      statusResult.value.forEach((currentStatusData, index) => {
+        if (currentStatusData.message?.order) {
+          fulfillmentData[index] = currentStatusData.message.order.fulfillment;
+        }
+      });
+
+      return fulfillmentData;
+    });
+
+    const supportData = computed(() => {
+      if (!supportResult.value) {
+        return null;
+      }
+
+      let shouldStopPooling = true;
+      const supportData = {};
+      supportResult.value.forEach((currentSupportData, index) => {
+        if (
+          currentSupportData.message &&
+          Object.keys(currentSupportData.message).length !== 0
+        ) {
+          supportData[index] = currentSupportData.message;
+        } else {
+          shouldStopPooling = false;
+        }
+      });
+
+      if (shouldStopPooling) {
+        stopPollingSupport();
+      }
+
+      return supportData;
+    });
+
+    const parentOrderId = context.root.$route.query.id;
     const fulfillmentStep = [
       { status: 'Items Packed', time: 'May 2021, 2021 12:40 PM' },
       { status: 'Delivery agent assigned', time: 'May 2021, 2021 12:40 PM' },
@@ -476,81 +666,57 @@ export default {
     ];
     const openSupportModal = ref(false);
     const openTrackModal = ref(false);
+    const openItemsModal = ref(false);
     const goHome = () => context.root.$router.push('/');
     const goBack = () => context.root.$router.push('/orders');
     const onCancel = () => context.root.$router.push('/cancelorder');
 
     const callSupport = async () => {
-      const params = {
-        context: {
-          // eslint-disable-next-line camelcase
-          transaction_id: order.value.transactionId,
-          // eslint-disable-next-line camelcase
-          bpp_id: order.value.cart.bpp.id,
-        },
-        message: {
-          // eslint-disable-next-line camelcase
-          ref_id: order.value.order.id,
-        },
-      };
-
-      try {
-        const response = await support(params);
-        await onSupport({ messageId: response.context.message_id });
-      } catch (error) {
-        console.log('Error calling support apis - ', error);
-      }
+      const params = createStatusTrackAndSupportOrderRequest(
+        order.value,
+        'ref_id'
+      );
+      const response = await support(params, localStorage.getItem('token'));
+      await onSupport(
+        { messageIds: helpers.getMessageIdsFromResponse(response) },
+        localStorage.getItem('token')
+      );
     };
 
     const callStatus = async () => {
-      const params = {
-        context: {
-          // eslint-disable-next-line camelcase
-          transaction_id: order.value.transactionId,
-          // eslint-disable-next-line camelcase
-          bpp_id: order.value.cart.bpp.id,
-        },
-        message: {
-          // eslint-disable-next-line camelcase
-          order_id: order.value.order.id,
-        },
-      };
-
-      try {
-        const response = await status(params);
-        await onStatus({ messageId: response.context.message_id });
-      } catch (error) {
-        console.log('Error calling status apis - ', error);
-      }
+      const params = createStatusTrackAndSupportOrderRequest(
+        order.value,
+        'order_id'
+      );
+      const response = await status(params, localStorage.getItem('token'));
+      await onStatus(
+        { messageIds: helpers.getMessageIdsFromResponse(response) },
+        localStorage.getItem('token')
+      );
     };
 
     const callTrack = async () => {
-      const params = {
-        context: {
-          // eslint-disable-next-line camelcase
-          transaction_id: order.value.transactionId,
-          // eslint-disable-next-line camelcase
-          bpp_id: order.value.cart.bpp.id,
-        },
-        message: {
-          // eslint-disable-next-line camelcase
-          order_id: order.value.order.id,
-        },
-      };
-
-      try {
-        const response = await track(params);
-        await onTrack({ messageId: response.context.message_id });
-      } catch (error) {
-        console.log('Error calling track apis - ', error);
-      }
+      const params = createStatusTrackAndSupportOrderRequest(
+        order.value,
+        'order_id'
+      );
+      const response = await track(params, localStorage.getItem('token'));
+      await onTrack(
+        { messageIds: helpers.getMessageIdsFromResponse(response) },
+        localStorage.getItem('token')
+      );
     };
     onBeforeMount(async () => {
       const orders = JSON.parse(localStorage.getItem('orderHistory')) ?? [];
 
       order.value = orders.find((ord) => {
-        return ord.transactionId === transactionId;
+        return ord.parentOrderId === parentOrderId;
       });
+
+      orderPlacementTime.value = helpers.getOrderPlacementTimeline(
+        order.value.order?.created_at
+      );
+
       await callTrack();
       await callSupport();
       await callStatus();
@@ -565,12 +731,14 @@ export default {
       // debugger
       window.open(link);
     };
+    const getMoreItems = helpers.getMoreItemsOfOrderFromcartItems;
     return {
       goHome,
       goBack,
       order,
       cartGetters,
-      isTrackingAvailable,
+      trackingData,
+      selectedTrackingId,
       providerGetters,
       fulfillmentStep,
       fulfillmentSteps,
@@ -578,23 +746,30 @@ export default {
       onCancel,
       enableLoader,
       openTrackModal,
+      openItemsModal,
       callTrack,
       trackResult,
       openWindow,
-      isFulfillmentAvailable,
-      isSupportAvailable,
+      orderStatusData,
+      fulfillmentData,
+      showFulfillmentProgress,
+      supportData,
+      selectedSupportId,
+      orderPlacementTime,
+      selectMoreItemsId,
+      getMoreItems,
     };
   },
 };
 </script>
 
 <style lang="scss" scoped>
-// .header-top{
-//     position: fixed;
-//     width: 100%;
-//     top: 45px;
-//     z-index: 9;
-// }
+.cancel-target {
+  color: #ce0400;
+}
+.track-target {
+  color: #f37a20;
+}
 .support-btns {
   width: 100%;
   border-radius: 3px;
@@ -649,6 +824,29 @@ export default {
 .address-text {
   align-self: center;
   margin-left: 6px;
+  span {
+    font-weight: 500;
+  }
+}
+
+.address-text-items {
+  display: flex;
+  align-self: center;
+  margin-left: 6px;
+  span {
+    font-weight: 500;
+  }
+}
+
+.more-items-button {
+  border: 1px solid #f37a20;
+  border-radius: 6px;
+  width: 100%;
+}
+
+.more-items-text {
+  padding: 9px;
+  color: #f37a20;
 }
 
 .sub-heading {
@@ -660,6 +858,13 @@ export default {
 .footer {
   position: fixed;
   bottom: 0;
+}
+.address-text {
+  font-weight: 600;
+}
+
+.address-text-value {
+  font-weight: 400;
 }
 
 .icon_back {
@@ -695,6 +900,12 @@ export default {
     margin: 0 auto;
   }
 }
+.order-buttons-wrapper {
+  padding-top: 20px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-around;
+}
 .checkout-product:first-child {
   border-top: 0px solid rgba(0, 0, 0, 0.3);
 }
@@ -716,6 +927,27 @@ export default {
   .s-p-price {
     font-size: 16px;
     font-weight: 600;
+    margin-top: 10px;
+    color: #f37a20;
+  }
+}
+.item-wrapper {
+  display: flex;
+  margin: 20px 0;
+
+  .s-p-image {
+    margin-right: 25px;
+  }
+  .s-p-name {
+    font-weight: 700;
+    font-size: 15px;
+  }
+  .s-p-retailer {
+    padding-top: 5px;
+    font-size: 13px;
+  }
+  .s-p-price {
+    font-size: 16px;
     margin-top: 10px;
     color: #f37a20;
   }
@@ -747,6 +979,10 @@ export default {
     }
   }
 }
+.more-items-flex {
+  display: flex;
+  flex-direction: column;
+}
 .modal-heading {
   margin: 20px;
   font-size: 20px;
@@ -757,10 +993,6 @@ export default {
   color: #f37a20;
 }
 
-.top-button {
-  position: absolute;
-  right: 6vw;
-}
 .modal-body {
   padding: 28px;
   .support-text {
@@ -780,5 +1012,13 @@ export default {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.shipment-wrapper {
+  margin-top: 20px;
+}
+
+.step-number {
+  line-height: 1;
 }
 </style>

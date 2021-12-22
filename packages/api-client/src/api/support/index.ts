@@ -4,24 +4,41 @@ import { onInitializeOrderParam } from '../../types/initializeOrder';
 import { AckResponse } from '../../types/BecknClientApi';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export async function support(context, params: onInitializeOrderParam): Promise<AckResponse> {
-  const config = (context.config as Config);
-  const client = (context.client as sa.SuperAgent<sa.SuperAgentRequest>);
+export async function support(
+  context: { config: Config; client: sa.SuperAgent<sa.SuperAgentRequest> },
+  params: onInitializeOrderParam,
+  token: string
+): Promise<AckResponse> {
+  const config = context.config as Config;
+  const client = context.client as sa.SuperAgent<sa.SuperAgentRequest>;
 
-  return client.post(config.api.url + config.api.endpoints.support)
+  return client
+    .post(config.api.url + config.api.endpoints.support)
     .send(params)
-    .then(res => {
-      return (res.body as AckResponse);
+    .set({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    })
+    .then((res) => {
+      return res.body as AckResponse;
     });
 }
 
-export async function onSupport(context, params: onInitializeOrderParam): Promise<AckResponse> {
-  const config = (context.config as Config);
-  const client = (context.client as sa.SuperAgent<sa.SuperAgentRequest>);
-  return client.get(config.api.url + config.api.endpoints.onSupport)
+export async function onSupport(
+  context: { config: Config; client: sa.SuperAgent<sa.SuperAgentRequest> },
+  params: onInitializeOrderParam,
+  token: string
+): Promise<AckResponse> {
+  const config = context.config as Config;
+  const client = context.client as sa.SuperAgent<sa.SuperAgentRequest>;
+  return client
+    .get(config.api.url + config.api.endpoints.onSupport)
     .query(params)
-    .then(res => {
-      return (res.body as AckResponse);
+    .set({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    })
+    .then((res) => {
+      return res.body as AckResponse;
     });
 }
-

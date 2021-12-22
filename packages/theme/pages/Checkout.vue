@@ -6,25 +6,26 @@
           <SfIcon color="var(--c-primary)" size="20px" icon="chevron_left" />
         </span>
       </div>
-      <div>Billing and Shipping</div>
+      <div>Checkout</div>
     </div>
     <div v-if="enableLoader" key="loadingCircle" class="loader-circle">
       <LoadingCircle :enable="enableLoader" />
     </div>
     <div class="details header-push">
       <div class="sub-heading">
-        <div class="p-name" v-e2e="'cart-item'">Items in Cart</div>
+        <div class="p-name" v-e2e="'cart-item'">Items</div>
       </div>
 
-      <div class="provider-head p-0">
-        <!-- <SfImage
+      <!-- to do cleanUp by Ujjwal -->
+      <!-- <div class="provider-head p-0"> -->
+      <!-- <SfImage
             class="back"
             :src="providerGetters.getProviderImages(provider)[0]"
             alt="Vila stripe maxi shirt dress"
             :width="35"
             :height="35"
           /> -->
-        <div class="provide-img">
+      <!-- <div class="provide-img">
           <img
             :src="
               cartGetters.getProviderImage(cartGetters.getBppProvider(cart))
@@ -40,9 +41,9 @@
         </div>
         <div class="text-padding">
           <span class="p-distance"> by </span> {{ cartGetters.getBpp(cart) }}
-        </div>
+        </div> -->
 
-        <!-- <div class="text-padding">
+      <!-- <div class="text-padding">
             <div class="flexy-center">
               <div class="p-name">Abc</div>
               <div class="text-padding">
@@ -51,31 +52,56 @@
               </div>
             </div>
           </div> -->
-      </div>
+      <!-- </div> -->
+      <!-- CLEANUP UPTO THIS EXTENT -->
 
       <div
-        :key="index + 'new'"
-        v-for="(product, index) in cartGetters.getItems(cart)"
-        class="checkout-product"
+        :key="bppId"
+        v-for="(
+          itemsPerBpp, bppId, shipmentNumber
+        ) in cartGetters.getCartItemsPerBppPerProvider(cart)"
+        class="cart-shipment-wrapper"
       >
-        <div class="s-p-image">
-          <SfImage
-            :src="cartGetters.getItemImage(product)"
-            alt="product img"
-            :width="85"
-            :height="90"
-          />
-        </div>
-        <div class="s-p-details">
-          <div class="s-p-name">{{ cartGetters.getItemName(product) }}</div>
-          <div class="s-p-weight">x {{ cartGetters.getItemQty(product) }}</div>
-          <div class="s-p-price">
-            ₹
-            {{
-              cartGetters.getUpdatedPrice(product)
-                ? cartGetters.getUpdatedPrice(product)
-                : cartGetters.getItemPrice(product).regular
-            }}
+        <div
+          v-for="(itemsPerProvider, bppProviderId) in itemsPerBpp"
+          :key="bppProviderId"
+          class="shipment-wrapper"
+        >
+          <div class="shipment-number">Shipment {{ shipmentNumber + 1 }}</div>
+          <div
+            v-for="(item, index) in itemsPerProvider"
+            :key="index"
+            class="item-wrapper"
+          >
+            <div class="s-p-image">
+              <SfImage
+                :src="cartGetters.getItemImage(item)"
+                alt="product img"
+                :width="85"
+                :height="90"
+              />
+            </div>
+            <div class="s-p-details">
+              <div class="s-p-name">{{ cartGetters.getItemName(item) }}</div>
+              <div class="s-p-retailer">
+                sold by
+                {{
+                  providerGetters.getProviderName(
+                    cartGetters.getBppProvider(item)
+                  )
+                }}
+              </div>
+              <div class="s-p-weight">
+                x {{ cartGetters.getItemQty(item).count }}
+              </div>
+              <div class="s-p-price">
+                ₹
+                {{
+                  cartGetters.getItemPrice(item).regular *
+                  cartGetters.getItemQty(item).count
+                }}
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -159,21 +185,57 @@
       <div class="sub-heading">
         <div class="p-name">Payment</div>
       </div>
-      <Card>
-        <CardContent
-          v-for="breakup in cart.quote.breakup"
-          :key="breakup.title"
-          class="flex-space-bw"
-        >
-          <div class="address-text">{{ breakup.title }}</div>
-          <div class="address-text">₹{{ breakup.price.value }}</div>
-        </CardContent>
-        <div><hr class="sf-divider divider" /></div>
-        <CardContent class="flex-space-bw">
-          <div class="address-text bold">Total</div>
-          <div class="address-text bold">₹{{ cart.quote.price.value }}</div>
-        </CardContent>
-      </Card>
+
+      <div>
+        <Card>
+          <SfAccordion>
+            <SfAccordionItem :header="'Subtotal'">
+              <!-- <CardContent > -->
+              <div class="bpp_breakup">
+                <div
+                  :key="bppId"
+                  v-for="(value, bppId) in cartGetters.getQuoteItem(cart)"
+                >
+                  <div
+                    :key="providerId"
+                    v-for="(valuePerProvider, providerId) in value"
+                  >
+                    <div
+                      :key="id"
+                      v-for="(breakup, id) in valuePerProvider.breakup"
+                    >
+                      <CardContent class="flex-space-bw">
+                        <div>{{ breakup.title }}</div>
+                        <div>₹{{ breakup.price.value }}</div>
+                      </CardContent>
+                    </div>
+                    <CardContent class="flex-space-bw">
+                      <div>Subtotal :</div>
+                      <div>₹{{ valuePerProvider.price.value }}</div>
+                    </CardContent>
+                  </div>
+                </div>
+              </div>
+            </SfAccordionItem>
+          </SfAccordion>
+        </Card>
+      </div>
+
+      <div class="order-policy">
+        <div class="sub-heading">
+          <div class="p-name">Order policy</div>
+        </div>
+        <Card>
+          <!-- To redo it after order policy content -->
+          <!-- <CardContent> -->
+          <p class="policy-text">
+            In publishing and graphic design, Lorem ipsum is a placeholder text
+            commonly used to demonstrate the visual form of a document or a
+            typeface without relying on..
+          </p>
+          <!-- </CardContent> -->
+        </Card>
+      </div>
 
       <!-- <div class="sub-heading">
         <div class="p-name">Order Policy</div>
@@ -198,10 +260,10 @@
     </div>
     <Footer
       class="footer-fixed"
-      @buttonClick="paymentProceed"
+      @buttonClick="initOrder"
       :totalPrice="cartGetters.getTotals(cart).total"
       :totalItem="cartGetters.getTotalItems(cart)"
-      :buttonText="'Proceed'"
+      :buttonText="'Proceed To Pay'"
       :buttonEnable="proceedToPay"
     >
       <template v-slot:buttonIcon>
@@ -228,7 +290,6 @@
         :headingText="'Shipping Details'"
         :addressDetails="shippingAddress"
         @getAddress="toggleShippingModal"
-        @initCall="initOrder"
       />
     </ModalSlide>
     <ModalSlide :visible="billingAddressModal" @close="toggleBillingModal">
@@ -238,7 +299,6 @@
         :headingText="'Billing Details'"
         :addressDetails="billingAddress"
         @getAddress="toggleBillingModal"
-        @initCall="initOrder"
       />
     </ModalSlide>
 
@@ -254,6 +314,7 @@ import {
   SfButton,
   SfModal,
   SfCheckbox,
+  SfAccordion,
   SfImage,
   SfInput,
   SfIcon,
@@ -261,6 +322,7 @@ import {
 import ModalSlide from '~/components/ModalSlide.vue';
 import AddressInputs from '~/components/AddressInputs.vue';
 import LoadingCircle from '~/components/LoadingCircle';
+import SfAccordionItem from '~/components/Accordion.vue';
 import Footer from '~/components/Footer.vue';
 import {
   useCart,
@@ -279,10 +341,11 @@ import CardContent from '~/components/CardContent.vue';
 
 import ProductCard from '~/components/ProductCard';
 import AddressCard from '~/components/AddressCard';
-import { createOrderRequest } from '../helpers/helpers';
+import helpers, { createOrderRequest } from '../helpers/helpers';
 /* eslint camelcase: 0 */
 
 export default {
+  middleware: 'auth',
   name: 'Checkout',
   components: {
     SfButton,
@@ -296,6 +359,8 @@ export default {
     SfInput,
     Card,
     SfImage,
+    SfAccordion,
+    SfAccordionItem,
     CardContent,
     ProductCard,
     AddressInputs,
@@ -315,12 +380,12 @@ export default {
     const { cart, load } = useCart();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     // const { selectedLocation } = useUiState();
-
     const {
       // polling ,
       pollResults: onInitResult,
       poll: onInitOrder,
       init,
+      stopPolling,
     } = useInitOrder();
 
     const { init: getOrderPolicy } = useOrderPolicy();
@@ -332,14 +397,12 @@ export default {
       setBillingAddress,
       setShippingAddress,
     } = useAddress();
-    console.log(getShippingAddress());
     const shippingAddress = ref(getShippingAddress());
 
     const billingAddress = ref(getBillngAddress());
     const transactionId = ref('');
 
     const isShippingAddressFilled = computed(() => {
-      // debugger;
       return (
         shippingAddress.value.name !== '' &&
         shippingAddress.value.mobile !== '' &&
@@ -373,10 +436,6 @@ export default {
     const goBack = () => context.root.$router.back();
 
     const proceedToPay = computed(() => {
-      console.log(
-        isShippingAddressFilled.value &&
-          (isBillingAddressFilled.value || shippingAsBilling.value)
-      );
       return (
         isShippingAddressFilled.value &&
         (isBillingAddressFilled.value || shippingAsBilling.value)
@@ -393,41 +452,88 @@ export default {
         shippingAsBilling.value,
         '12.9063433,77.5856825'
       );
-      const response = await init(params);
-      console.log(response);
-      await onInitOrder({
-        // eslint-disable-next-line camelcase
-        messageId: response.context.message_id,
-      });
-      console.log(onInitResult);
-    };
-    const paymentProceed = () => {
-      context.root.$router.push({
-        path: '/payment',
-        query: {
-          id: transactionId.value,
-        },
-      });
+      const response = await init(params, localStorage.getItem('token'));
+
+      if (response) {
+        let messageIds = '';
+        response.forEach((res) => {
+          messageIds += res.context?.message_id + ',';
+        });
+        messageIds = messageIds.substring(0, messageIds.length - 1);
+        await onInitOrder(
+          {
+            // eslint-disable-next-line camelcase
+            messageIds: messageIds,
+          },
+          localStorage.getItem('token')
+        );
+      } else {
+        enableLoader.value = false;
+      }
     };
 
     watch(
       () => onInitResult.value,
-      (newValue) => {
-        if (newValue?.message?.order) {
-          cart.value.quote = newValue.message.order.quote;
+      (onInitResponse) => {
+        if (!onInitResponse) {
+          return;
+        }
+        if (helpers.shouldStopPooling(onInitResponse, 'order')) {
+          stopPolling();
+        }
+        const initOrderPerBppPerProvider = {};
+        // eslint-disable-next-line no-prototype-builtins
+        if (onInitResponse.every((item) => item.hasOwnProperty('message'))) {
+          onInitResponse.forEach((initResponse) => {
+            const { order: currentOnInitData } = initResponse.message;
+            if (!currentOnInitData) {
+              return;
+            }
+
+            const { bpp_id: bppId } = initResponse.context;
+            const { id: providerId } = currentOnInitData.provider;
+            if (cart.value.quoteItem[bppId]) {
+              cart.value.quoteItem[bppId][providerId] = {
+                ...currentOnInitData.quote,
+              };
+            } else {
+              cart.value.quoteItem[bppId] = {
+                [providerId]: { ...currentOnInitData.quote },
+              };
+            }
+
+            if (initOrderPerBppPerProvider[bppId]) {
+              initOrderPerBppPerProvider[bppId][providerId] = {
+                ...currentOnInitData,
+              };
+            } else {
+              initOrderPerBppPerProvider[bppId] = {
+                [providerId]: { ...currentOnInitData },
+              };
+            }
+          });
+
+          // TODO( To provide BPP Id too in the object once we start getting it)
           localStorage.setItem(
             'orderProgress',
             JSON.stringify({
-              cart: cart.value,
-              status: 0,
               shippingAddress: shippingAddress.value,
               billingAddress: billingAddress.value,
               shippingAsBilling: shippingAsBilling.value,
-              initOrder: onInitResult.value.message.order,
               transactionId: transactionId.value,
+              status: 0,
+              initOrder: initOrderPerBppPerProvider,
+              cart: cart.value,
             })
           );
-          enableLoader.value = false;
+
+          localStorage.removeItem('transactionId');
+          context.root.$router.push({
+            path: '/payment',
+            query: {
+              id: transactionId.value,
+            },
+          });
         }
       }
     );
@@ -437,7 +543,7 @@ export default {
       transactionId.value = localStorage.getItem('transactionId');
       getOrderPolicy({
         context: {
-          bpp_id: cart.value.bpp.id,
+          bpp_id: cart.value.items[0].bpp.id,
         },
       }).then((res) => {
         policy.value = res.message;
@@ -463,7 +569,6 @@ export default {
       enableLoader,
       initOrder,
       policy,
-      paymentProceed,
     };
   },
 };
@@ -507,8 +612,8 @@ export default {
 
 .s-p-weight {
   margin-top: 6px;
-  font-size: 14px;
-  color: #8a8d8e;
+  font-size: 15px;
+  font-weight: 700;
 }
 
 .flex-space-bw {
@@ -563,6 +668,10 @@ export default {
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.07);
 }
 
+.policy-text {
+  font-size: 13px;
+}
+
 .p-name {
   font-size: 16px;
   font-weight: 600;
@@ -575,23 +684,40 @@ export default {
     margin: 0 auto;
   }
 }
-.checkout-product:first-child {
+
+.cart-shipment-wrapper {
+  margin-bottom: 30px;
+}
+
+.shipment-number {
+  font-weight: bold;
+  font-size: 18px;
+  line-height: 18px;
+}
+
+.shipment-wrapper {
+  margin-top: 20px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+}
+
+.shipment-wrapper:first-child {
   border-top: 0px solid rgba(0, 0, 0, 0.3);
 }
-.checkout-product {
+
+.item-wrapper {
   display: flex;
-  margin-top: 15px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.3);
-  padding-bottom: 15px;
-  &:first-child(2) {
-    border-top: 0 !important;
-  }
+  margin: 20px 0;
+
   .s-p-image {
     margin-right: 25px;
   }
   .s-p-name {
+    font-weight: 700;
+    font-size: 15px;
+  }
+  .s-p-retailer {
+    padding-top: 5px;
     font-size: 11px;
-    color: #000;
   }
   .s-p-price {
     font-size: 16px;
@@ -599,6 +725,7 @@ export default {
     color: #f37a20;
   }
 }
+
 .checkout {
   @include for-desktop {
     display: flex;
@@ -626,7 +753,12 @@ export default {
     }
   }
 }
-
+.flex-space-bw {
+  justify-content: space-between;
+}
+.bpp_breakup {
+  border-bottom: 5px solid rgba(0, 0, 0, 0.3);
+}
 .loader-circle {
   width: 100%;
   position: fixed;
@@ -634,5 +766,9 @@ export default {
   // top: 130px;
   left: 0;
   height: 95vh;
+}
+
+.order-policy {
+  margin-bottom: 30px;
 }
 </style>

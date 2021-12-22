@@ -1,7 +1,7 @@
 <template>
   <div id="payment">
     <div class="top-bar header-top">
-      <div @click="goBack" class="sf-chevron--left sf-chevron icon_back">
+      <div class="sf-chevron--left sf-chevron icon_back">
         <span class="sf-search-bar__icon">
           <SfIcon color="var(--c-primary)" size="20px" icon="chevron_left" />
         </span>
@@ -16,23 +16,30 @@
         <div class="p-name">Payment</div>
       </div>
       <Card v-if="order.cart">
-        <CardContent
-          v-for="breakup in order.cart.quote.breakup"
-          :key="breakup.title"
-          class="flex-space-bw"
-        >
-          <div class="address-text">{{ breakup.title }}</div>
-          <div class="address-text">
-            ₹{{ parseFloat(breakup.price.value).toFixed(2) }}
+        <div v-for="(value, bppId) in order.cart.quoteItem" :key="bppId">
+          <div
+            :key="providerId"
+            v-for="(valuePerProvider, providerId) in value"
+            class="address-text bold"
+          >
+            <div :key="id" v-for="(breakup, id) in valuePerProvider.breakup">
+              <CardContent class="flex-space-bw">
+                <div class="address-text">
+                  {{ breakup.title }}
+                </div>
+                <div class="address-text">
+                  ₹{{ parseFloat(breakup.price.value).toFixed(2) }}
+                </div>
+              </CardContent>
+            </div>
+            <div><hr class="sf-divider divider" /></div>
+            <CardContent class="flex-space-bw">
+              <div>Subtotal :</div>
+              ₹{{ valuePerProvider.price.value }}
+            </CardContent>
           </div>
-        </CardContent>
+        </div>
         <div><hr class="sf-divider divider" /></div>
-        <CardContent class="flex-space-bw">
-          <div class="address-text bold">Total</div>
-          <div class="address-text bold">
-            ₹{{ order.cart.quote.price.value }}
-          </div>
-        </CardContent>
       </Card>
       <div class="sub-heading">
         <div class="p-name">Other</div>
@@ -87,16 +94,16 @@ import { useUiState } from '~/composables';
 import { ref, computed, onBeforeMount, watch } from '@vue/composition-api';
 
 import LoadingCircle from '~/components/LoadingCircle';
-// import helpers from '../helpers/helpers';
-import { useConfirmOrder, cartGetters } from '@vue-storefront/beckn';
+import { useCart, useConfirmOrder, cartGetters } from '@vue-storefront/beckn';
 
 import Card from '~/components/Card.vue';
 
 import Footer from '~/components/Footer.vue';
 import CardContent from '~/components/CardContent.vue';
-import { createConfirmOrderRequest } from '../helpers/helpers';
+import helpers, { createConfirmOrderRequest } from '../helpers/helpers';
 const { toggleCartSidebar } = useUiState();
 export default {
+  middleware: 'auth',
   name: 'Payment',
   components: {
     SfButton,
@@ -105,12 +112,12 @@ export default {
     CardContent,
     SfRadio,
     Footer,
-    LoadingCircle
+    LoadingCircle,
   },
   methods: {
     openCart() {
       toggleCartSidebar();
-    }
+    },
   },
   setup(_, context) {
     const paymentMethod = ref('');
@@ -120,7 +127,9 @@ export default {
       return order.value?.transactionId === context.root.$route.query.id;
     });
 
-    const { init, poll, pollResults } = useConfirmOrder('confirm-order');
+    const { clear } = useCart();
+    const { init, poll, pollResults, stopPolling, polling } =
+      useConfirmOrder('confirm-order');
 
     const changePaymentMethod = (value) => {
       paymentMethod.value = value;
@@ -140,37 +149,62 @@ export default {
         order.value.billingAddress,
         order.value.shippingAsBilling,
         '12.9063433,77.5856825',
-        {
-          amount: cartGetters.getTotals(order.value.cart).total,
-          status: 'PAID',
-          transactionId: order.value.transactionId
-        }
+        order.value.initOrder
       );
-      const response = await init(params);
-      await poll({ messageId: response.context.message_id });
+      const confirmResponses = await init(
+        params,
+        localStorage.getItem('token')
+      );
+
+      let messageIds = '';
+      confirmResponses.forEach((confirmResponse) => {
+        messageIds += confirmResponse.context?.message_id + ',';
+      });
+      messageIds = messageIds.substring(0, messageIds.length - 1);
+      await poll({ messageIds: messageIds }, localStorage.getItem('token'));
     };
 
-    const goBack = () => context.root.$router.back();
+    const setOrderHistory = (onConfirmResponse) => {
+      // Next Line: To be removed after orderData flow is set
+      order.value.order = onConfirmResponse[0].message.order;
+      const parentOrderId = helpers.generateUniqueOrderId();
+      const orderData = {};
+
+      onConfirmResponse.forEach((onConfirmData) => {
+        const currentOrderData = onConfirmData.message?.order;
+        currentOrderData.bppId = onConfirmData.context?.bpp_id;
+        if (currentOrderData) {
+          orderData[currentOrderData.id] = currentOrderData;
+        }
+      });
+
+      order.value.parentOrderId = parentOrderId;
+      order.value.orderData = orderData;
+      const orderHistory =
+        JSON.parse(localStorage.getItem('orderHistory')) ?? [];
+      orderHistory.push(order.value);
+      localStorage.setItem('orderHistory', JSON.stringify(orderHistory));
+      localStorage.removeItem('orderProgress');
+      localStorage.removeItem('transactionId');
+
+      context.root.$router.push({
+        path: '/ordersuccess',
+        query: {
+          id: parentOrderId,
+        },
+      });
+    };
 
     watch(
       () => pollResults.value,
-      (newValue) => {
-        if (newValue?.message?.order) {
-          order.value.order = newValue?.message?.order;
+      (onConfirmResponse) => {
+        if (!polling.value || !onConfirmResponse) {
+          return;
+        }
 
-          const orderHistory =
-            JSON.parse(localStorage.getItem('orderHistory')) ?? [];
-          orderHistory.push(order.value);
-          localStorage.setItem('orderHistory', JSON.stringify(orderHistory));
-          localStorage.removeItem('orderProgress');
-          localStorage.removeItem('transactionId');
-
-          context.root.$router.push({
-            path: '/ordersuccess',
-            query: {
-              id: order.value.transactionId
-            }
-          });
+        if (helpers.shouldStopPooling(onConfirmResponse, 'order')) {
+          stopPolling();
+          setOrderHistory(onConfirmResponse);
         }
       }
     );
@@ -181,33 +215,22 @@ export default {
         context.root.$router.push('/');
       }
       console.log(order.value);
+      clear();
     });
     return {
       paymentMethod,
       changePaymentMethod,
       order,
       cartGetters,
-      goBack,
       isPayConfirmActive,
       proceedToConfirm,
       isTransactionMatching,
-      enableLoader
+      enableLoader,
     };
-  }
+  },
 };
 </script>
 <style lang="scss" scoped>
-// .header-top{
-//     position: fixed;
-//     width: 100%;
-//     top: 45px;
-//     z-index: 9;
-// }
-// .header-push{
-//     top: 107px;
-//     position: relative;
-//     padding-bottom: 107px;
-// }
 .top-bar {
   align-items: center;
   display: flex;

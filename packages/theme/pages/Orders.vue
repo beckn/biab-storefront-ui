@@ -15,9 +15,9 @@
       <LoadingCircle :enable="enableLoader" />
     </div>
     <div v-else class="details">
-      <div :key="order.transactionId" v-for="order in orders">
+      <div :key="order.parentOrderId" v-for="order in orders">
         <CardContent>
-          <div @click="goToOrder(order.transactionId)" class="order-details">
+          <div @click="goToOrder(order.parentOrderId)" class="order-details">
             <div class="order-icon">
               <div class="address-bar-icon">
                 <svg
@@ -37,18 +37,27 @@
               </div>
             </div>
             <div class="order color-def">
-              <div class="order-id">Order ID {{ order.order.id }}</div>
-              <div class="order-status">{{ order.order.state }}</div>
+              <div class="order-id">Order ID {{ order.parentOrderId }}</div>
+              <!-- Hardcoding to use first orderData. To be changed when we get more details on this page -->
+              <div class="order-status">
+                {{ order.orderData[Object.keys(order.orderData)[0]].state }}
+              </div>
               <div class="order-date">
                 {{
-                  new Date(Date.parse(order.order.created_at)).toDateString()
+                  new Date(
+                    Date.parse(
+                      order.orderData[Object.keys(order.orderData)[0]]
+                        .created_at
+                    )
+                  ).toDateString()
                 }}
               </div>
             </div>
             <div class="order-price">
               ₹
               {{
-                order.initOrder.payment.params.amount
+                order.orderData[Object.keys(order.orderData)[0]].payment.params
+                  .amount
               }}
             </div>
           </div>
@@ -68,12 +77,13 @@ import LoadingCircle from '~/components/LoadingCircle';
 import CardContent from '~/components/CardContent.vue';
 
 export default {
+  middleware: 'auth',
   name: 'Orders',
   components: {
     SfButton,
     SfIcon,
     CardContent,
-    LoadingCircle
+    LoadingCircle,
   },
   setup(_, context) {
     const orders = ref([]);
@@ -85,12 +95,12 @@ export default {
       enableLoader.value = false;
     });
 
-    const goToOrder = (transactionId) => {
+    const goToOrder = (parentOrderId) => {
       context.root.$router.push({
         path: '/orderdetails',
         query: {
-          id: transactionId
-        }
+          id: parentOrderId,
+        },
       });
     };
 
@@ -99,9 +109,9 @@ export default {
       orders,
       enableLoader,
       goToOrder,
-      goBack
+      goBack,
     };
-  }
+  },
 };
 </script>
 <style lang="scss" scoped>

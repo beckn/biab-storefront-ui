@@ -21,6 +21,7 @@
 import { SfIcon, SfRadio } from '@storefront-ui/vue';
 
 export default {
+  middleware: 'auth',
   name: 'OrderCancelled',
   components: {
     SfIcon,

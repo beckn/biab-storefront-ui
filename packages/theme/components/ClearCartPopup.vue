@@ -1,3 +1,5 @@
+<!-- File not used since functionality is removed.
+     If we are using again then need changes to the cart object as it is now an array -->
 <template>
   <div v-if="show" class="clear-cart">
     <SfOverlay :visible="show"></SfOverlay>
@@ -12,7 +14,9 @@
         Your cart has items from {{ cart.bppProvider.descriptor.name }} Mart.
       </div>
       <div class="text-detail">Do you wish to clear cart and add</div>
-      <div class="text-detail">items from {{ cart.newProvider.descriptor.name }} mart?</div>
+      <div class="text-detail">
+        items from {{ cart.newProvider.descriptor.name }} mart?
+      </div>
       <div class="button-container">
         <button
           class="sf-button sf-button--full-width button-s no"
@@ -32,7 +36,7 @@
 </template>
 <script>
 import { SfIcon, SfOverlay, SfImage } from '@storefront-ui/vue';
-import { ref, watch } from '@vue/composition-api';
+import { ref } from '@vue/composition-api';
 import { useCart } from '@vue-storefront/beckn';
 import { useUiState } from '~/composables';
 
@@ -47,21 +51,28 @@ export default {
     const { cart, addItem } = useCart();
     const show = ref(false);
     const { changeClearCart } = useUiState();
-    watch(
-      () => cart?.value?.newProvider,
-      () => {
-        if (cart.value.bppProvider?.id !== cart.value.newProvider?.id) {
-          show.value = true;
-          changeClearCart(true);
-        }
-      }
-    );
+
+    /* Commenting this watcher which shows the Clear Cart Popup when an item with new bpp provider is added to cart as we dont want this functionality currently */
+    // watch(
+    //   () => cart?.value?.newProvider,
+    //   () => {
+    //     if (cart.value.bppProvider?.id !== cart.value.newProvider?.id) {
+    //       show.value = true;
+    //       changeClearCart(true);
+    //     }
+    //   }
+    // );
 
     const onClickYes = () => {
       addItem({
         product: cart.value.newProduct,
         quantity: cart.value.newProduct.quantity,
-        customQuery: { bpp: cart.value.newBpp, bppProvider: cart.value.newProvider, clearCart: true, locations: cart.value.locations }
+        customQuery: {
+          bpp: cart.value.newBpp,
+          bppProvider: cart.value.newProvider,
+          clearCart: true,
+          locations: cart.value.locations
+        }
       });
       changeClearCart(false);
       show.value = false;
