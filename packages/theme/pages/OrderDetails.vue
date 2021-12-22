@@ -376,7 +376,7 @@ import {
   SfAccordion,
   SfImage,
   SfInput,
-  SfIcon,
+  SfIcon
 } from '@storefront-ui/vue';
 import ModalSlide from '~/components/ModalSlide.vue';
 import LoadingCircle from '~/components/LoadingCircle';
@@ -388,14 +388,14 @@ import {
   providerGetters,
   useTrack,
   useOrderStatus,
-  useSupport,
+  useSupport
 } from '@vue-storefront/beckn';
 
 import {
   ref,
   onBeforeMount,
   computed,
-  onBeforeUnmount,
+  onBeforeUnmount
 } from '@vue/composition-api';
 import Card from '~/components/Card.vue';
 import CardContent from '~/components/CardContent.vue';
@@ -423,7 +423,7 @@ export default {
     SfAccordionItem,
     SfIcon,
     LoadingCircle,
-    AddressCard,
+    AddressCard
   },
   setup(_, context) {
     // const isThankYou = computed(() => currentStep.value === 'thank-you');
@@ -434,19 +434,19 @@ export default {
     const {
       poll: onTrack,
       init: track,
-      pollResults: trackResult,
+      pollResults: trackResult
     } = useTrack('track');
     const {
       poll: onSupport,
       init: support,
-      pollResults: supportResult,
+      pollResults: supportResult
     } = useSupport('support');
 
     const {
       poll: onStatus,
       init: status,
       pollResults: statusResult,
-      stopPolling: stopStatusPolling,
+      stopPolling: stopStatusPolling
     } = useOrderStatus('status');
     const isTrackingAvailable = computed(() => {
       return trackResult.value?.message?.tracking?.url;
@@ -467,12 +467,12 @@ export default {
       null,
       null,
       null,
-      null,
+      null
     ];
     const fulfillmentSteps = [
       { status: 'Items Packed', time: 'May 2021, 2021 12:40 PM' },
       { status: 'Delivery agent assigned', time: 'May 2021, 2021 12:40 PM' },
-      { status: 'Agent enroute to store', time: 'May 2021, 2021 12:40 PM' },
+      { status: 'Agent enroute to store', time: 'May 2021, 2021 12:40 PM' }
     ];
     const openSupportModal = ref(false);
     const openTrackModal = ref(false);
@@ -486,12 +486,12 @@ export default {
           // eslint-disable-next-line camelcase
           transaction_id: order.value.transactionId,
           // eslint-disable-next-line camelcase
-          bpp_id: order.value.cart.bpp.id,
+          bpp_id: order.value.cart.bpp.id
         },
         message: {
           // eslint-disable-next-line camelcase
-          ref_id: order.value.order.id,
-        },
+          ref_id: order.value.order.id
+        }
       };
 
       try {
@@ -508,12 +508,12 @@ export default {
           // eslint-disable-next-line camelcase
           transaction_id: order.value.transactionId,
           // eslint-disable-next-line camelcase
-          bpp_id: order.value.cart.bpp.id,
+          bpp_id: order.value.cart.bpp.id
         },
         message: {
           // eslint-disable-next-line camelcase
-          order_id: order.value.order.id,
-        },
+          order_id: order.value.order.id
+        }
       };
 
       try {
@@ -530,12 +530,12 @@ export default {
           // eslint-disable-next-line camelcase
           transaction_id: order.value.transactionId,
           // eslint-disable-next-line camelcase
-          bpp_id: order.value.cart.bpp.id,
+          bpp_id: order.value.cart.bpp.id
         },
         message: {
           // eslint-disable-next-line camelcase
-          order_id: order.value.order.id,
-        },
+          order_id: order.value.order.id
+        }
       };
 
       try {
@@ -583,8 +583,9 @@ export default {
       openWindow,
       isFulfillmentAvailable,
       isSupportAvailable,
+      fulfillmentData
     };
-  },
+  }
 };
 </script>
 

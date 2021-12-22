@@ -54,7 +54,7 @@
     </div>
     <Footer
       class="footer-fixed"
-      :buttonText="'Pay & Confirm'"
+      :buttonText="'Confirm'"
       :buttonEnable="isPayConfirmActive"
       :totalPrice="parseFloat(order.cart.quote.price.value)"
       :totalItem="cartGetters.getTotalItems(order.cart)"
