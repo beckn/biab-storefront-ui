@@ -1,22 +1,33 @@
 <template>
   <div id="error">
-    <SfImage class="image" :src="require('@storefront-ui/shared/icons/error.svg')" alt="something went wrong" />
-    <SfHeading title="Something went wrong" :level="2" description="please go back and try again" class="heading sf-heading--no-underline" />
+    <SfImage
+      class="image"
+      :src="require('@storefront-ui/shared/icons/error.svg')"
+      alt="something went wrong"
+    />
+    <SfHeading
+      title="Something went wrong"
+      :level="2"
+      description="please go back and try again"
+      class="heading sf-heading--no-underline"
+    />
     <div class="actions">
       <SfButton class="sf-button--full-width actions__button" @click="goHome">
         Return home
       </SfButton>
-      <SfButton @click="goBack" class="sf-button--full-width sf-button--text actions__button">
-        Back
+
+      <SfButton class="sf-button--full-width actions__button">
+        <GoBackLink />
       </SfButton>
     </div>
   </div>
 </template>
 <script>
 import { SfButton, SfImage, SfHeading } from '@storefront-ui/vue';
+import GoBackLink from '../components/GoBackLink.vue';
 export default {
   name: 'Error',
-  components: { SfButton, SfImage, SfHeading },
+  components: { SfButton, SfImage, SfHeading, GoBackLink },
   setup(_, context) {
     const goHome = () => context.root.$router.push('/');
 

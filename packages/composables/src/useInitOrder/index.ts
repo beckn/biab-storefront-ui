@@ -17,12 +17,13 @@ const factoryParams = {
   },
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  continuePolling: (_, { oldResults, newResults }) => {
+ continuePolling: (_, { oldResults, newResults }) => {
     if (newResults.map((newResult) => newResult.message?.order)) {
       return false;
     }
     return true;
   },
+  
   init: async (context: Context, { params, token }) => {
     const ackResponse: AckResponse = await context.$beckn.api.initializeOrder(
       params,
