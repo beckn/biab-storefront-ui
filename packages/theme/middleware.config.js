@@ -16,12 +16,12 @@ module.exports = {
             onConfirmOrder: '/v2/on_confirm_order',
             cancel: '/v1/cancel',
             onCancel: '/v1/on_cancel',
-            orderStatus: '/v1/order_status',
-            onOrderStatus: '/v1/on_order_status',
-            track: '/v1/track',
-            onTrack: '/v1/on_track',
-            support: '/v1/get_support',
-            onSupport: '/v1/on_support',
+            orderStatus: '/v2/order_status',
+            onOrderStatus: '/v2/on_order_status',
+            track: '/v2/track',
+            onTrack: '/v2/on_track',
+            support: '/v2/get_support',
+            onSupport: '/v2/on_support',
             orderPolicy: '/v0/get_order_policy'
           }
         }

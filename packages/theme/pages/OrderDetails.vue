@@ -237,47 +237,34 @@
       <Card>
         <SfAccordion>
           <SfAccordionItem :header="'Payment'">
-            <div :key="bppId" v-for="(value, bppId) in order.cart.quoteItem">
-              <div
-                :key="providerId"
-                v-for="(valuePerProvider, providerId) in value"
-              >
-                <div
-                  :key="id"
-                  v-for="(breakup, id) in valuePerProvider.breakup"
-                >
-                  <CardContent class="flex-space-bw">
-                    <div class="address-text">{{ breakup.title }}</div>
-                    <div class="address-text">₹{{ breakup.price.value }}</div>
-                  </CardContent>
-                  <div><hr class="sf-divider divider" /></div>
-
-                  <CardContent class="flex-space-bw">
-                    <div class="address-text bold">Total</div>
-                    <div class="address-text bold">
-                      ₹{{ valuePerProvider.price.value }}
-                    </div>
-                  </CardContent>
-                  <CardContent class="flex-space-bw">
-                    <div class="address-text">Method</div>
-                    <div class="address-text">{{ order.paymentMethod }}</div>
-                  </CardContent>
-                  <CardContent class="flex-space-bw">
-                    <div class="address-text">Status</div>
-                    <div class="address-text">
-                      {{ order.order.payment.status }}
-                    </div>
-                  </CardContent>
-                  <div><hr /></div>
-                  <CardContent v-if="false" class="flex-space-bw">
-                    <div class="address-text">Transaction Id</div>
-                    <div class="address-text">
-                      <!-- {{ order.order.payment.params.transaction_id }} -->
-                    </div>
-                  </CardContent>
-                </div>
+            <div :key="orderId" v-for="(value, orderId) in order.orderData">
+              <div :key="id" v-for="(breakup, id) in value.quote.breakup">
+                <CardContent class="flex-space-bw">
+                  <div class="address-text">{{ breakup.title }}</div>
+                  <div class="address-text-value">
+                    ₹{{ breakup.price.value }}
+                  </div>
+                </CardContent>
               </div>
+              <div><hr class="sf-divider divider" /></div>
+              <CardContent class="flex-space-bw">
+                <div class="address-text">Total</div>
+                <div class="address-text-value">
+                  ₹{{ value.quote.price.value }}
+                </div>
+              </CardContent>
+              <CardContent class="flex-space-bw">
+                <div class="address-text">Status</div>
+                <div class="address-text-value">
+                  {{ value.payment.status }}
+                </div>
+              </CardContent>
             </div>
+            <CardContent class="flex-space-bw">
+              <div class="address-text">Method</div>
+              <div class="address-text-value">{{ order.paymentMethod }}</div>
+            </CardContent>
+            <div><hr /></div>
           </SfAccordionItem>
         </SfAccordion>
       </Card>
@@ -423,52 +410,57 @@
               <span>Shipment 1</span>
             </div>
             <div class="address-text order-id">
-              <span>Id - {{selectMoreItemsId}}</span>
+              <span>Id - {{ selectMoreItemsId }}</span>
             </div>
           </CardContent>
           <div v-if="selectMoreItemsId !== null">
-               <CardContent  class="more-items-flex">
-            <div v-for="(product,index) in getMoreItems(order,selectMoreItemsId)" :key="index" class="item-wrapper">
-            <div class="s-p-image">
-              <SfImage
-                :src="cartGetters.getItemImage(product)"
-                alt="product img"
-                :width="85"
-                :height="90"
-              />
-            </div>
-            <div class="s-p-details">
-              <div class="s-p-name">{{ cartGetters.getItemName(product) }}</div>
-              <div class="s-p-retailer">
-                sold by
-                {{
-                  providerGetters.getProviderName(
-                    cartGetters.getBppProvider(product)
-                  )
-                }}
+            <CardContent class="more-items-flex">
+              <div
+                v-for="(product, index) in getMoreItems(
+                  order,
+                  selectMoreItemsId
+                )"
+                :key="index"
+                class="item-wrapper"
+              >
+                <div class="s-p-image">
+                  <SfImage
+                    :src="cartGetters.getItemImage(product)"
+                    alt="product img"
+                    :width="85"
+                    :height="90"
+                  />
+                </div>
+                <div class="s-p-details">
+                  <div class="s-p-name">
+                    {{ cartGetters.getItemName(product) }}
+                  </div>
+                  <div class="s-p-retailer">
+                    sold by
+                    {{
+                      providerGetters.getProviderName(
+                        cartGetters.getBppProvider(product)
+                      )
+                    }}
+                  </div>
+                  <div class="s-p-weight">x {{ product.quantity }}</div>
+                  <div class="s-p-price">
+                    ₹
+                    {{
+                      cartGetters.getItemPrice(product).regular *
+                      product.quantity
+                    }}
+                  </div>
+                </div>
               </div>
-              <div class="s-p-weight">
-                x {{ product.quantity }}
-              </div>
-              <div class="s-p-price">
-                ₹
-                {{log( "regular",cartGetters.getItemPrice(product).regular)}}
-                {{log("count",cartGetters.getItemQty(product).count)}}
-                {{
-                  cartGetters.getItemPrice(product).regular *
-                  product.quantity
-                }}
-              </div>
-            </div>
-            </div>
-               </CardContent>
+            </CardContent>
           </div>
-           <button
-        class="sf-button color-primary support-btns"
-        @click="openItemsModal = false;"
-      >
-        <div class="f-btn-text">Okay</div>
-      </button>
+          <button
+            class="sf-button color-primary support-btns"
+            @click="openItemsModal = false"
+          >
+            <div class="f-btn-text">Okay</div>
+          </button>
         </div>
       </ModalSlide>
     </div>
@@ -866,6 +858,13 @@ export default {
 .footer {
   position: fixed;
   bottom: 0;
+}
+.address-text {
+  font-weight: 600;
+}
+
+.address-text-value {
+  font-weight: 400;
 }
 
 .icon_back {
