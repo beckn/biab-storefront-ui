@@ -17,12 +17,12 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v1
         with:
-          node-version: "12"
+          node-version: '12'
 
       - name: Get cached dependencies
         uses: actions/cache@v2
         with:
-          path: "**/node_modules"
+          path: '**/node_modules'
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
 
       - name: Install dependencies
@@ -40,16 +40,19 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v1
         with:
-          node-version: "12"
+          node-version: '12'
 
       - name: Get cached dependencies
         uses: actions/cache@v2
         with:
-          path: "**/node_modules"
+          path: '**/node_modules'
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
 
       - name: Clean yarn cache
         run: yarn cache clean
+
+      - name: Install dependencies
+        run: yarn install
 
       - name: Build api-client
         run: yarn build:api-client
