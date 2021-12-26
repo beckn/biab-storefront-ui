@@ -66,6 +66,7 @@
         type="button"
         @click="saveDetails"
         style="width: 100%"
+        :disabled="!buttonEnable"
         >{{ buttonText }}</SfButton
       >
     </div>
@@ -100,6 +101,7 @@ export default {
         address: '',
       },
     },
+    buttonEnable: { type: Boolean, default: true },
   },
   setup(props, { emit }) {
     const address = ref(props.addressDetails);

@@ -1,7 +1,7 @@
 <template>
   <div id="payment">
     <div class="top-bar header-top">
-      <div class="sf-chevron--left sf-chevron icon_back">
+      <div @click="goBack" class="sf-chevron--left sf-chevron icon_back">
         <span class="sf-search-bar__icon">
           <SfIcon color="var(--c-primary)" size="20px" icon="chevron_left" />
         </span>
@@ -61,7 +61,7 @@
     </div>
     <Footer
       class="footer-fixed"
-      :buttonText="'Pay & Confirm'"
+      :buttonText="'Confirm'"
       :buttonEnable="isPayConfirmActive"
       :totalPrice="parseFloat(order.cart.quote.price.value)"
       :totalItem="cartGetters.getTotalItems(order.cart)"
@@ -195,6 +195,8 @@ export default {
       });
     };
 
+    const goBack = () => context.root.$router.back();
+
     watch(
       () => pollResults.value,
       (onConfirmResponse) => {
@@ -226,6 +228,7 @@ export default {
       proceedToConfirm,
       isTransactionMatching,
       enableLoader,
+      goBack,
     };
   },
 };
