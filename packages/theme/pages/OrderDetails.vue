@@ -676,11 +676,15 @@ export default {
         order.value,
         'ref_id'
       );
-      const response = await support(params, localStorage.getItem('token'));
-      await onSupport(
-        { messageIds: helpers.getMessageIdsFromResponse(response) },
-        localStorage.getItem('token')
-      );
+      try {
+        const response = await support(params, localStorage.getItem('token'));
+        await onSupport(
+          { messageIds: helpers.getMessageIdsFromResponse(response) },
+          localStorage.getItem('token')
+        );
+      } catch (error) {
+        console.log('Error calling support apis - ', error);
+      }
     };
 
     const callStatus = async () => {
@@ -688,11 +692,15 @@ export default {
         order.value,
         'order_id'
       );
-      const response = await status(params, localStorage.getItem('token'));
-      await onStatus(
-        { messageIds: helpers.getMessageIdsFromResponse(response) },
-        localStorage.getItem('token')
-      );
+      try {
+        const response = await status(params, localStorage.getItem('token'));
+        await onStatus(
+          { messageIds: helpers.getMessageIdsFromResponse(response) },
+          localStorage.getItem('token')
+        );
+      } catch (error) {
+        console.log('Error calling track apis - ', error);
+      }
     };
 
     const callTrack = async () => {
@@ -700,11 +708,15 @@ export default {
         order.value,
         'order_id'
       );
-      const response = await track(params, localStorage.getItem('token'));
-      await onTrack(
-        { messageIds: helpers.getMessageIdsFromResponse(response) },
-        localStorage.getItem('token')
-      );
+      try {
+        const response = await track(params, localStorage.getItem('token'));
+        await onTrack(
+          { messageIds: helpers.getMessageIdsFromResponse(response) },
+          localStorage.getItem('token')
+        );
+      } catch (error) {
+        console.log('Error calling track apis - ', error);
+      }
     };
     onBeforeMount(async () => {
       const orders = JSON.parse(localStorage.getItem('orderHistory')) ?? [];

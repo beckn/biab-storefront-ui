@@ -6,7 +6,7 @@
           <SfIcon color="var(--c-primary)" size="20px" icon="chevron_left" />
         </span>
       </div>
-      <div>Checkout</div>
+      <div>Billing and Shipping</div>
     </div>
     <div v-if="enableLoader" key="loadingCircle" class="loader-circle">
       <LoadingCircle :enable="enableLoader" />
@@ -260,10 +260,10 @@
     </div>
     <Footer
       class="footer-fixed"
-      @buttonClick="initOrder"
+      @buttonClick="paymentProceed"
       :totalPrice="cartGetters.getTotals(cart).total"
       :totalItem="cartGetters.getTotalItems(cart)"
-      :buttonText="'Proceed To Pay'"
+      :buttonText="'Proceed'"
       :buttonEnable="proceedToPay"
     >
       <template v-slot:buttonIcon>
@@ -290,15 +290,18 @@
         :headingText="'Shipping Details'"
         :addressDetails="shippingAddress"
         @getAddress="toggleShippingModal"
+        @initCall="initOrder"
+        :buttonEnable="isShippingButtonEnabled"
       />
     </ModalSlide>
     <ModalSlide :visible="billingAddressModal" @close="toggleBillingModal">
       <AddressInputs
         :buttonText="'Save Billing Details'"
-        :buttonEnable="false"
         :headingText="'Billing Details'"
         :addressDetails="billingAddress"
         @getAddress="toggleBillingModal"
+        @initCall="initOrder"
+        :buttonEnable="isBillingButtonEnabled"
       />
     </ModalSlide>
 
@@ -407,7 +410,9 @@ export default {
         shippingAddress.value.name !== '' &&
         shippingAddress.value.mobile !== '' &&
         shippingAddress.value.building !== '' &&
-        shippingAddress.value.address !== ''
+        shippingAddress.value.address !== '' &&
+        shippingAddress.value.pincode != '' &&
+        shippingAddress.value.landmark !== ''
       );
     });
     const isBillingAddressFilled = computed(() => {
@@ -415,9 +420,20 @@ export default {
         billingAddress.value.name !== '' &&
         billingAddress.value.mobile !== '' &&
         billingAddress.value.building !== '' &&
-        billingAddress.value.address !== ''
+        billingAddress.value.address !== '' &&
+        shippingAddress.value.pincode != '' &&
+        shippingAddress.value.landmark !== ''
       );
     });
+
+    const paymentProceed = () => {
+      context.root.$router.push({
+        path: '/payment',
+        query: {
+          id: transactionId.value,
+        },
+      });
+    };
 
     const toggleShippingModal = () => {
       setShippingAddress(shippingAddress.value);
@@ -434,6 +450,14 @@ export default {
     };
 
     const goBack = () => context.root.$router.back();
+
+    const isShippingButtonEnabled = computed(() => {
+      return isShippingAddressFilled.value;
+    });
+
+    const isBillingButtonEnabled = computed(() => {
+      return isBillingAddressFilled.value;
+    });
 
     const proceedToPay = computed(() => {
       return (
@@ -527,13 +551,9 @@ export default {
             })
           );
 
-          localStorage.removeItem('transactionId');
-          context.root.$router.push({
-            path: '/payment',
-            query: {
-              id: transactionId.value,
-            },
-          });
+          enableLoader.value = false;
+
+          // localStorage.removeItem('transactionId');
         }
       }
     );
@@ -569,6 +589,9 @@ export default {
       enableLoader,
       initOrder,
       policy,
+      paymentProceed,
+      isShippingButtonEnabled,
+      isBillingButtonEnabled,
     };
   },
 };
