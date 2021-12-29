@@ -1,15 +1,28 @@
 <template>
   <div class="search-page">
-    <div class="search-bar side-padding">
+    <div class="search-bar side-padding searchBy-search-bar">
       <SfSearchBar
-        placeholder="Search for items"
+        :placeholder="searchByPlaceholderMapper[selectedSearchByOption]"
         aria-label="Search"
         :icon="null"
         :value="searchKey"
         @input="(value) => (searchKey = value)"
         @keydown.enter="searchHit($event)"
+        :disabled="!selectedLocation.latitude || !selectedLocation.longitude"
       >
         <template #icon>
+          <div
+           :class="{'dropdown-button': true, 'dropdown-disabled': !selectedLocation.latitude || !selectedLocation.longitude }"
+           @click="onDropdownHeaderClick">
+            <div v-if="selectedSearchByOption === 'search-by-all'">
+              All
+            </div>
+            <SfImage v-else
+              :src="`/icons/${selectedSearchByOption}.png`"
+              :alt="`${selectedSearchByOption}`"
+            />
+            <SfIcon icon="chevron_down" size="xxs" />
+          </div>
           <SfButton
             v-if="searchKey"
             class="sf-search-bar__button sf-button--pure"
@@ -32,7 +45,22 @@
           </SfButton>
         </template>
       </SfSearchBar>
+
+      <div class="dowpdown" v-if="openSearchByDropdown">
+        <div class="dowpdown-item"
+          v-for="(searchBy, key, index) in searchByMapper" :key="key" @click="onSelectDropdownItem(key)"
+          :class="{'border':index !== Object.keys(searchByMapper)-1}"
+        >
+          <SfImage
+            :src="`/icons/${key}.png`"
+            :alt="`${key}`"
+            class="search-by-icon"
+          />
+          {{searchBy}}
+        </div>
+      </div>
     </div>
+
     <div class="details">
       <transition-group name="sf-fade" mode="out-in" v-if="!enableLoader">
         <div
@@ -185,6 +213,19 @@ export default {
     const { pollResults, poll, polling, stopPolling } = useSearch('search');
     const noSearchFound = ref(false);
 
+    const openSearchByDropdown = ref(false);
+    const selectedSearchByOption = ref(context.root.$route.params.searchBy || 'search-by-all');
+    const searchByMapper = {
+      'search-by-all': 'All',
+      'search-by-seller': 'Search by Seller',
+      'search-by-category': 'Search by Category'
+    };
+    const searchByPlaceholderMapper = {
+      'search-by-all': 'Search for Items',
+      'search-by-seller': 'Enter Seller\'s Name',
+      'search-by-category': 'Enter Category Name'
+    };
+
     console.log(cart);
 
     watch(
@@ -207,7 +248,8 @@ export default {
         locationIs:
           selectedLocation?.value?.latitude +
           ',' +
-          selectedLocation?.value?.longitude
+          selectedLocation?.value?.longitude,
+        searchBy: selectedSearchByOption.value
         // eslint-disable-next-line no-unused-vars
       }).then((_) => {
         localStorage.setItem(
@@ -360,6 +402,17 @@ export default {
       });
     };
 
+    const onDropdownHeaderClick = () => {
+      if (selectedLocation.value.latitude || selectedLocation.value.longitude) {
+        openSearchByDropdown.value = !openSearchByDropdown.value;
+      }
+    };
+
+    const onSelectDropdownItem = (selectedOption) => {
+      selectedSearchByOption.value = selectedOption;
+      openSearchByDropdown.value = false;
+    };
+
     return {
       goBack,
       enableLoader,
@@ -382,7 +435,14 @@ export default {
       goToProduct,
       sortByPriceToggler,
       sortItemsByPrice,
-      isSortAscending
+      isSortAscending,
+      selectedSearchByOption,
+      openSearchByDropdown,
+      selectedLocation,
+      onDropdownHeaderClick,
+      onSelectDropdownItem,
+      searchByMapper,
+      searchByPlaceholderMapper
     };
   }
 };
@@ -396,5 +456,62 @@ export default {
 .side-padding {
   display: flex;
   justify-content: space-between;
+}
+
+.dropdown-button{
+  position: absolute;
+  border-right: 1px solid #D9D9D9;
+  height: 100%;
+  padding: 10px;
+  width: 75px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  color: #F37A20;
+  box-sizing: border-box;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.dowpdown{
+  background: #FFFFFF;
+  box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.3);
+  border-radius: 6px;
+  padding: 0 7px;
+  position: absolute;
+  top: 75px;
+  width: 342px;
+  z-index: 1;
+  .dowpdown-item{
+    display: flex;
+    align-items: center;
+    padding: 8px 0;
+    cursor: pointer;
+  }
+  .border{
+    border-bottom: 1px solid rgba(226, 226, 226, 0.7);
+  }
+  .color-text{
+    color: #F37A20;
+    cursor: pointer;
+  }
+}
+
+.search-by-icon {
+  padding-right: 20px;
+  padding-left: 8px;
+}
+
+.dropdown-disabled {
+  opacity: 0.4;
+  color: #e0e0e1 !important;
+
+  .sf-icon {
+      --icon-color: #e0e0e1 !important;
+    }
+}
+
+.search-bar {
+  position: relative;
 }
 </style>
