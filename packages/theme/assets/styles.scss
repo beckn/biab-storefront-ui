@@ -522,6 +522,20 @@ body {
     left: 0;
     z-index: 3;
   }
+
+  .searchBy-search-bar {
+    .sf-search-bar__input {
+      padding-left: 85px;
+    }
+
+    .sf-search-bar {
+      height: 50px;
+    }
+
+    .sf-search-bar__button {
+      top: 10px;
+    }
+  }
 }
 
 // ..............................................................................................
