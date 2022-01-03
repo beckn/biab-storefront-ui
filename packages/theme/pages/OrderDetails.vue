@@ -489,6 +489,7 @@ import {
   useTrack,
   useOrderStatus,
   useSupport,
+  useCart,
 } from '@vue-storefront/beckn';
 
 import {
@@ -536,6 +537,7 @@ export default {
     const selectedTrackingId = ref(null);
     const selectedSupportId = ref(null);
     const selectMoreItemsId = ref(null);
+    const { clear } = useCart();
 
     const {
       poll: onTrack,
@@ -733,6 +735,9 @@ export default {
       await callSupport();
       await callStatus();
       enableLoader.value = false;
+      localStorage.removeItem('orderProgress');
+      localStorage.removeItem('transactionId');
+      clear();
     });
 
     onBeforeUnmount(async () => {
