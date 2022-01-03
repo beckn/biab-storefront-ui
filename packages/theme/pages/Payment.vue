@@ -127,7 +127,6 @@ export default {
       return order.value?.transactionId === context.root.$route.query.id;
     });
 
-    const { clear } = useCart();
     const { init, poll, pollResults, stopPolling, polling } =
       useConfirmOrder('confirm-order');
 
@@ -184,8 +183,6 @@ export default {
         JSON.parse(localStorage.getItem('orderHistory')) ?? [];
       orderHistory.push(order.value);
       localStorage.setItem('orderHistory', JSON.stringify(orderHistory));
-      localStorage.removeItem('orderProgress');
-      localStorage.removeItem('transactionId');
 
       context.root.$router.push({
         path: '/ordersuccess',
@@ -217,7 +214,6 @@ export default {
         context.root.$router.push('/');
       }
       console.log(order.value);
-      clear();
     });
     return {
       paymentMethod,
