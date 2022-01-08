@@ -26,10 +26,13 @@ const factoryParams = {
     }
     if (catalogs) {
       const oldCodes = oldResults.map((obj) => {
-        return obj.bpp_descriptor.name;
+        return obj.bpp_descriptor ? obj.bpp_descriptor.name : null;
       });
       const data = catalogs.filter((bpp) => {
-        return !(oldCodes.includes(bpp.bpp_descriptor.name));
+        if (bpp.bpp_descriptor) {
+          return !oldCodes.includes(bpp.bpp_descriptor.name);
+        }
+        return null;
       });
       return [...oldResults, ...data];
     }
@@ -41,7 +44,9 @@ const factoryParams = {
   },
   init: async (context: Context, { params }) => {
     const searchParams = buildSearchItemsWhere(params.input);
-    const ackResponse: AckResponse = await context.$beckn.api.getProduct(searchParams);
+    const ackResponse: AckResponse = await context.$beckn.api.getProduct(
+      searchParams
+    );
     return {
       ackResponse
     };
@@ -52,7 +57,6 @@ const factoryParams = {
   intervalTime: () => {
     return config.timers.search.interval;
   }
-
 };
 
 export default usePollerFactory(factoryParams);
