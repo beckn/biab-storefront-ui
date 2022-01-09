@@ -12,12 +12,16 @@
       >
         <template #icon>
           <div
-           :class="{'dropdown-button': true, 'dropdown-disabled': !selectedLocation.latitude || !selectedLocation.longitude }"
-           @click="onDropdownHeaderClick">
-            <div v-if="selectedSearchByOption === 'search-by-all'">
-              All
-            </div>
-            <SfImage v-else
+            :class="{
+              'dropdown-button': true,
+              'dropdown-disabled':
+                !selectedLocation.latitude || !selectedLocation.longitude,
+            }"
+            @click="onDropdownHeaderClick"
+          >
+            <div v-if="selectedSearchByOption === 'search-by-all'">All</div>
+            <SfImage
+              v-else
               :src="`/icons/${selectedSearchByOption}.png`"
               :alt="`${selectedSearchByOption}`"
             />
@@ -47,16 +51,19 @@
       </SfSearchBar>
 
       <div class="dowpdown" v-if="openSearchByDropdown">
-        <div class="dowpdown-item"
-          v-for="(searchBy, key, index) in searchByMapper" :key="key" @click="onSelectDropdownItem(key)"
-          :class="{'border':index !== Object.keys(searchByMapper)-1}"
+        <div
+          class="dowpdown-item"
+          v-for="(searchBy, key, index) in searchByMapper"
+          :key="key"
+          @click="onSelectDropdownItem(key)"
+          :class="{ border: index !== Object.keys(searchByMapper) - 1 }"
         >
           <SfImage
             :src="`/icons/${key}.png`"
             :alt="`${key}`"
             class="search-by-icon"
           />
-          {{searchBy}}
+          {{ searchBy }}
         </div>
       </div>
     </div>
@@ -100,13 +107,13 @@
                 v-for="(product, pIndex) in sortItemsByPrice(provider.items)"
                 :key="
                   bppIndex +
-                    '-' +
-                    prIndex +
-                    '-' +
-                    pIndex +
-                    '-' +
-                    keyVal +
-                    'product'
+                  '-' +
+                  prIndex +
+                  '-' +
+                  pIndex +
+                  '-' +
+                  keyVal +
+                  'product'
                 "
                 class="results--mobile"
               >
@@ -177,7 +184,7 @@ import {
   cartGetters,
   useCart,
   useFacet,
-  useSearch
+  useSearch,
 } from '@vue-storefront/beckn';
 
 export default {
@@ -189,7 +196,7 @@ export default {
     SfButton,
     ProductCard,
     Footer,
-    SfImage
+    SfImage,
   },
   setup(_, context) {
     const {
@@ -197,7 +204,7 @@ export default {
       changeSearchString,
       selectedLocation,
       toggleLoadindBar,
-      clearCartPopup
+      clearCartPopup,
     } = useUiState();
     const goBack = () => {
       context.root.$router.back();
@@ -214,16 +221,18 @@ export default {
     const noSearchFound = ref(false);
 
     const openSearchByDropdown = ref(false);
-    const selectedSearchByOption = ref(context.root.$route.params.searchBy || 'search-by-all');
+    const selectedSearchByOption = ref(
+      context.root.$route.params.searchBy || 'search-by-all'
+    );
     const searchByMapper = {
       'search-by-all': 'All',
       'search-by-seller': 'Search by Seller',
-      'search-by-category': 'Search by Category'
+      'search-by-category': 'Search by Category',
     };
     const searchByPlaceholderMapper = {
       'search-by-all': 'Search for Items',
-      'search-by-seller': 'Enter Seller\'s Name',
-      'search-by-category': 'Enter Category Name'
+      'search-by-seller': "Enter Seller's Name",
+      'search-by-category': 'Enter Category Name',
     };
 
     console.log(cart);
@@ -249,7 +258,7 @@ export default {
           selectedLocation?.value?.latitude +
           ',' +
           selectedLocation?.value?.longitude,
-        searchBy: selectedSearchByOption.value
+        searchBy: selectedSearchByOption.value,
         // eslint-disable-next-line no-unused-vars
       }).then((_) => {
         localStorage.setItem(
@@ -259,7 +268,7 @@ export default {
 
         poll({
           // eslint-disable-next-line camelcase
-          message_id: result.value.data.ackResponse.context.message_id
+          message_id: result.value.data.ackResponse.context.message_id,
         });
       });
 
@@ -329,8 +338,12 @@ export default {
     const totalResults = computed(() => {
       let reusltNum = 0;
       for (const bpp of pollResults?.value) {
-        for (const provider of bpp.bpp_providers) {
-          reusltNum += provider.items.length;
+        if (bpp.bpp_providers.length !== 0) {
+          for (const provider of bpp.bpp_providers) {
+            if (provider.items) {
+              reusltNum += provider.items.length;
+            }
+          }
         }
       }
       return reusltNum;
@@ -367,20 +380,20 @@ export default {
           product,
           bpp: {
             id: bpp.bpp_id,
-            descriptor: bpp.bpp_descriptor
+            descriptor: bpp.bpp_descriptor,
           },
           bppProvider: {
             id: provider.id,
-            descriptor: provider.descriptor
+            descriptor: provider.descriptor,
           },
-          locations: provider.locations
+          locations: provider.locations,
         })
       );
       context.root.$router.push({
         path: '/product',
         query: {
-          data: data
-        }
+          data: data,
+        },
       });
     };
 
@@ -391,14 +404,14 @@ export default {
         customQuery: {
           bpp: {
             id: bpp.bpp_id,
-            descriptor: bpp.bpp_descriptor
+            descriptor: bpp.bpp_descriptor,
           },
           bppProvider: {
             id: provider.id,
-            descriptor: provider.descriptor
+            descriptor: provider.descriptor,
           },
-          locations: provider.locations
-        }
+          locations: provider.locations,
+        },
       });
     };
 
@@ -442,9 +455,9 @@ export default {
       onDropdownHeaderClick,
       onSelectDropdownItem,
       searchByMapper,
-      searchByPlaceholderMapper
+      searchByPlaceholderMapper,
     };
-  }
+  },
 };
 </script>
 
@@ -458,23 +471,23 @@ export default {
   justify-content: space-between;
 }
 
-.dropdown-button{
+.dropdown-button {
   position: absolute;
-  border-right: 1px solid #D9D9D9;
+  border-right: 1px solid #d9d9d9;
   height: 100%;
   padding: 10px;
   width: 75px;
   display: flex;
   align-items: center;
   justify-content: space-around;
-  color: #F37A20;
+  color: #f37a20;
   box-sizing: border-box;
   font-weight: 700;
   cursor: pointer;
 }
 
-.dowpdown{
-  background: #FFFFFF;
+.dowpdown {
+  background: #ffffff;
   box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.3);
   border-radius: 6px;
   padding: 0 7px;
@@ -482,17 +495,17 @@ export default {
   top: 75px;
   width: 342px;
   z-index: 1;
-  .dowpdown-item{
+  .dowpdown-item {
     display: flex;
     align-items: center;
     padding: 8px 0;
     cursor: pointer;
   }
-  .border{
+  .border {
     border-bottom: 1px solid rgba(226, 226, 226, 0.7);
   }
-  .color-text{
-    color: #F37A20;
+  .color-text {
+    color: #f37a20;
     cursor: pointer;
   }
 }
@@ -507,8 +520,8 @@ export default {
   color: #e0e0e1 !important;
 
   .sf-icon {
-      --icon-color: #e0e0e1 !important;
-    }
+    --icon-color: #e0e0e1 !important;
+  }
 }
 
 .search-bar {
