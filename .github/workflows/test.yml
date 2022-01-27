@@ -5,7 +5,7 @@ on: [push]
 jobs:
   prepare_dependencies:
     name: Prepare dependencies
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/v1.0.0'
     runs-on: [self-hosted, linux]
     steps:
       - name: Running a git level clean
@@ -31,7 +31,7 @@ jobs:
   test:
     name: Test api-client and composables
     needs: prepare_dependencies
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/v1.0.0'
     runs-on: [self-hosted, linux]
     steps:
       - name: Checkout code
@@ -82,7 +82,7 @@ jobs:
   deploy:
     name: package and deploy the service
     needs: test
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/v1.0.0'
     runs-on: [self-hosted, linux]
     steps:
       - name: Set up Docker Buildx
