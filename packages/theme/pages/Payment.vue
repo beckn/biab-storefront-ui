@@ -105,20 +105,17 @@ export default {
     CardContent,
     SfRadio,
     Footer,
-    LoadingCircle
+    LoadingCircle,
   },
   methods: {
     openCart() {
       toggleCartSidebar();
-    }
+    },
   },
   setup(_, context) {
     const paymentMethod = ref('');
     const order = ref({});
     const enableLoader = ref(false);
-    const isTransactionMatching = computed(() => {
-      return order.value?.transactionId === context.root.$route.query.id;
-    });
 
     const { init, poll, pollResults } = useConfirmOrder('confirm-order');
 
@@ -143,7 +140,7 @@ export default {
         {
           amount: cartGetters.getTotals(order.value.cart).total,
           status: 'PAID',
-          transactionId: order.value.transactionId
+          transactionId: order.value.transactionId,
         }
       );
       const response = await init(params);
@@ -162,14 +159,14 @@ export default {
             JSON.parse(localStorage.getItem('orderHistory')) ?? [];
           orderHistory.push(order.value);
           localStorage.setItem('orderHistory', JSON.stringify(orderHistory));
-          localStorage.removeItem('orderProgress');
-          localStorage.removeItem('transactionId');
+          // localStorage.removeItem('orderProgress');
+          // localStorage.removeItem('transactionId');
 
           context.root.$router.push({
             path: '/ordersuccess',
             query: {
-              id: order.value.transactionId
-            }
+              id: order.value.transactionId,
+            },
           });
         }
       }
@@ -177,9 +174,6 @@ export default {
 
     onBeforeMount(() => {
       order.value = JSON.parse(localStorage.getItem('orderProgress'));
-      if (!isTransactionMatching.value) {
-        context.root.$router.push('/');
-      }
       console.log(order.value);
     });
     return {
@@ -190,10 +184,9 @@ export default {
       goBack,
       isPayConfirmActive,
       proceedToConfirm,
-      isTransactionMatching,
-      enableLoader
+      enableLoader,
     };
-  }
+  },
 };
 </script>
 <style lang="scss" scoped>
