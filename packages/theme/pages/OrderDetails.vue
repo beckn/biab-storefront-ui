@@ -583,6 +583,7 @@ export default {
       openWindow,
       isFulfillmentAvailable,
       isSupportAvailable,
+      fulfillmentData,
     };
   },
 };
