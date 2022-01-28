@@ -313,6 +313,16 @@ export default {
     // const billingAddressModal = ref(false);
 
     const { cart, load } = useCart();
+
+    const currentOrderTransactionId = computed(() => {
+      if (localStorage.getItem('orderProgress') !== null) {
+        const orderProgressData = JSON.parse(
+          localStorage.getItem('orderProgress')
+        );
+        return orderProgressData?.transactionId;
+      }
+    });
+
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     // const { selectedLocation } = useUiState();
 
@@ -337,6 +347,10 @@ export default {
 
     const billingAddress = ref(getBillngAddress());
     const transactionId = ref('');
+
+    const isTransactionMatching = computed(() => {
+      return transactionId.value === currentOrderTransactionId.value;
+    });
 
     const isShippingAddressFilled = computed(() => {
       // debugger;
@@ -401,13 +415,39 @@ export default {
       });
       console.log(onInitResult);
     };
-    const paymentProceed = () => {
-      context.root.$router.push({
-        path: '/payment',
-        query: {
-          id: transactionId.value,
-        },
-      });
+
+    //To re-factor the function below
+    const paymentProceed = async () => {
+      if (isTransactionMatching.value) {
+        context.root.$router.push({
+          path: '/payment',
+          query: {
+            id: transactionId.value,
+          },
+        });
+      } else {
+        enableLoader.value = true;
+        const params = createOrderRequest(
+          transactionId.value,
+          cart.value,
+          shippingAddress.value,
+          billingAddress.value,
+          shippingAsBilling.value,
+          '12.9063433,77.5856825'
+        );
+        const response = await init(params);
+        console.log(response);
+        await onInitOrder({
+          // eslint-disable-next-line camelcase
+          messageId: response.context.message_id,
+        });
+        context.root.$router.push({
+          path: '/payment',
+          query: {
+            id: transactionId.value,
+          },
+        });
+      }
     };
 
     watch(
@@ -464,6 +504,8 @@ export default {
       initOrder,
       policy,
       paymentProceed,
+      isTransactionMatching,
+      currentOrderTransactionId,
     };
   },
 };
