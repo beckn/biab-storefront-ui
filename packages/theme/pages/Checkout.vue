@@ -441,12 +441,6 @@ export default {
           // eslint-disable-next-line camelcase
           messageId: response.context.message_id,
         });
-        context.root.$router.push({
-          path: '/payment',
-          query: {
-            id: transactionId.value,
-          },
-        });
       }
     };
 
@@ -467,6 +461,15 @@ export default {
               transactionId: transactionId.value,
             })
           );
+
+          if (!isTransactionMatching.value) {
+            context.root.$router.push({
+              path: '/payment',
+              query: {
+                id: transactionId.value,
+              },
+            });
+          }
           enableLoader.value = false;
         }
       }
