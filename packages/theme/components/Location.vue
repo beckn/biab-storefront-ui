@@ -1,89 +1,109 @@
 <template>
-  <div class="location-blk d-flex w-100">
-    <SfCircleIcon
-      class="sf-circle-icon--large left-pos"
-      aria-label="marker"
-      icon="marker"
-      icon-size="18px"
-    />
-    <div class="layout-container">
-      <div class="location-content">
-        <client-only>
-          <div class="location-icon">
-            <slot>
-              <div>
-                <p>{{ name }}</p>
-              </div>
-              <div
-                @click="toggleIsShow"
-                v-e2e="'app-header-location-input-div'"
-              >
-                <template>
-                  <SfButton class="button-pos sf-button--pure">
-                    <span class="sf-search-bar__icon">
-                      <SfIcon
-                        color="var(--c-text)"
-                        size="18px"
-                        icon="chevron_down"
-                      />
-                    </span>
-                  </SfButton>
-                </template>
-              </div>
-            </slot>
-          </div>
-        </client-only>
-        <template>
-          <div id="location" class="location-drop">
-            <SfSidebar
-              :visible="!!isLocationdropOpen"
-              :button="false"
-              title="My Location"
-              @close="toggleLocationDrop"
-              class="sidebar sf-sidebar--right"
-            >
-              <transition name="fade">
-                <client-only>
-                  <LocationSearchBar
-                    @locationSelected="locationSelected"
-                    @toggleLocationDrop="toggleLocationDrop"
-                    v-e2e="'app-location-sidebar'"
-                  />
-                </client-only>
-              </transition>
-            </SfSidebar>
-          </div>
-        </template>
-        <div class="popover-blk">
-          <template>
-            <div v-if="!!isShow" @click="toggleIsShow">
-              <ModalComponent
-                @toggleLocationDrop="toggleLocationDrop"
-                class="modalclass"
-                v-e2e="'app-header-location-modal'"
+  <no-ssr>
+    <div class="location-blk d-flex w-100">
+      <SfCircleIcon
+        class="sf-circle-icon--large left-pos"
+        aria-label="marker"
+        icon="marker"
+        icon-size="18px"
+      />
+      <div class="layout-container">
+        <div class="location-content">
+          <client-only>
+            <div class="location-icon">
+              <slot>
+                <div>
+                  <p>{{ locationText }}</p>
+                </div>
+                <div
+                  @click="toggleIsShow"
+                  v-e2e="'app-header-location-input-div'"
+                >
+                  <template>
+                    <SfButton class="button-pos sf-button--pure">
+                      <span class="sf-search-bar__icon">
+                        <SfIcon
+                          color="var(--c-text)"
+                          size="18px"
+                          icon="chevron_down"
+                        />
+                      </span>
+                    </SfButton>
+                  </template>
+                </div>
+              </slot>
+            </div>
+            <div v-if="isLocationSelected">
+              <input
+                v-model="location"
+                type="text"
+                aria-label="Select Location"
+                class="
+                  sf-header__search
+                  sf-search-bar
+                  sf-header__search
+                  be-search-location
+                "
+                disabled="isActive"
+                v-e2e="'app-header-location-input'"
               />
             </div>
-          </template>
-        </div>
-      </div>
-      <div class="user-cart-content">
-        <div class="cart-content">
+          </client-only>
           <template>
-            <SfButton class="button-pos sf-button--pure">
-              <SfIcon icon="empty_cart" />
-            </SfButton>
+            <div id="location" class="location-drop">
+              <SfSidebar
+                :visible="!!isLocationdropOpen"
+                :button="false"
+                title="My Location"
+                @close="toggleLocationDrop"
+                class="sidebar sf-sidebar--right"
+              >
+                <transition name="fade">
+                  <client-only>
+                    <LocationSearchBar
+                      @locationSelected="locationSelected"
+                      @toggleLocationDrop="toggleLocationDrop"
+                      v-e2e="'app-location-sidebar'"
+                    />
+                  </client-only>
+                </transition>
+              </SfSidebar>
+            </div>
           </template>
+          <div class="popover-blk">
+            <template>
+              <div v-if="!!isShow" @click="toggleIsShow">
+                <ModalComponent
+                  @toggleLocationDrop="toggleLocationDrop"
+                  class="modalclass"
+                  v-e2e="'app-header-location-modal'"
+                />
+              </div>
+            </template>
+          </div>
         </div>
-        <div class="user-content">
-          <template>
-            <SfButton class="button-pos sf-button--pure">
-              <SfIcon icon="profile" />
-            </SfButton>
-          </template>
+        <div class="user-cart-content">
+          <div class="cart-content">
+            <nuxt-link :to="localePath('/cart')">
+              <SfButton class="button-pos sf-button--pure">
+                <SfIcon icon="empty_cart" />
+              </SfButton>
+            </nuxt-link>
+          </div>
+          <div class="user-content">
+            <nuxt-link :to="localePath('/Login')">
+              <div v-if="isAuthenticatedUser">
+                <SfButton class="button-pos sf-button--pure">
+                  <SfIcon icon="profile" />
+                </SfButton>
+              </div>
+              <div class="sign-in-text" v-else>sign in</div>
+            </nuxt-link>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  </no-ssr>
 </template>
 <script>
 import { SfCircleIcon, SfButton, SfSidebar, SfIcon } from '@storefront-ui/vue';
@@ -115,12 +135,12 @@ export default {
       isActive: false
     };
   },
-  setup() {
+  setup(props, { root }) {
     const { selectedLocation, updateLocation } = useUiState();
     const isLocationdropOpen = ref(false);
     const isShow = ref(false);
-    const name = ref('Your Location');
     const location = ref(selectedLocation?.value?.address);
+    const currentUser = root.$store.$fire.auth.currentUser;
 
     const toggleLocationDrop = () => {
       isLocationdropOpen.value = !isLocationdropOpen.value;
@@ -132,7 +152,6 @@ export default {
 
     const locationSelected = (latitude, longitude, address) => {
       location.value = address;
-      name.value = address;
       toggleLocationDrop();
       updateLocation({
         latitude: latitude,
@@ -140,15 +159,27 @@ export default {
         address: address
       });
     };
+
     return {
-      name,
       isLocationdropOpen,
       toggleLocationDrop,
       isShow,
       toggleIsShow,
       location,
-      locationSelected
+      locationSelected,
+      currentUser
     };
+  },
+  computed: {
+    isLocationSelected() {
+      return this.location !== '';
+    },
+    locationText() {
+      return this.location !== '' ? 'Your location' : 'Set location';
+    },
+    isAuthenticatedUser() {
+      return this.currentUser !== null;
+    }
   }
 };
 </script>
@@ -183,6 +214,9 @@ export default {
   line-height: 13px;
   letter-spacing: 0em;
   text-align: left;
+}
+.sign-in-text {
+  color: #f37a20;
 }
 .userIcon {
   background-color: #f37a20;

@@ -24,9 +24,20 @@
             @click="openHamburger = !openHamburger"
             class="dropdown-content"
           >
-            <nuxt-link :to="localePath('/orders')"> Orders </nuxt-link>
+            <nuxt-link :to="localePath('/orders')"> My Orders </nuxt-link>
             <div><hr class="sf-divider" /></div>
-            <nuxt-link :to="localePath('/cart')"> Cart </nuxt-link>
+            <!-- TO DO -->
+            <nuxt-link :to="localePath('/')"> My Address </nuxt-link>
+            <div><hr class="sf-divider" /></div>
+            <!-- TO DO -->
+            <nuxt-link :to="localePath('/')">Support</nuxt-link>
+            <div><hr class="sf-divider" /></div>
+            <!-- TO DO -->
+            <nuxt-link :to="localePath('/')">About</nuxt-link>
+            <div><hr class="sf-divider" /></div>
+            <nuxt-link v-if="isUserAuthenticated()" :to="localePath('/Logout')"
+              >Logout</nuxt-link
+            >
           </div>
         </div>
         <!-- <div>
@@ -38,7 +49,7 @@
       <LoadingBar
         :enable="
           enableLoadindBar &&
-          ['Product', 'cart', 'Search'].includes($route.name)
+            ['Product', 'cart', 'Search'].includes($route.name)
         "
       />
       <div
@@ -99,6 +110,13 @@ export default {
 
     const openHamburger = false;
 
+    const isUserAuthenticated = () => {
+      if (root.$store.$fire.auth.currentUser === null) {
+        return false;
+      }
+      return true;
+    };
+
     const goBack = () => {
       stopPolling();
       root.$router.back();
@@ -128,7 +146,8 @@ export default {
       LoadingBar,
       enableLoadindBar,
       goBack,
-      openHamburger
+      openHamburger,
+      isUserAuthenticated
     };
   }
 };
