@@ -521,7 +521,7 @@ export default {
 
       try {
         const response = await status(params);
-        await onStatus({ messageId: response.context.message_id });
+        await onStatus({ messageId: order.value.order.id });
       } catch (error) {
         console.log('Error calling status apis - ', error);
       }
