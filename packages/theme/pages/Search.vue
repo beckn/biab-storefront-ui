@@ -1,16 +1,31 @@
 <template>
   <div class="search-page">
     <div class="search-bar side-padding">
-      <SfSearchBar placeholder="Search for items" aria-label="Search" :icon="null" :value="searchKey" @input="(value) => (searchKey = value)" @keydown.enter="searchHit($event)">
+      <SfSearchBar
+        placeholder="Search for items"
+        aria-label="Search"
+        :icon="null"
+        :value="searchKey"
+        @input="(value) => (searchKey = value)"
+        @keydown.enter="searchHit($event)"
+      >
         <template #icon>
-          <SfButton v-if="searchKey" class="sf-search-bar__button sf-button--pure" @click="clearSearch">
+          <SfButton
+            v-if="searchKey"
+            class="sf-search-bar__button sf-button--pure"
+            @click="clearSearch"
+          >
             <span class="sf-search-bar__icon">
               <SfIcon color="var(--c-text)" size="20px" icon="cross" />
             </span>
           </SfButton>
-          <SfButton v-else class="sf-search-bar__button sf-button--pure" @click="
+          <SfButton
+            v-else
+            class="sf-search-bar__button sf-button--pure"
+            @click="
               isSearchOpen ? (isSearchOpen = false) : (isSearchOpen = true)
-            ">
+            "
+          >
             <span class="sf-search-bar__icon">
               <SfIcon color="var(--c-text)" size="20px" icon="search" />
             </span>
@@ -20,36 +35,82 @@
     </div>
     <div class="details">
       <transition-group name="sf-fade" mode="out-in">
-        <div v-if="pollResults && pollResults.length > 0" class="search__wrapper-results" key="results">
+        <div
+          v-if="pollResults && pollResults.length > 0"
+          class="search__wrapper-results"
+          key="results"
+        >
           <div class="side-padding result-num">
-            <span><span v-e2e="'total-result'">{{ totalResults(pollResults) }}</span> results found</span>
+            <span
+              ><span v-e2e="'total-result'">{{
+                totalResults(pollResults)
+              }}</span>
+              results found</span
+            >
           </div>
           <div v-for="(bpp, bppIndex) in pollResults" :key="bppIndex">
-            <div v-for="(provider, prIndex) in bpp.bpp_providers" :key="prIndex">
+            <div
+              v-for="(provider, prIndex) in bpp.bpp_providers"
+              :key="prIndex"
+            >
               <div class="provider-head aline-center side-padding">
                 <div class="flexy">
-                  <img class="provide-img" :src="providerGetters.getProviderImages(provider)[0]?providerGetters.getProviderImages(provider)[0]:require('~/assets/images/store-placeholder.png')" alt="Vila stripe maxi shirt dress" :width="35" :height="36" />
+                  <img
+                    class="provide-img"
+                    :src="
+                      providerGetters.getProviderImages(provider)[0]
+                        ? providerGetters.getProviderImages(provider)[0]
+                        : require('~/assets/images/store-placeholder.png')
+                    "
+                    alt="Vila stripe maxi shirt dress"
+                    :width="35"
+                    :height="36"
+                  />
                   <div class="text-padding">
                     <div class="aline-center">
-                      <div class="p-name">{{providerGetters.getProviderName(provider,provider)}}</div>
-                      <div class="text-padding"> <span class="p-distance">by</span> <span>{{providerGetters.getProviderBpp(bpp.bpp_descriptor)}}</span></div>
+                      <div class="p-name">
+                        {{
+                          providerGetters.getProviderName(provider, provider)
+                        }}
+                      </div>
+                      <div class="text-padding">
+                        <span class="p-distance">by</span>
+                        <span>{{
+                          providerGetters.getProviderBpp(bpp.bpp_descriptor)
+                        }}</span>
+                      </div>
                     </div>
                     <!-- <div class="p-distance">{{providerGetters.getProviderDistance(provider)}} km</div> -->
                   </div>
                 </div>
-                <div class="exp-provider" @click="openProvider(bpp,provider )">Explore All</div>
+                <div class="exp-provider" @click="openProvider(bpp, provider)">
+                  Explore All
+                </div>
               </div>
               <div class="results--mobile">
                 <ProductCard
                   v-for="(product, pIndex) in provider.items.slice(0, 5)"
-                  @goToProduct="goToProduct(product,provider,bpp)"
-                  :key="bppIndex+'-'+prIndex+'-'+pIndex+'-'+keyVal+'product'"
+                  @goToProduct="goToProduct(product, provider, bpp)"
+                  :key="
+                    bppIndex +
+                      '-' +
+                      prIndex +
+                      '-' +
+                      pIndex +
+                      '-' +
+                      keyVal +
+                      'product'
+                  "
                   :pName="productGetters.getName(product)"
                   :pPrice="productGetters.getPrice(product).regular"
                   :pImage="productGetters.getGallery(product)[0].small[0]"
-                  :pWieght="productGetters.getProductWeight(product)+' kg'"
-                  :pCount="cartGetters.getItemQty(isInCart({product}))"
-                  @updateItemCount="(item)=>updateItemCount(item, provider, bpp, pIndex)" />
+                  :pWieght="productGetters.getProductWeight(product) + ' kg'"
+                  :pCount="cartGetters.getItemQty(isInCart({ product }))"
+                  :pTags="product.tags"
+                  @updateItemCount="
+                    (item) => updateItemCount(item, provider, bpp, pIndex)
+                  "
+                />
               </div>
               <div>
                 <hr class="sf-divider" />
@@ -59,9 +120,18 @@
         </div>
         <LoadingCircle :enable="enableLoader" key="loding-cir" />
         <div v-if="noSearchFound" key="no-search" class="before-results">
-          <SfImage src="/icons/feather_search.svg" class="" alt="error" loading="lazy" />
-          <p><b>{{ $t('Your search did not yield ') }}</b></p>
-          <p><b>{{ $t('any results ') }}</b></p>
+          <SfImage
+            src="/icons/feather_search.svg"
+            class=""
+            alt="error"
+            loading="lazy"
+          />
+          <p>
+            <b>{{ $t('Your search did not yield ') }}</b>
+          </p>
+          <p>
+            <b>{{ $t('any results ') }}</b>
+          </p>
           <p>{{ $t('Please try searching again using ') }}</p>
           <p>{{ $t('different keyword') }}</p>
         </div>
@@ -134,11 +204,14 @@ export default {
 
     console.log(cart);
 
-    watch(() => clearCartPopup.value, (newVal) => {
-      if (!newVal) {
-        keyVal.value++;
+    watch(
+      () => clearCartPopup.value,
+      (newVal) => {
+        if (!newVal) {
+          keyVal.value++;
+        }
       }
-    });
+    );
 
     const handleSearch = debounce(async (paramValue) => {
       if (polling.value) stopPolling();
@@ -169,7 +242,9 @@ export default {
         }
       );
       // eslint-disable-next-line camelcase
-      await poll({ message_id: result.value.data.ackResponse.context.message_id });
+      await poll({
+        message_id: result.value.data.ackResponse.context.message_id
+      });
 
       watch(
         () => polling.value,
@@ -242,18 +317,20 @@ export default {
     };
 
     const goToProduct = (product, provider, bpp) => {
-      const data = btoa(JSON.stringify({
-        product,
-        bpp: {
-          id: bpp.bpp_id,
-          descriptor: bpp.bpp_descriptor
-        },
-        bppProvider: {
-          id: provider.id,
-          descriptor: provider.descriptor
-        },
-        locations: provider.locations
-      }));
+      const data = btoa(
+        JSON.stringify({
+          product,
+          bpp: {
+            id: bpp.bpp_id,
+            descriptor: bpp.bpp_descriptor
+          },
+          bppProvider: {
+            id: provider.id,
+            descriptor: provider.descriptor
+          },
+          locations: provider.locations
+        })
+      );
       context.root.$router.push({
         path: '/product',
         query: {
@@ -320,6 +397,4 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>
