@@ -54,7 +54,7 @@
     </div>
     <Footer
       class="footer-fixed"
-      :buttonText="'Pay & Confirm'"
+      :buttonText="'Confirm'"
       :buttonEnable="isPayConfirmActive"
       :totalPrice="parseFloat(order.cart.quote.price.value)"
       :totalItem="cartGetters.getTotalItems(order.cart)"
@@ -105,12 +105,12 @@ export default {
     CardContent,
     SfRadio,
     Footer,
-    LoadingCircle,
+    LoadingCircle
   },
   methods: {
     openCart() {
       toggleCartSidebar();
-    },
+    }
   },
   setup(_, context) {
     const paymentMethod = ref('');
@@ -118,6 +118,27 @@ export default {
     const enableLoader = ref(false);
 
     const { init, poll, pollResults } = useConfirmOrder('confirm-order');
+    const isProductConfirmed = async () => {
+      await fetch('https://dev.studio.dhiway.com/api/v1/cord/confirm-order', {
+        method: 'POST',
+        cache: 'no-cache',
+        credentials: 'same-origin',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        redirect: 'follow',
+        referrerPolicy: 'no-referrer',
+        body: JSON.stringify({
+          identifier: '//buyer//3',
+          order_price: 99,
+          quantity: 5,
+          listId:
+            '0x9680e7a736505315841b182161e439fdec0fb8fda4984a43894d5d6d369daea2',
+          blockHash:
+            '0x7f1d58fe69fd81971d0e5a951c9ae7a52d2525a4b1f13d68fd986f39760c4760'
+        })
+      });
+    };
 
     const changePaymentMethod = (value) => {
       paymentMethod.value = value;
@@ -140,10 +161,11 @@ export default {
         {
           amount: cartGetters.getTotals(order.value.cart).total,
           status: 'PAID',
-          transactionId: order.value.transactionId,
+          transactionId: order.value.transactionId
         }
       );
       const response = await init(params);
+      await isProductConfirmed();
       await poll({ messageId: response.context.message_id });
     };
 
@@ -165,8 +187,8 @@ export default {
           context.root.$router.push({
             path: '/ordersuccess',
             query: {
-              id: order.value.transactionId,
-            },
+              id: order.value.transactionId
+            }
           });
         }
       }
@@ -185,8 +207,9 @@ export default {
       isPayConfirmActive,
       proceedToConfirm,
       enableLoader,
+      isProductConfirmed
     };
-  },
+  }
 };
 </script>
 <style lang="scss" scoped>
