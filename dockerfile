@@ -17,7 +17,7 @@ RUN yarn build
 # production environment
 FROM nginx:1.19.7-alpine
 RUN apk update && apk upgrade
-RUN apk add --no-cache nodejs=14.19.0-r0-r0 npm=14.19.0-r0
+RUN apk add --no-cache nodejs=14.19.0-r0 npm=14.19.0-r0
 RUN npm install -g yarn
 COPY --from=build /app /usr/share/nginx/html
 WORKDIR /usr/share/nginx/html
