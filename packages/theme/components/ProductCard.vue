@@ -17,8 +17,9 @@
               class="verified"
               src="/icons/verified.svg"
               alt="verified-icon"
+              title="Verified"
               :width="12"
-              :height="12"
+              :height="16"
             />
           </div>
         </div>
