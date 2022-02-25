@@ -1,26 +1,34 @@
 <template>
   <div class="s-product">
     <div :class="{ horizontal: horizontalView, vertical: !horizontalView }">
-      <div @click="$emit('goToProduct')" class="s-p-image">
+      <div class="s-p-image">
         <SfImage
+          @click="$emit('goToProduct')"
           :src="_pImage"
           alt="product img"
           :width="horizontalView ? 85 : 75"
           :height="90"
         />
       </div>
-      <div @click="$emit('goToProduct')" class="s-p-details">
+      <div class="s-p-details">
         <div class="price-verified">
-          <div class="s-p-name">{{ _pName }}</div>
+          <div @click="$emit('goToProduct')" class="s-p-name">{{ _pName }}</div>
           <div v-if="_pTags">
-            <SfImage
+            <button
               class="verified"
-              src="/icons/verified.svg"
-              alt="verified-icon"
-              title="Verified"
-              :width="12"
-              :height="16"
-            />
+              @click="showModal(_pName)"
+            >
+              Verified
+            </button>
+            <div :id="_pName" class="tooltiptext">
+              ONDC Verified
+              <SfImage
+                alt="verified-icon"
+                src="/icons/verified.svg"
+                :width="8"
+                :height="10"
+              />
+            </div>
           </div>
         </div>
         <!-- <div class="s-p-weight">{{ _pWieght }}</div> -->
@@ -152,6 +160,13 @@ export default {
     getProductBase(product) {
       this.$emit('removeSearchResults');
       return btoa(JSON.stringify(product));
+    },
+    showModal(pName) {
+      const element = document.getElementById(pName);
+      element.style.display = 'inline-block';
+      setTimeout(() => {
+        element.style.display = 'none';
+      }, 2000);
     }
   }
 };
@@ -202,6 +217,24 @@ export default {
 }
 
 .verified {
-  padding-top: 4px;
+  margin-top: 4px;
+  padding: 0px;
+  font-size: 6px;
+}
+
+/* Tooltip text */
+.tooltiptext {
+  display: none;
+  background-color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 2px 6px;
+  margin-top: -16px;
+  font-size: 10px;
+  font-weight: bold;
+  border: 1px solid #888;
+  /* Position the tooltip text - see examples below! */
+  position: absolute;
+  z-index: 1;
 }
 </style>
