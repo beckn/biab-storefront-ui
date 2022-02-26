@@ -13,16 +13,26 @@
       <div class="s-p-details">
         <div class="price-verified">
           <div @click="$emit('goToProduct')" class="s-p-name">{{ _pName }}</div>
+        </div>
+        <!-- <div class="s-p-weight">{{ _pWieght }}</div> -->
+        <div
+          class="price-increase"
+          v-if="!!_updatedPrice && _updatedPrice !== _pPrice"
+        >
+          Price increased by <span>₹{{ _updatedPrice - _pPrice }}</span>
+        </div>
+        <div class="verify-inline-container">
+          <div class="s-p-price" v-if="_updatedCount !== 0">
+            ₹ {{ _updatedPrice ? _updatedPrice : _pPrice }}
+          </div>
           <div class="verify-button" v-if="_pTags">
-            <!-- <button class="verified" @click="showModal(_pName)">
-              <span class="verified-text"> Verify </span>
-            </button> -->
             <SfImage
+              class="image-verify"
               @click="showModal(_pName)"
               alt="verified-icon"
               src="/icons/verified icon badge.png"
-              :width="38"
-              :height="34"
+              :width="19"
+              :height="19"
             />
             <div :id="_pName" class="tooltiptext">
               ONDC Verified
@@ -34,16 +44,6 @@
               />
             </div>
           </div>
-        </div>
-        <!-- <div class="s-p-weight">{{ _pWieght }}</div> -->
-        <div
-          class="price-increase"
-          v-if="!!_updatedPrice && _updatedPrice !== _pPrice"
-        >
-          Price increased by <span>₹{{ _updatedPrice - _pPrice }}</span>
-        </div>
-        <div class="s-p-price" v-if="_updatedCount !== 0">
-          ₹ {{ _updatedPrice ? _updatedPrice : _pPrice }}
         </div>
         <span class="out-stock" v-if="_updatedCount === 0">Out of Stock</span>
       </div>
@@ -220,6 +220,11 @@ export default {
   align-items: top;
 }
 
+.verify-inline-container {
+  display: flex;
+  justify-content: space-around;
+}
+
 .verified {
   margin-top: 4px;
   padding: 1px;
@@ -237,6 +242,10 @@ export default {
 
 .verify-button {
   line-height: 38px;
+  padding-left: 40px;
+}
+.image-verify {
+  margin-bottom: 4px;
 }
 
 /* Tooltip text */
