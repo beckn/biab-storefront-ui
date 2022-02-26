@@ -5,7 +5,7 @@ on: [push]
 jobs:
   prepare_dependencies:
     name: Prepare dependencies
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/v1.0.0'
     runs-on: [self-hosted, linux]
     steps:
       - name: Running a git level clean
@@ -17,21 +17,21 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v1
         with:
-          node-version: "12"
+          node-version: '12'
 
       - name: Get cached dependencies
         uses: actions/cache@v2
         with:
-          path: "**/node_modules"
+          path: '**/node_modules'
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
 
       - name: Install dependencies
-        run: yarn --frozen-lockfile
+        run: yarn
 
   test:
     name: Test api-client and composables
     needs: prepare_dependencies
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/v1.0.0'
     runs-on: [self-hosted, linux]
     steps:
       - name: Checkout code
@@ -40,16 +40,19 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v1
         with:
-          node-version: "12"
+          node-version: '12'
 
       - name: Get cached dependencies
         uses: actions/cache@v2
         with:
-          path: "**/node_modules"
+          path: '**/node_modules'
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
 
       - name: Clean yarn cache
         run: yarn cache clean
+
+      - name: Install dependencies
+        run: yarn install
 
       - name: Build api-client
         run: yarn build:api-client
@@ -82,7 +85,7 @@ jobs:
   deploy:
     name: package and deploy the service
     needs: test
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/v1.0.0'
     runs-on: [self-hosted, linux]
     steps:
       - name: Set up Docker Buildx

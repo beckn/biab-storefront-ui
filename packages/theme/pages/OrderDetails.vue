@@ -598,6 +598,7 @@ export default {
       isSupportAvailable,
       fulfillmentData,
       paymentData
+
     };
   }
 };
