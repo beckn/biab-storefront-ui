@@ -13,12 +13,9 @@
       <div class="s-p-details">
         <div class="price-verified">
           <div @click="$emit('goToProduct')" class="s-p-name">{{ _pName }}</div>
-          <div v-if="_pTags">
-            <button
-              class="verified"
-              @click="showModal(_pName)"
-            >
-              Verified
+          <div class="verify-button" v-if="_pTags">
+            <button class="verified" @click="showModal(_pName)">
+              <span class="verified-text"> Verify </span>
             </button>
             <div :id="_pName" class="tooltiptext">
               ONDC Verified
@@ -218,8 +215,21 @@ export default {
 
 .verified {
   margin-top: 4px;
-  padding: 0px;
+  padding: 1px;
+  background-color: #f37a20;
+  color: white;
   font-size: 6px;
+  width: 44px;
+  height: 30px;
+  cursor: pointer;
+}
+
+.verified-text {
+  font-size: 14px;
+}
+
+.verify-button {
+  line-height: 38px;
 }
 
 /* Tooltip text */
