@@ -1,7 +1,11 @@
 <template>
-    <div v-show="enable" class="sf-loader">
-      <transition name="sf-fade" mode="out-in">
-        <div class="sf-loader__overlay">
+  <div v-show="enable" class="sf-loader">
+    <transition name="sf-fade" mode="out-in">
+      <div class="sf-loader__overlay">
+        <div>
+          <p>{{ custmText }}</p>
+        </div>
+        <div>
           <svg
             class="sf-loader__spinner"
             role="img"
@@ -10,7 +14,6 @@
             viewBox="0 0 38 38"
             xmlns="http://www.w3.org/2000/svg"
           >
-            <title>Loading...</title>
             <g fill="none" fill-rule="evenodd">
               <g transform="translate(1 1)" stroke-width="2">
                 <circle stroke-opacity=".5" cx="18" cy="18" r="18" />
@@ -28,20 +31,29 @@
             </g>
           </svg>
         </div>
-      </transition>
-    </div>
+      </div>
+    </transition>
+  </div>
 </template>
 
 <script>
-
 export default {
   name: 'LoadingBar',
   props: {
     enable: {
       type: Boolean,
       default: false
+    },
+    custmText: {
+      type: String,
+      default: ''
     }
   }
 };
 </script>
-
+<style lang="scss" scoped>
+.sf-loader__overlay {
+  display: flex;
+  flex-direction: column-reverse;
+}
+</style>

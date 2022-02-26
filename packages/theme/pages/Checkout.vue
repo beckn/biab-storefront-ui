@@ -256,7 +256,7 @@ import {
   SfCheckbox,
   SfImage,
   SfInput,
-  SfIcon,
+  SfIcon
 } from '@storefront-ui/vue';
 import ModalSlide from '~/components/ModalSlide.vue';
 import AddressInputs from '~/components/AddressInputs.vue';
@@ -268,7 +268,7 @@ import {
   providerGetters,
   useAddress,
   useInitOrder,
-  useOrderPolicy,
+  useOrderPolicy
 } from '@vue-storefront/beckn';
 
 // import { useUiState } from '~/composables';
@@ -300,7 +300,7 @@ export default {
     ProductCard,
     AddressInputs,
     SfIcon,
-    AddressCard,
+    AddressCard
   },
   setup(_, context) {
     // const isThankYou = computed(() => currentStep.value === 'thank-you');
@@ -313,6 +313,16 @@ export default {
     // const billingAddressModal = ref(false);
 
     const { cart, load } = useCart();
+
+    const currentOrderTransactionId = computed(() => {
+      if (localStorage.getItem('orderProgress') !== null) {
+        const orderProgressData = JSON.parse(
+          localStorage.getItem('orderProgress')
+        );
+        return orderProgressData?.transactionId;
+      }
+    });
+
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     // const { selectedLocation } = useUiState();
 
@@ -320,7 +330,7 @@ export default {
       // polling ,
       pollResults: onInitResult,
       poll: onInitOrder,
-      init,
+      init
     } = useInitOrder();
 
     const { init: getOrderPolicy } = useOrderPolicy();
@@ -330,13 +340,17 @@ export default {
       getBillngAddress,
       getShippingAddress,
       setBillingAddress,
-      setShippingAddress,
+      setShippingAddress
     } = useAddress();
     console.log(getShippingAddress());
     const shippingAddress = ref(getShippingAddress());
 
     const billingAddress = ref(getBillngAddress());
     const transactionId = ref('');
+
+    const isTransactionMatching = computed(() => {
+      return transactionId.value === currentOrderTransactionId.value;
+    });
 
     const isShippingAddressFilled = computed(() => {
       // debugger;
@@ -397,17 +411,37 @@ export default {
       console.log(response);
       await onInitOrder({
         // eslint-disable-next-line camelcase
-        messageId: response.context.message_id,
+        messageId: response.context.message_id
       });
       console.log(onInitResult);
     };
-    const paymentProceed = () => {
-      context.root.$router.push({
-        path: '/payment',
-        query: {
-          id: transactionId.value,
-        },
-      });
+
+    //To re-factor the function below
+    const paymentProceed = async () => {
+      if (isTransactionMatching.value) {
+        context.root.$router.push({
+          path: '/payment',
+          query: {
+            id: transactionId.value
+          }
+        });
+      } else {
+        enableLoader.value = true;
+        const params = createOrderRequest(
+          transactionId.value,
+          cart.value,
+          shippingAddress.value,
+          billingAddress.value,
+          shippingAsBilling.value,
+          '12.9063433,77.5856825'
+        );
+        const response = await init(params);
+        console.log(response);
+        await onInitOrder({
+          // eslint-disable-next-line camelcase
+          messageId: response.context.message_id
+        });
+      }
     };
 
     watch(
@@ -425,8 +459,18 @@ export default {
               shippingAsBilling: shippingAsBilling.value,
               initOrder: onInitResult.value.message.order,
               transactionId: transactionId.value,
+              bapId: onInitResult.value.context.bap_id
             })
           );
+
+          if (!isTransactionMatching.value) {
+            context.root.$router.push({
+              path: '/payment',
+              query: {
+                id: transactionId.value
+              }
+            });
+          }
           enableLoader.value = false;
         }
       }
@@ -437,8 +481,8 @@ export default {
       transactionId.value = localStorage.getItem('transactionId');
       getOrderPolicy({
         context: {
-          bpp_id: cart.value.bpp.id,
-        },
+          bpp_id: cart.value.bpp.id
+        }
       }).then((res) => {
         policy.value = res.message;
       });
@@ -464,8 +508,10 @@ export default {
       initOrder,
       policy,
       paymentProceed,
+      isTransactionMatching,
+      currentOrderTransactionId
     };
-  },
+  }
 };
 </script>
 

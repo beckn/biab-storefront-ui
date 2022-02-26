@@ -1,5 +1,15 @@
 <template>
   <div id="payment">
+    <div v-if="enableLoader" key="loadingCircle" class="loader-circle">
+      <LoadingCircle
+        :enable="enableLoader"
+        :custmText="
+          !isOrderVerified
+            ? 'Checking authenticity of items'
+            : 'Items Successfully Verified for Authenticity. Confirming Order'
+        "
+      />
+    </div>
     <div class="top-bar header-top">
       <div @click="goBack" class="sf-chevron--left sf-chevron icon_back">
         <span class="sf-search-bar__icon">
@@ -8,9 +18,7 @@
       </div>
       <div class="">Select Payment Method</div>
     </div>
-    <div v-if="enableLoader" key="loadingCircle" class="loader-circle">
-      <LoadingCircle :enable="enableLoader" />
-    </div>
+
     <div class="details header-push">
       <div class="sub-heading">
         <div class="p-name">Payment</div>
@@ -54,7 +62,7 @@
     </div>
     <Footer
       class="footer-fixed"
-      :buttonText="'Pay & Confirm'"
+      :buttonText="'Confirm'"
       :buttonEnable="isPayConfirmActive"
       :totalPrice="parseFloat(order.cart.quote.price.value)"
       :totalItem="cartGetters.getTotalItems(order.cart)"
@@ -115,12 +123,36 @@ export default {
   setup(_, context) {
     const paymentMethod = ref('');
     const order = ref({});
+    const isOrderVerified = ref(false);
     const enableLoader = ref(false);
-    const isTransactionMatching = computed(() => {
-      return order.value?.transactionId === context.root.$route.query.id;
-    });
 
     const { init, poll, pollResults } = useConfirmOrder('confirm-order');
+    const isProductConfirmed = async () => {
+      await fetch('https://dev.studio.dhiway.com/api/v1/cord/order_confirm', {
+        method: 'POST',
+        cache: 'no-cache',
+        credentials: 'same-origin',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        redirect: 'follow',
+        referrerPolicy: 'no-referrer',
+        body: JSON.stringify({
+          identifier: order.value.bapId,
+          order_price: order.value.cart.totalPrice,
+          quantity: order.value.cart.totalItems,
+          listId: order.value.cart.items[0].tags.product_list_id,
+
+          blockHash: order.value.cart.items[0].tags.blockhash
+        })
+      })
+        .then((res) => {
+          if (res.status === 200) {
+            isOrderVerified.value = true;
+          }
+        })
+        .catch((e) => console.error(e));
+    };
 
     const changePaymentMethod = (value) => {
       paymentMethod.value = value;
@@ -132,6 +164,7 @@ export default {
 
     const proceedToConfirm = async () => {
       enableLoader.value = true;
+      await isProductConfirmed();
       order.value.paymentMethod = paymentMethod.value;
       const params = createConfirmOrderRequest(
         order.value.transactionId,
@@ -162,8 +195,8 @@ export default {
             JSON.parse(localStorage.getItem('orderHistory')) ?? [];
           orderHistory.push(order.value);
           localStorage.setItem('orderHistory', JSON.stringify(orderHistory));
-          localStorage.removeItem('orderProgress');
-          localStorage.removeItem('transactionId');
+          // localStorage.removeItem('orderProgress');
+          // localStorage.removeItem('transactionId');
 
           context.root.$router.push({
             path: '/ordersuccess',
@@ -177,9 +210,6 @@ export default {
 
     onBeforeMount(() => {
       order.value = JSON.parse(localStorage.getItem('orderProgress'));
-      if (!isTransactionMatching.value) {
-        context.root.$router.push('/');
-      }
       console.log(order.value);
     });
     return {
@@ -190,8 +220,9 @@ export default {
       goBack,
       isPayConfirmActive,
       proceedToConfirm,
-      isTransactionMatching,
-      enableLoader
+      enableLoader,
+      isProductConfirmed,
+      isOrderVerified
     };
   }
 };

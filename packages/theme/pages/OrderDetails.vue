@@ -75,7 +75,17 @@
           />
         </div>
         <div class="s-p-details">
-          <div class="s-p-name">{{ cartGetters.getItemName(product) }}</div>
+          <div class="verify-container">
+            <div class="s-p-name">{{ cartGetters.getItemName(product) }}</div>
+            <div class="verified-image" v-if="product.tags">
+              <SfImage
+                alt="verified-icon"
+                src="/icons/verified.svg"
+                :width="18"
+                :height="18"
+              />
+            </div>
+          </div>
           <div class="s-p-weight">x {{ cartGetters.getItemQty(product) }}</div>
           <div class="s-p-price">
             ₹ {{ cartGetters.getItemPrice(product).regular }}
@@ -161,9 +171,9 @@
               <div class="address-text">Method</div>
               <div class="address-text">{{ order.paymentMethod }}</div>
             </CardContent>
-            <CardContent class="flex-space-bw">
+            <CardContent v-if="paymentData" class="flex-space-bw">
               <div class="address-text">Status</div>
-              <div class="address-text">{{ order.order.payment.status }}</div>
+              <div class="address-text">{{ paymentData.payment.status }}</div>
             </CardContent>
             <CardContent v-if="false" class="flex-space-bw">
               <div class="address-text">Transaction Id</div>
@@ -251,7 +261,7 @@
             class="track-details"
             :class="{
               first: index === 0,
-              last: index === fulfillmentSteps.length - 1,
+              last: index === fulfillmentSteps.length - 1
             }"
             v-for="(step, index) in fulfillmentSteps"
             :key="index"
@@ -376,7 +386,7 @@ import {
   SfAccordion,
   SfImage,
   SfInput,
-  SfIcon,
+  SfIcon
 } from '@storefront-ui/vue';
 import ModalSlide from '~/components/ModalSlide.vue';
 import LoadingCircle from '~/components/LoadingCircle';
@@ -388,14 +398,14 @@ import {
   providerGetters,
   useTrack,
   useOrderStatus,
-  useSupport,
+  useSupport
 } from '@vue-storefront/beckn';
 
 import {
   ref,
   onBeforeMount,
   computed,
-  onBeforeUnmount,
+  onBeforeUnmount
 } from '@vue/composition-api';
 import Card from '~/components/Card.vue';
 import CardContent from '~/components/CardContent.vue';
@@ -423,7 +433,7 @@ export default {
     SfAccordionItem,
     SfIcon,
     LoadingCircle,
-    AddressCard,
+    AddressCard
   },
   setup(_, context) {
     // const isThankYou = computed(() => currentStep.value === 'thank-you');
@@ -431,22 +441,20 @@ export default {
     const order = ref(null);
     const enableLoader = ref(true);
     const fulfillmentData = ref(null);
-    const {
-      poll: onTrack,
-      init: track,
-      pollResults: trackResult,
-    } = useTrack('track');
+    const { poll: onTrack, init: track, pollResults: trackResult } = useTrack(
+      'track'
+    );
     const {
       poll: onSupport,
       init: support,
-      pollResults: supportResult,
+      pollResults: supportResult
     } = useSupport('support');
 
     const {
       poll: onStatus,
       init: status,
       pollResults: statusResult,
-      stopPolling: stopStatusPolling,
+      stopPolling: stopStatusPolling
     } = useOrderStatus('status');
     const isTrackingAvailable = computed(() => {
       return trackResult.value?.message?.tracking?.url;
@@ -456,6 +464,11 @@ export default {
       fulfillmentData.value = statusResult.value?.message?.order;
       return statusResult.value?.message?.order;
     });
+
+    const paymentData = computed(() => {
+      return statusResult.value?.message?.order;
+    });
+
     const isSupportAvailable = computed(() => {
       return supportResult.value?.message;
     });
@@ -467,12 +480,12 @@ export default {
       null,
       null,
       null,
-      null,
+      null
     ];
     const fulfillmentSteps = [
       { status: 'Items Packed', time: 'May 2021, 2021 12:40 PM' },
       { status: 'Delivery agent assigned', time: 'May 2021, 2021 12:40 PM' },
-      { status: 'Agent enroute to store', time: 'May 2021, 2021 12:40 PM' },
+      { status: 'Agent enroute to store', time: 'May 2021, 2021 12:40 PM' }
     ];
     const openSupportModal = ref(false);
     const openTrackModal = ref(false);
@@ -486,12 +499,12 @@ export default {
           // eslint-disable-next-line camelcase
           transaction_id: order.value.transactionId,
           // eslint-disable-next-line camelcase
-          bpp_id: order.value.cart.bpp.id,
+          bpp_id: order.value.cart.bpp.id
         },
         message: {
           // eslint-disable-next-line camelcase
-          ref_id: order.value.order.id,
-        },
+          ref_id: order.value.order.id
+        }
       };
 
       try {
@@ -508,17 +521,17 @@ export default {
           // eslint-disable-next-line camelcase
           transaction_id: order.value.transactionId,
           // eslint-disable-next-line camelcase
-          bpp_id: order.value.cart.bpp.id,
+          bpp_id: order.value.cart.bpp.id
         },
         message: {
           // eslint-disable-next-line camelcase
-          order_id: order.value.order.id,
-        },
+          order_id: order.value.order.id
+        }
       };
 
       try {
         const response = await status(params);
-        await onStatus({ messageId: response.context.message_id });
+        await onStatus({ messageId: order.value.order.id });
       } catch (error) {
         console.log('Error calling status apis - ', error);
       }
@@ -530,12 +543,12 @@ export default {
           // eslint-disable-next-line camelcase
           transaction_id: order.value.transactionId,
           // eslint-disable-next-line camelcase
-          bpp_id: order.value.cart.bpp.id,
+          bpp_id: order.value.cart.bpp.id
         },
         message: {
           // eslint-disable-next-line camelcase
-          order_id: order.value.order.id,
-        },
+          order_id: order.value.order.id
+        }
       };
 
       try {
@@ -583,8 +596,10 @@ export default {
       openWindow,
       isFulfillmentAvailable,
       isSupportAvailable,
+      fulfillmentData,
+      paymentData
     };
-  },
+  }
 };
 </script>
 
@@ -598,6 +613,12 @@ export default {
 .support-btns {
   width: 100%;
   border-radius: 3px;
+}
+.verify-container {
+  display: flex;
+}
+.verified-image {
+  padding-left: 10px;
 }
 
 .cancel-order-btn {
