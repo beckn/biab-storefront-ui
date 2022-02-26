@@ -13,7 +13,6 @@ ENV PATH /app/node_modules/.bin:$PATH
 COPY . ./
 RUN yarn install
 RUN yarn build
-
 # production environment
 FROM nginx:1.19.7-alpine
 RUN apk update && apk upgrade
