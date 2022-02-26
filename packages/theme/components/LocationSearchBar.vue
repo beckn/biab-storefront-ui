@@ -98,4 +98,7 @@ export default {
   right: 0;
   top: 0;
 }
+.sf-search-bar__icon {
+  padding-left: 80%;
+}
 </style>

@@ -14,9 +14,16 @@
         <div class="price-verified">
           <div @click="$emit('goToProduct')" class="s-p-name">{{ _pName }}</div>
           <div class="verify-button" v-if="_pTags">
-            <button class="verified" @click="showModal(_pName)">
+            <!-- <button class="verified" @click="showModal(_pName)">
               <span class="verified-text"> Verify </span>
-            </button>
+            </button> -->
+            <SfImage
+              @click="showModal(_pName)"
+              alt="verified-icon"
+              src="/icons/verified icon badge.png"
+              :width="38"
+              :height="34"
+            />
             <div :id="_pName" class="tooltiptext">
               ONDC Verified
               <SfImage
