@@ -75,7 +75,17 @@
           />
         </div>
         <div class="s-p-details">
-          <div class="s-p-name">{{ cartGetters.getItemName(product) }}</div>
+          <div class="verify-container">
+            <div class="s-p-name">{{ cartGetters.getItemName(product) }}</div>
+            <div class="verified-image" v-if="product.tags">
+              <SfImage
+                alt="verified-icon"
+                src="/icons/verified.svg"
+                :width="18"
+                :height="18"
+              />
+            </div>
+          </div>
           <div class="s-p-weight">x {{ cartGetters.getItemQty(product) }}</div>
           <div class="s-p-price">
             ₹ {{ cartGetters.getItemPrice(product).regular }}
@@ -161,7 +171,7 @@
               <div class="address-text">Method</div>
               <div class="address-text">{{ order.paymentMethod }}</div>
             </CardContent>
-            <CardContent class="flex-space-bw">
+            <CardContent v-if="paymentData" class="flex-space-bw">
               <div class="address-text">Status</div>
               <div class="address-text">{{ paymentData.payment.status }}</div>
             </CardContent>
@@ -603,6 +613,12 @@ export default {
 .support-btns {
   width: 100%;
   border-radius: 3px;
+}
+.verify-container {
+  display: flex;
+}
+.verified-image {
+  padding-left: 10px;
 }
 
 .cancel-order-btn {

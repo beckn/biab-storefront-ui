@@ -1,5 +1,15 @@
 <template>
   <div id="payment">
+    <div v-if="enableLoader" key="loadingCircle" class="loader-circle">
+      <LoadingCircle
+        :enable="enableLoader"
+        :custmText="
+          !isOrderVerified
+            ? 'Checking authenticity of items'
+            : 'Items Successfully Verified for Authenticity. Confirming Order'
+        "
+      />
+    </div>
     <div class="top-bar header-top">
       <div @click="goBack" class="sf-chevron--left sf-chevron icon_back">
         <span class="sf-search-bar__icon">
@@ -8,9 +18,7 @@
       </div>
       <div class="">Select Payment Method</div>
     </div>
-    <div v-if="enableLoader" key="loadingCircle" class="loader-circle">
-      <LoadingCircle :enable="enableLoader" />
-    </div>
+
     <div class="details header-push">
       <div class="sub-heading">
         <div class="p-name">Payment</div>
@@ -115,32 +123,35 @@ export default {
   setup(_, context) {
     const paymentMethod = ref('');
     const order = ref({});
+    const isOrderVerified = ref(false);
     const enableLoader = ref(false);
 
     const { init, poll, pollResults } = useConfirmOrder('confirm-order');
     const isProductConfirmed = async () => {
-      try {
-        await fetch('https://dev.studio.dhiway.com/api/v1/cord/confirm-order', {
-          method: 'POST',
-          cache: 'no-cache',
-          credentials: 'same-origin',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          redirect: 'follow',
-          referrerPolicy: 'no-referrer',
-          body: JSON.stringify({
-            identifier: '//buyer//3',
-            order_price: order.value.cart.totalPrice,
-            quantity: order.value.cart.totalItems,
-            listId: order.value.cart.items[0].tags.product_list_id,
+      await fetch('https://dev.studio.dhiway.com/api/v1/cord/order_confirm', {
+        method: 'POST',
+        cache: 'no-cache',
+        credentials: 'same-origin',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        redirect: 'follow',
+        referrerPolicy: 'no-referrer',
+        body: JSON.stringify({
+          identifier: order.value.bapId,
+          order_price: order.value.cart.totalPrice,
+          quantity: order.value.cart.totalItems,
+          listId: order.value.cart.items[0].tags.product_list_id,
 
-            blockHash: order.value.cart.items[0].tags.blockhash
-          })
-        });
-      } catch (error) {
-        console.error(error);
-      }
+          blockHash: order.value.cart.items[0].tags.blockhash
+        })
+      })
+        .then((res) => {
+          if (res.status === 200) {
+            isOrderVerified.value = true;
+          }
+        })
+        .catch((e) => console.error(e));
     };
 
     const changePaymentMethod = (value) => {
@@ -153,6 +164,7 @@ export default {
 
     const proceedToConfirm = async () => {
       enableLoader.value = true;
+      await isProductConfirmed();
       order.value.paymentMethod = paymentMethod.value;
       const params = createConfirmOrderRequest(
         order.value.transactionId,
@@ -168,7 +180,6 @@ export default {
         }
       );
       const response = await init(params);
-      await isProductConfirmed();
       await poll({ messageId: response.context.message_id });
     };
 
@@ -210,7 +221,8 @@ export default {
       isPayConfirmActive,
       proceedToConfirm,
       enableLoader,
-      isProductConfirmed
+      isProductConfirmed,
+      isOrderVerified
     };
   }
 };
