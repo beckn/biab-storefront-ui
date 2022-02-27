@@ -27,7 +27,6 @@
           </div>
           <div class="verify-button" v-if="_pTags">
             <SfImage
-              class="image-verify"
               @click="showModal(_pName)"
               alt="verified-icon"
               src="/icons/verified icon badge.png"
@@ -222,7 +221,6 @@ export default {
 
 .verify-inline-container {
   display: flex;
-  justify-content: space-around;
 }
 
 .verified {
@@ -241,11 +239,7 @@ export default {
 }
 
 .verify-button {
-  line-height: 38px;
   padding-left: 40px;
-}
-.image-verify {
-  margin-bottom: 4px;
 }
 
 /* Tooltip text */
