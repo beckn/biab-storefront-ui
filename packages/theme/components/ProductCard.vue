@@ -240,11 +240,12 @@ export default {
 
 .verify-button {
   padding-left: 40px;
+  position: relative;
 }
 
-/* Tooltip text */
 .tooltiptext {
   display: none;
+  width: 90px;
   background-color: #fff;
   text-align: center;
   border-radius: 6px;
@@ -253,7 +254,6 @@ export default {
   font-size: 10px;
   font-weight: bold;
   border: 1px solid #888;
-  /* Position the tooltip text - see examples below! */
   position: absolute;
   z-index: 1;
 }
