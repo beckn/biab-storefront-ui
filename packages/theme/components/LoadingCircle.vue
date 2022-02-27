@@ -2,8 +2,8 @@
   <div v-show="enable" class="sf-loader">
     <transition name="sf-fade" mode="out-in">
       <div class="sf-loader__overlay">
-        <div>
-          <p>{{ custmText }}</p>
+        <div class="custom-text">
+          <span>{{ custmText }}</span>
         </div>
         <div>
           <svg
@@ -55,5 +55,9 @@ export default {
 .sf-loader__overlay {
   display: flex;
   flex-direction: column-reverse;
+}
+.custom-text {
+  text-align: center;
+  padding-top: 11px;
 }
 </style>
