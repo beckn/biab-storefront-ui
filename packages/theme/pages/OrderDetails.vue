@@ -80,9 +80,9 @@
             <div class="verified-image" v-if="product.tags">
               <SfImage
                 alt="verified-icon"
-                src="/icons/verified.svg"
-                :width="18"
-                :height="18"
+                src="/icons/verified icon badge.png"
+                :width="19"
+                :height="19"
               />
             </div>
           </div>
@@ -598,7 +598,6 @@ export default {
       isSupportAvailable,
       fulfillmentData,
       paymentData
-
     };
   }
 };
