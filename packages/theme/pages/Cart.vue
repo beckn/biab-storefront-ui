@@ -100,7 +100,7 @@
         :totalPrice="cartGetters.getTotals(cart).total"
         :totalItem="cartGetters.getTotalItems(cart)"
         :buttonEnable="!errOutOfStock && !errUpdateCount && !enableLoader"
-        buttonText="checkout"
+        buttonText="proceed"
       >
         <template v-slot:buttonIcon>
           <SfIcon icon="empty_cart" color="white" :coverage="1" />
@@ -146,7 +146,7 @@ import {
   SfPrice,
   SfCollectedProduct,
   SfImage,
-  SfInput,
+  SfInput
 } from '@storefront-ui/vue';
 import { useCart, cartGetters, useQuote } from '@vue-storefront/beckn';
 import ProductCard from '~/components/ProductCard';
@@ -171,7 +171,7 @@ export default {
     Footer,
     ModalSlide,
     SfInput,
-    LoadingCircle,
+    LoadingCircle
   },
   setup(_, { root }) {
     const { cart, addItem, load, setCart } = useCart();
@@ -201,14 +201,14 @@ export default {
             bpp_id: cart.value.bpp.id,
             provider: {
               id: cart.value.bppProvider.id,
-              locations: [item.location_id],
-            },
+              locations: [item.location_id]
+            }
           };
         });
         const cartData = await init({
           // eslint-disable-next-line camelcase
           context: { transaction_id: transactionId },
-          message: { cart: { items: cartItems } },
+          message: { cart: { items: cartItems } }
         });
 
         watch(
@@ -268,8 +268,8 @@ export default {
         customQuery: {
           bpp: cart.value.bpp,
           bppProvider: cart.value.bppProvider,
-          locations: cart.value.locations,
-        },
+          locations: cart.value.locations
+        }
       });
       if (matchQ) matchQuote();
     };
@@ -334,9 +334,9 @@ export default {
       enableLoader,
       updateAll,
       validInput,
-      onChangeInput,
+      onChangeInput
     };
-  },
+  }
 };
 </script>
 
@@ -507,4 +507,3 @@ export default {
   }
 }
 </style>
-

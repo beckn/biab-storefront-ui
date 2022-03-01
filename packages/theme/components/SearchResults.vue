@@ -75,7 +75,7 @@
                       keyVal +
                       'product'
                   "
-                  :pTags="product.tags"
+                  :pTags="false"
                   :pName="productGetters.getName(product)"
                   :pPrice="productGetters.getPrice(product).regular"
                   :pImage="productGetters.getGallery(product)[0].small[0]"

@@ -25,7 +25,7 @@
           <div class="s-p-price" v-if="_updatedCount !== 0">
             ₹ {{ _updatedPrice ? _updatedPrice : _pPrice }}
           </div>
-          <div class="verify-button" v-if="_pTags">
+          <div class="verify-button" v-if="false">
             <SfImage
               @click="showModal(_pName)"
               alt="verified-icon"
