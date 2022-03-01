@@ -1,11 +1,6 @@
 <template>
   <div>
     <div class="top-bar">
-      <div @clic="goBack" class="sf-chevron--left sf-chevron icon_back">
-        <span class="sf-search-bar__icon">
-          <SfIcon color="var(--c-primary)" size="20px" icon="chevron_left" />
-        </span>
-      </div>
       <div class="header-push">Order Details</div>
       <SfButton
         v-if="isTrackingAvailable"
@@ -77,7 +72,7 @@
         <div class="s-p-details">
           <div class="verify-container">
             <div class="s-p-name">{{ cartGetters.getItemName(product) }}</div>
-            <div class="verified-image" v-if="product.tags">
+            <div class="verified-image" v-if="false">
               <SfImage
                 alt="verified-icon"
                 src="/icons/verified icon badge.png"
