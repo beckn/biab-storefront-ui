@@ -153,13 +153,15 @@
               class="flex-space-bw"
             >
               <div class="address-text">{{ breakup.title }}</div>
-              <div class="address-text">₹{{ breakup.price.value }}</div>
+              <div class="address-text">
+                ₹{{ Math.trunc(breakup.price.value) }}
+              </div>
             </CardContent>
             <div><hr class="sf-divider divider" /></div>
             <CardContent class="flex-space-bw">
               <div class="address-text bold">Total</div>
               <div class="address-text bold">
-                ₹{{ order.cart.quote.price.value }}
+                ₹{{ Math.trunc(order.cart.quote.price.value) }}
               </div>
             </CardContent>
             <CardContent class="flex-space-bw">
