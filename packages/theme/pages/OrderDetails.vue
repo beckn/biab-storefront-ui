@@ -173,7 +173,21 @@
             </CardContent>
             <CardContent v-if="paymentData" class="flex-space-bw">
               <div class="address-text">Status</div>
-              <div class="address-text">{{ paymentData.payment.status }}</div>
+              <div
+                v-if="paymentData.payment.status === 'PAID'"
+                class="address-text paid-green"
+              >
+                {{ paymentData.payment.status }}
+              </div>
+              <div
+                v-else-if="paymentData.payment.status === 'NOT-PAID'"
+                class="address-text paid-blue"
+              >
+                {{ paymentData.payment.status }}
+              </div>
+              <div v-else class="address-text">
+                {{ paymentData.payment.status }}
+              </div>
             </CardContent>
             <CardContent v-if="false" class="flex-space-bw">
               <div class="address-text">Transaction Id</div>
@@ -201,7 +215,11 @@
             </CardContent>
             <CardContent v-if="isFulfillmentAvailable" class="flex-space-bw">
               <div class="address-text">Status</div>
-              <div class="address-text">{{ isFulfillmentAvailable.state }}</div>
+              <!-- <div class="address-text">{{ isFulfillmentAvailable.state }}</div> -->
+
+              <div class="address-text order-status">
+                {{ isFulfillmentAvailable.state }}
+              </div>
             </CardContent>
           </SfAccordionItem>
         </SfAccordion>
@@ -218,8 +236,8 @@
                 v-if="fulfillmentData.fulfillment.state"
                 class="flex-space-bw"
               >
-                <div class="address-text">State</div>
-                <div class="address-text">
+                <div class="address-text">Latest Status</div>
+                <div class="address-text fulfillment-state">
                   {{ fulfillmentData.fulfillment.state.descriptor.name }}
                 </div>
               </CardContent>
@@ -614,6 +632,14 @@ export default {
   width: 100%;
   border-radius: 3px;
 }
+.fulfillment-state {
+  color: blue;
+}
+
+.order-status {
+  color: blue;
+}
+
 .verify-container {
   display: flex;
 }
@@ -670,6 +696,13 @@ export default {
 .address-text {
   align-self: center;
   margin-left: 6px;
+}
+.paid-blue {
+  color: blue;
+}
+
+.paid-green {
+  color: green;
 }
 
 .sub-heading {

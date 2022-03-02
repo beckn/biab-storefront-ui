@@ -214,13 +214,16 @@ export default {
 }
 .price-verified {
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: top;
 }
 
 .verify-inline-container {
   display: flex;
+  justify-content: space-between;
+}
+
+.s-p-details {
+  display: flex;
+  flex-direction: column;
 }
 
 .verified {
