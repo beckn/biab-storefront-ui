@@ -4,7 +4,7 @@
 
 <a href="https://discord.vuestorefront.io">![Our Discord server](https://img.shields.io/discord/770285988244750366?label=join%20discord&logo=Discord&logoColor=white)</a>
 
-> **Disclaimer:** This project is still in beta phase.
+> **Disclaimer:** This project is still in beta phase. Ustable for Production Use
 
 This repository is a starting point for creating new integrations for [Vue Storefront Next](https://github.com/vuestorefront/vue-storefront/).
 
