@@ -34,7 +34,7 @@
               :height="19"
             />
             <div :id="_pName" class="tooltiptext">
-              ONDC Verified
+              Agmark Certified
               <SfImage
                 alt="verified-icon"
                 src="/icons/agmark-verified-logo.png"
