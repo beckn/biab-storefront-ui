@@ -86,6 +86,10 @@
               />
             </div>
           </div>
+          <div>
+            <span class="s-p-name">SKU:</span>
+            <span class="s-p-name">{{ product.id }}</span>
+          </div>
           <div class="s-p-weight">x {{ cartGetters.getItemQty(product) }}</div>
           <div class="s-p-price">
             ₹ {{ cartGetters.getItemPrice(product).regular }}
@@ -224,6 +228,35 @@
           </SfAccordionItem>
         </SfAccordion>
       </Card>
+
+      <div class="sub-heading"></div>
+      <div v-if="isFulfillmentAvailable">
+        <Card>
+          <SfAccordion>
+            <SfAccordionItem :header="'Fulfillment progress'">
+              <!-- <CardContent class="fulfillment-progress"> -->
+              <!-- <CardContent class="fulfillment-progress"> -->
+              <div class="fulfillment-data-container">
+                <div>
+                  <SfImage
+                    alt="fulfillment-progress"
+                    src="/icons/fulfillment-progress-check.svg"
+                    :width="21"
+                    :height="21"
+                  />
+                </div>
+                <div class="fulfillment-descriptor">
+                  {{ fulfillmentData.fulfillment.state.descriptor.name }}
+                </div>
+              </div>
+              <div class="fulfillment-time">
+                <span>{{ getOrderPlacementTimeline(fulfillmentContext) }}</span>
+              </div>
+              <!-- </CardContent> -->
+            </SfAccordionItem>
+          </SfAccordion>
+        </Card>
+      </div>
 
       <div class="sub-heading">
         <!-- <div class="p-name">Order</div> -->
@@ -459,6 +492,7 @@ export default {
     const order = ref(null);
     const enableLoader = ref(true);
     const fulfillmentData = ref(null);
+    const fulfillmentContext = ref(null);
     const { poll: onTrack, init: track, pollResults: trackResult } = useTrack(
       'track'
     );
@@ -478,7 +512,20 @@ export default {
       return trackResult.value?.message?.tracking?.url;
     });
 
+    const getOrderPlacementTimeline = (timeStamp) => {
+      const localDateAndTime = new Date(timeStamp);
+      const localTime = localDateAndTime.toLocaleTimeString();
+      const localDate = localDateAndTime.toDateString();
+      const localDateWithoutDay = localDate
+        .split(' ')
+        .slice(1)
+        .join(' ');
+
+      return `${localDateWithoutDay}, ${localTime}`;
+    };
+
     const isFulfillmentAvailable = computed(() => {
+      fulfillmentContext.value = statusResult.value?.context?.timestamp;
       fulfillmentData.value = statusResult.value?.message?.order;
       return statusResult.value?.message?.order;
     });
@@ -615,7 +662,9 @@ export default {
       isFulfillmentAvailable,
       isSupportAvailable,
       fulfillmentData,
-      paymentData
+      paymentData,
+      getOrderPlacementTimeline,
+      fulfillmentContext
     };
   }
 };
@@ -632,6 +681,25 @@ export default {
   width: 100%;
   border-radius: 3px;
 }
+
+.fulfillment-time {
+  padding-left: 25px;
+}
+.fulfillment-progress {
+  display: flex;
+  flex-direction: column;
+}
+
+.fulfillment-data-container {
+  display: flex;
+  padding-top: 8px;
+}
+
+.fulfillment-descriptor {
+  padding-left: 5px;
+  font-weight: 700;
+}
+
 .fulfillment-state {
   color: blue;
 }

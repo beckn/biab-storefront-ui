@@ -37,8 +37,8 @@
               ONDC Verified
               <SfImage
                 alt="verified-icon"
-                src="/icons/verified.svg"
-                :width="8"
+                src="/icons/agmark-verified-logo.png"
+                :width="10"
                 :height="10"
               />
             </div>

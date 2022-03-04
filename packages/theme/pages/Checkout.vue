@@ -67,7 +67,17 @@
           />
         </div>
         <div class="s-p-details">
-          <div class="s-p-name">{{ cartGetters.getItemName(product) }}</div>
+          <div class="checkout-verify">
+            <div class="s-p-name">{{ cartGetters.getItemName(product) }}</div>
+            <div class="verified-image" v-if="product.tags">
+              <SfImage
+                alt="verified-icon"
+                src="/icons/verified icon badge.png"
+                :width="19"
+                :height="19"
+              />
+            </div>
+          </div>
           <div class="s-p-weight">x {{ cartGetters.getItemQty(product) }}</div>
           <div class="s-p-price">
             ₹
@@ -532,6 +542,14 @@ export default {
 // }
 .bold {
   font-weight: 600;
+}
+
+.checkout-verify {
+  display: flex;
+}
+
+.verified-image {
+  padding-left: 9px;
 }
 
 .card-checkbox {
