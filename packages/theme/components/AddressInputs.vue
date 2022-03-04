@@ -9,7 +9,7 @@
         :errorMessage="validateInput('Name')"
         v-model="address.name"
         :type="'text'"
-        :label="'Name'"
+        :label="'Name*'"
         :name="'Name'"
       />
       <SfInput
@@ -18,7 +18,7 @@
         :errorMessage="validateInput('mobile')"
         v-model="address.mobile"
         :type="'number'"
-        :label="'Mobile Number'"
+        :label="'Mobile Number*'"
         pattern="[0-9]{10}"
         maxlength="10"
         autocomplete="tel"
@@ -28,14 +28,14 @@
         v-e2e="'full-address-input'"
         v-model="address.address"
         :type="'text'"
-        :label="'Complete Address'"
+        :label="'Complete Address*'"
         :name="'address'"
       />
       <SfInput
         v-e2e="'building-input'"
         v-model="address.building"
         :type="'text'"
-        :label="'Building Name Floor'"
+        :label="'Building Name Floor*'"
         :name="'building'"
       />
       <SfInput
@@ -46,7 +46,7 @@
         :max="999999"
         min="0"
         pattern="[0-9]{6}"
-        :label="'Pincode'"
+        :label="'Pincode*'"
         :name="'Pincode'"
         :valid="!validateInput('Pincode')"
         :errorMessage="validateInput('Pincode')"
@@ -55,7 +55,7 @@
         v-e2e="'landmark-input'"
         v-model="address.landmark"
         :type="'text'"
-        :label="'Landmark'"
+        :label="'Landmark*'"
         :name="'locality'"
         @change="() => {}"
       />
@@ -80,16 +80,16 @@ export default {
   name: 'AddressInputs',
   components: {
     SfButton,
-    SfInput,
+    SfInput
   },
   props: {
     buttonText: {
       type: String,
-      default: '',
+      default: ''
     },
     headingText: {
       type: String,
-      default: '',
+      default: ''
     },
     addressDetails: {
       type: Object,
@@ -98,10 +98,10 @@ export default {
         mobile: '',
         building: '',
         landmark: '',
-        address: '',
-      },
+        address: ''
+      }
     },
-    buttonEnable: { type: Boolean, default: true },
+    buttonEnable: { type: Boolean, default: true }
   },
   setup(props, { emit }) {
     const address = ref(props.addressDetails);
@@ -111,7 +111,7 @@ export default {
       pincode: false,
       mobile: false,
       name: false,
-      building: false,
+      building: false
     });
 
     const validateInput = (field) => {
@@ -156,7 +156,7 @@ export default {
           autoComplete.getPlacePredictions(
             {
               input: newValue,
-              types: ['geocode'],
+              types: ['geocode']
             },
             (predictions, status) => {
               if (status === window.google.maps.places.PlacesServiceStatus.OK) {
@@ -217,9 +217,9 @@ export default {
       saveDetails,
       valid,
       isFieldsValid,
-      validateInput,
+      validateInput
     };
-  },
+  }
 };
 </script>
 

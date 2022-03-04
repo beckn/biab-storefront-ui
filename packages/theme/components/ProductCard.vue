@@ -13,7 +13,7 @@
         <div>
           <div class="s-p-name">{{ _pName }}</div>
           <div class="s-p-retailer">
-            Sold by {{ _pProviderName }},
+            Sold by {{ _pProviderName }}
             <span class="s-p-retailer-distance">{{ _pDistance }}</span>
           </div>
         </div>

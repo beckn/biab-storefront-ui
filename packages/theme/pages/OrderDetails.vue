@@ -1,11 +1,6 @@
 <template>
   <div>
     <div class="top-bar">
-      <div @click="goBack" class="sf-chevron--left sf-chevron icon_back">
-        <span class="sf-search-bar__icon">
-          <SfIcon color="var(--c-primary)" size="20px" icon="chevron_left" />
-        </span>
-      </div>
       <div class="header-push">Order Details</div>
     </div>
 
@@ -96,17 +91,6 @@
               </CardContent>
 
               <div class="order-buttons-wrapper">
-                <div class="cancel-link">
-                  <span>
-                    <a
-                      class="cancel-target"
-                      target="_blank"
-                      href="http://www.google.com"
-                      >Cancel</a
-                    >
-                  </span>
-                </div>
-
                 <SfButton
                   class="sf-button--pure"
                   @click="
@@ -142,20 +126,20 @@
               <CardContent class="flex-space-bw">
                 <div class="fulfillment-progress">
                   <div
-                    v-for="(
-                      currFulfillment, fulfillmentId, index
-                    ) in fulfillmentData"
+                    v-for="(currFulfillment,
+                    fulfillmentId,
+                    index) in fulfillmentData"
                     class="track-details"
                     :class="{
                       first: index === 0,
-                      last: index === Object.keys(fulfillmentData).length - 1,
+                      last: index === Object.keys(fulfillmentData).length - 1
                     }"
                     :key="index"
                   >
                     <template
                       v-if="
                         currFulfillment.state &&
-                        currFulfillment.state.descriptor
+                          currFulfillment.state.descriptor
                       "
                     >
                       <div class="check-container">
@@ -448,7 +432,7 @@
                     ₹
                     {{
                       cartGetters.getItemPrice(product).regular *
-                      product.quantity
+                        product.quantity
                     }}
                   </div>
                 </div>
@@ -476,7 +460,7 @@ import {
   SfAccordion,
   SfImage,
   SfInput,
-  SfIcon,
+  SfIcon
 } from '@storefront-ui/vue';
 import ModalSlide from '~/components/ModalSlide.vue';
 import LoadingCircle from '~/components/LoadingCircle';
@@ -489,20 +473,20 @@ import {
   useTrack,
   useOrderStatus,
   useSupport,
-  useCart,
+  useCart
 } from '@vue-storefront/beckn';
 
 import {
   ref,
   onBeforeMount,
   computed,
-  onBeforeUnmount,
+  onBeforeUnmount
 } from '@vue/composition-api';
 import Card from '~/components/Card.vue';
 import CardContent from '~/components/CardContent.vue';
 import AddressCard from '~/components/AddressCard';
 import helpers, {
-  createStatusTrackAndSupportOrderRequest,
+  createStatusTrackAndSupportOrderRequest
 } from '../helpers/helpers';
 
 export default {
@@ -526,7 +510,7 @@ export default {
     SfIcon,
     LoadingCircle,
     AddressCard,
-    helpers,
+    helpers
   },
   setup(_, context) {
     // const isThankYou = computed(() => currentStep.value === 'thank-you');
@@ -543,20 +527,20 @@ export default {
       poll: onTrack,
       init: track,
       pollResults: trackResult,
-      stopPolling: stopPollingOnTrack,
+      stopPolling: stopPollingOnTrack
     } = useTrack('track');
     const {
       poll: onSupport,
       init: support,
       pollResults: supportResult,
-      stopPolling: stopPollingSupport,
+      stopPolling: stopPollingSupport
     } = useSupport('support');
 
     const {
       poll: onStatus,
       init: status,
       pollResults: statusResult,
-      stopPolling: stopStatusPolling,
+      stopPolling: stopStatusPolling
     } = useOrderStatus('status');
 
     const trackingData = computed(() => {
@@ -659,12 +643,12 @@ export default {
       null,
       null,
       null,
-      null,
+      null
     ];
     const fulfillmentSteps = [
       { status: 'Items Packed', time: 'May 2021, 2021 12:40 PM' },
       { status: 'Delivery agent assigned', time: 'May 2021, 2021 12:40 PM' },
-      { status: 'Agent enroute to store', time: 'May 2021, 2021 12:40 PM' },
+      { status: 'Agent enroute to store', time: 'May 2021, 2021 12:40 PM' }
     ];
     const openSupportModal = ref(false);
     const openTrackModal = ref(false);
@@ -774,16 +758,13 @@ export default {
       selectedSupportId,
       orderPlacementTime,
       selectMoreItemsId,
-      getMoreItems,
+      getMoreItems
     };
-  },
+  }
 };
 </script>
 
 <style lang="scss" scoped>
-.cancel-target {
-  color: #ce0400;
-}
 .track-target {
   color: #f37a20;
 }
