@@ -26,15 +26,6 @@
           >
             <nuxt-link :to="localePath('/orders')"> My Orders </nuxt-link>
             <div><hr class="sf-divider" /></div>
-            <!-- TO DO -->
-            <nuxt-link :to="localePath('/')"> My Address </nuxt-link>
-            <div><hr class="sf-divider" /></div>
-            <!-- TO DO -->
-            <nuxt-link :to="localePath('/')">Support</nuxt-link>
-            <div><hr class="sf-divider" /></div>
-            <!-- TO DO -->
-            <nuxt-link :to="localePath('/')">About</nuxt-link>
-            <div><hr class="sf-divider" /></div>
             <nuxt-link v-if="isUserAuthenticated()" :to="localePath('/Logout')"
               >Logout</nuxt-link
             >
@@ -49,7 +40,7 @@
       <LoadingBar
         :enable="
           enableLoadindBar &&
-          ['Product', 'cart', 'Search'].includes($route.name)
+            ['Product', 'cart', 'Search'].includes($route.name)
         "
       />
       <div
@@ -94,7 +85,7 @@ export default {
     SfBottomModal,
     Location,
     LoadingBar,
-    Card,
+    Card
   },
   directives: { clickOutside },
   setup(props, { root }) {
@@ -147,9 +138,9 @@ export default {
       enableLoadindBar,
       goBack,
       openHamburger,
-      isUserAuthenticated,
+      isUserAuthenticated
     };
-  },
+  }
 };
 </script>
 

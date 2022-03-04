@@ -57,7 +57,6 @@
             :horizontalView="false"
             :deleteCard="true"
             :dropdownCouner="true"
-            :pDistance="'800m away'"
             @updateItemCount="(item) => updateItemCount(item, index)"
             @deleteItem="updateItemCount(0, index)"
             @dropdownMore="toggleModal(index)"
@@ -133,13 +132,13 @@ import {
   SfPrice,
   SfCollectedProduct,
   SfImage,
-  SfInput,
+  SfInput
 } from '@storefront-ui/vue';
 import {
   useCart,
   cartGetters,
   useQuote,
-  providerGetters,
+  providerGetters
 } from '@vue-storefront/beckn';
 import ProductCard from '~/components/ProductCard';
 import Footer from '~/components/Footer';
@@ -165,7 +164,7 @@ export default {
     ModalSlide,
     SfInput,
     LoadingCircle,
-    helpers,
+    helpers
   },
 
   setup(_, { root }) {
@@ -203,8 +202,9 @@ export default {
           const currentQuoteData = getQuoteRes.message.quote;
           const bppId = getQuoteRes.context.bpp_id;
           currentQuoteData.items.forEach((quoteItem) => {
-            const { cartItem, index } =
-              getCartItemCorrespondingToQuoteItem(quoteItem);
+            const { cartItem, index } = getCartItemCorrespondingToQuoteItem(
+              quoteItem
+            );
             if (cartItem.updatedCount) {
               cartItem.updatedCount = null;
             }
@@ -239,15 +239,15 @@ export default {
           price = {
             ...currentQuoteData.quote?.price,
             value:
-              price.value + parseFloat(currentQuoteData.quote?.price?.value),
+              price.value + parseFloat(currentQuoteData.quote?.price?.value)
           };
           if (cart.value.quoteItem[bppId]) {
             cart.value.quoteItem[bppId][currentQuoteData.provider.id] = {
-              ...currentQuoteData.quote,
+              ...currentQuoteData.quote
             };
           } else {
             cart.value.quoteItem[bppId] = {
-              [currentQuoteData.provider.id]: { ...currentQuoteData.quote },
+              [currentQuoteData.provider.id]: { ...currentQuoteData.quote }
             };
           }
         }
@@ -255,7 +255,7 @@ export default {
 
       cart.value.quote = {
         breakup,
-        price,
+        price
       };
       cart.value.totalPrice =
         cart.value.quote.price.value || cart.value.totalPrice;
@@ -297,8 +297,9 @@ export default {
         const transactionId = localStorage.getItem('transactionId');
 
         const getQuoteRequest = [];
-        const cartItemsPerBppPerProvider =
-          cartGetters.getCartItemsPerBppPerProvider(cart.value);
+        const cartItemsPerBppPerProvider = cartGetters.getCartItemsPerBppPerProvider(
+          cart.value
+        );
 
         // Creating request array unique to a Provider and its corresponding Bpp by pushing the list of items for each Provider in each of the Bpp.
         Object.keys(cartItemsPerBppPerProvider).forEach((bppId) => {
@@ -309,13 +310,13 @@ export default {
                   // eslint-disable-next-line camelcase
                   transaction_id: transactionId,
                   // eslint-disable-next-line camelcase
-                  bpp_id: bppId,
+                  bpp_id: bppId
                 },
                 message: {
                   cart: {
-                    items: cartItemsPerBppPerProvider[bppId][providerId],
-                  },
-                },
+                    items: cartItemsPerBppPerProvider[bppId][providerId]
+                  }
+                }
               };
 
               getQuoteRequest.push(cartItem);
@@ -344,8 +345,8 @@ export default {
         customQuery: {
           bpp: cart.value.bpp,
           bppProvider: cart.value.bppProvider,
-          locations: cart.value.locations,
-        },
+          locations: cart.value.locations
+        }
       });
       if (matchQ) matchQuote();
     };
@@ -411,9 +412,9 @@ export default {
       enableLoader,
       updateAll,
       validInput,
-      onChangeInput,
+      onChangeInput
     };
-  },
+  }
 };
 </script>
 
