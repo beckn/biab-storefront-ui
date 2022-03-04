@@ -118,7 +118,6 @@
             :valid="validInput"
             label="Enter Quantity"
             name="locality"
-            errorMessage="Maximum limit on cart quantity is 10."
             @input="onChangeInput"
           />
         </div>
@@ -314,7 +313,7 @@ export default {
     });
 
     const onChangeInput = (value) => {
-      if (value < 10) validInput.value = true;
+      if (value < 100) validInput.value = true;
       else validInput.value = false;
     };
 

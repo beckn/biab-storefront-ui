@@ -81,6 +81,10 @@
               />
             </div>
           </div>
+          <div>
+            <span class="s-p-name">SKU:</span>
+            <span class="s-p-name">{{ product.id }}</span>
+          </div>
           <div class="s-p-weight">x {{ cartGetters.getItemQty(product) }}</div>
           <div class="s-p-price">
             ₹ {{ cartGetters.getItemPrice(product).regular }}
@@ -170,7 +174,21 @@
             </CardContent>
             <CardContent v-if="paymentData" class="flex-space-bw">
               <div class="address-text">Status</div>
-              <div class="address-text">{{ paymentData.payment.status }}</div>
+              <div
+                v-if="paymentData.payment.status === 'PAID'"
+                class="address-text paid-green"
+              >
+                {{ paymentData.payment.status }}
+              </div>
+              <div
+                v-else-if="paymentData.payment.status === 'NOT-PAID'"
+                class="address-text paid-blue"
+              >
+                {{ paymentData.payment.status }}
+              </div>
+              <div v-else class="address-text">
+                {{ paymentData.payment.status }}
+              </div>
             </CardContent>
             <CardContent v-if="false" class="flex-space-bw">
               <div class="address-text">Transaction Id</div>
@@ -198,11 +216,44 @@
             </CardContent>
             <CardContent v-if="isFulfillmentAvailable" class="flex-space-bw">
               <div class="address-text">Status</div>
-              <div class="address-text">{{ isFulfillmentAvailable.state }}</div>
+              <!-- <div class="address-text">{{ isFulfillmentAvailable.state }}</div> -->
+
+              <div class="address-text order-status">
+                {{ isFulfillmentAvailable.state }}
+              </div>
             </CardContent>
           </SfAccordionItem>
         </SfAccordion>
       </Card>
+
+      <div class="sub-heading"></div>
+      <div v-if="isFulfillmentAvailable">
+        <Card>
+          <SfAccordion>
+            <SfAccordionItem :header="'Fulfillment progress'">
+              <!-- <CardContent class="fulfillment-progress"> -->
+              <!-- <CardContent class="fulfillment-progress"> -->
+              <div class="fulfillment-data-container">
+                <div>
+                  <SfImage
+                    alt="fulfillment-progress"
+                    src="/icons/fulfillment-progress-check.svg"
+                    :width="21"
+                    :height="21"
+                  />
+                </div>
+                <div class="fulfillment-descriptor">
+                  {{ fulfillmentData.fulfillment.state.descriptor.name }}
+                </div>
+              </div>
+              <div class="fulfillment-time">
+                <span>{{ getOrderPlacementTimeline(fulfillmentContext) }}</span>
+              </div>
+              <!-- </CardContent> -->
+            </SfAccordionItem>
+          </SfAccordion>
+        </Card>
+      </div>
 
       <div class="sub-heading">
         <!-- <div class="p-name">Order</div> -->
@@ -215,8 +266,8 @@
                 v-if="fulfillmentData.fulfillment.state"
                 class="flex-space-bw"
               >
-                <div class="address-text">State</div>
-                <div class="address-text">
+                <div class="address-text">Latest Status</div>
+                <div class="address-text fulfillment-state">
                   {{ fulfillmentData.fulfillment.state.descriptor.name }}
                 </div>
               </CardContent>
@@ -438,6 +489,7 @@ export default {
     const order = ref(null);
     const enableLoader = ref(true);
     const fulfillmentData = ref(null);
+    const fulfillmentContext = ref(null);
     const { poll: onTrack, init: track, pollResults: trackResult } = useTrack(
       'track'
     );
@@ -457,7 +509,20 @@ export default {
       return trackResult.value?.message?.tracking?.url;
     });
 
+    const getOrderPlacementTimeline = (timeStamp) => {
+      const localDateAndTime = new Date(timeStamp);
+      const localTime = localDateAndTime.toLocaleTimeString();
+      const localDate = localDateAndTime.toDateString();
+      const localDateWithoutDay = localDate
+        .split(' ')
+        .slice(1)
+        .join(' ');
+
+      return `${localDateWithoutDay}, ${localTime}`;
+    };
+
     const isFulfillmentAvailable = computed(() => {
+      fulfillmentContext.value = statusResult.value?.context?.timestamp;
       fulfillmentData.value = statusResult.value?.message?.order;
       return statusResult.value?.message?.order;
     });
@@ -594,7 +659,9 @@ export default {
       isFulfillmentAvailable,
       isSupportAvailable,
       fulfillmentData,
-      paymentData
+      paymentData,
+      getOrderPlacementTimeline,
+      fulfillmentContext
     };
   }
 };
@@ -611,6 +678,33 @@ export default {
   width: 100%;
   border-radius: 3px;
 }
+
+.fulfillment-time {
+  padding-left: 25px;
+}
+.fulfillment-progress {
+  display: flex;
+  flex-direction: column;
+}
+
+.fulfillment-data-container {
+  display: flex;
+  padding-top: 8px;
+}
+
+.fulfillment-descriptor {
+  padding-left: 5px;
+  font-weight: 700;
+}
+
+.fulfillment-state {
+  color: blue;
+}
+
+.order-status {
+  color: blue;
+}
+
 .verify-container {
   display: flex;
 }
@@ -667,6 +761,13 @@ export default {
 .address-text {
   align-self: center;
   margin-left: 6px;
+}
+.paid-blue {
+  color: blue;
+}
+
+.paid-green {
+  color: green;
 }
 
 .sub-heading {

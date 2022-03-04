@@ -37,8 +37,8 @@
               ONDC Verified
               <SfImage
                 alt="verified-icon"
-                src="/icons/verified.svg"
-                :width="8"
+                src="/icons/agmark-verified-logo.png"
+                :width="10"
                 :height="10"
               />
             </div>
@@ -214,13 +214,16 @@ export default {
 }
 .price-verified {
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: top;
 }
 
 .verify-inline-container {
   display: flex;
+  justify-content: space-between;
+}
+
+.s-p-details {
+  display: flex;
+  flex-direction: column;
 }
 
 .verified {
