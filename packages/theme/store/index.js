@@ -16,9 +16,7 @@ const actions = {
         email,
         Aa
       });
-      this.$router.push({
-        path: '/'
-      });
+      this.$router.go(-2);
     }
   }
 };
