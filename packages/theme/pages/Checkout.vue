@@ -16,50 +16,11 @@
         <div class="p-name" v-e2e="'cart-item'">Items</div>
       </div>
 
-      <!-- to do cleanUp by Ujjwal -->
-      <!-- <div class="provider-head p-0"> -->
-      <!-- <SfImage
-            class="back"
-            :src="providerGetters.getProviderImages(provider)[0]"
-            alt="Vila stripe maxi shirt dress"
-            :width="35"
-            :height="35"
-          /> -->
-      <!-- <div class="provide-img">
-          <img
-            :src="
-              cartGetters.getProviderImage(cartGetters.getBppProvider(cart))
-                ? cartGetters.getProviderImage(cartGetters.getBppProvider(cart))
-                : require('~/assets/images/store-placeholder.png')
-            "
-          />
-        </div>
-        <div class="p-name">
-          {{
-            providerGetters.getProviderName(cartGetters.getBppProvider(cart))
-          }}
-        </div>
-        <div class="text-padding">
-          <span class="p-distance"> by </span> {{ cartGetters.getBpp(cart) }}
-        </div> -->
-
-      <!-- <div class="text-padding">
-            <div class="flexy-center">
-              <div class="p-name">Abc</div>
-              <div class="text-padding">
-                <span class="p-distance"> by </span>
-                <span>BCA</span>
-              </div>
-            </div>
-          </div> -->
-      <!-- </div> -->
-      <!-- CLEANUP UPTO THIS EXTENT -->
-
       <div
         :key="bppId"
-        v-for="(
-          itemsPerBpp, bppId, shipmentNumber
-        ) in cartGetters.getCartItemsPerBppPerProvider(cart)"
+        v-for="(itemsPerBpp,
+        bppId,
+        shipmentNumber) in cartGetters.getCartItemsPerBppPerProvider(cart)"
         class="cart-shipment-wrapper"
       >
         <div
@@ -98,7 +59,7 @@
                 ₹
                 {{
                   cartGetters.getItemPrice(item).regular *
-                  cartGetters.getItemQty(item).count
+                    cartGetters.getItemQty(item).count
                 }}
               </div>
             </div>
@@ -233,30 +194,8 @@
             commonly used to demonstrate the visual form of a document or a
             typeface without relying on..
           </p>
-          <!-- </CardContent> -->
         </Card>
       </div>
-
-      <!-- <div class="sub-heading">
-        <div class="p-name">Order Policy</div>
-      </div>
-      <Card>
-        <template>
-          <CardContent
-            v-for="policyObj in policy.cancellation_reasons"
-            :key="policyObj.id"
-            class="flex-half"
-          >
-            <div class="">{{ policyObj.descriptor.name }}</div>
-            <div class="address-text">{{ policyObj.descriptor.code }}</div>
-          </CardContent> -->
-      <!-- <div><hr class="sf-divider divider" /></div>
-          <CardContent class="flex-space-bw">
-            <div class="address-text bold">Total</div>
-            <div class="address-text bold">₹{{ cart.quote.price.value }}</div>
-          </CardContent> -->
-      <!-- </template>
-      </Card> -->
     </div>
     <Footer
       class="footer-fixed"
@@ -304,10 +243,6 @@
         :buttonEnable="isBillingButtonEnabled"
       />
     </ModalSlide>
-
-    <!-- <ModalSlide :visible="billingAddressModal" @close="toggleBillingModal">
-
-    </ModalSlide> -->
   </div>
 </template>
 <script>
@@ -320,7 +255,7 @@ import {
   SfAccordion,
   SfImage,
   SfInput,
-  SfIcon,
+  SfIcon
 } from '@storefront-ui/vue';
 import ModalSlide from '~/components/ModalSlide.vue';
 import AddressInputs from '~/components/AddressInputs.vue';
@@ -333,7 +268,7 @@ import {
   providerGetters,
   useAddress,
   useInitOrder,
-  useOrderPolicy,
+  useOrderPolicy
 } from '@vue-storefront/beckn';
 
 // import { useUiState } from '~/composables';
@@ -368,7 +303,7 @@ export default {
     ProductCard,
     AddressInputs,
     SfIcon,
-    AddressCard,
+    AddressCard
   },
   setup(_, context) {
     // const isThankYou = computed(() => currentStep.value === 'thank-you');
@@ -388,7 +323,7 @@ export default {
       pollResults: onInitResult,
       poll: onInitOrder,
       init,
-      stopPolling,
+      stopPolling
     } = useInitOrder();
 
     const { init: getOrderPolicy } = useOrderPolicy();
@@ -398,7 +333,7 @@ export default {
       getBillngAddress,
       getShippingAddress,
       setBillingAddress,
-      setShippingAddress,
+      setShippingAddress
     } = useAddress();
     const shippingAddress = ref(getShippingAddress());
 
@@ -430,8 +365,8 @@ export default {
       context.root.$router.push({
         path: '/payment',
         query: {
-          id: transactionId.value,
-        },
+          id: transactionId.value
+        }
       });
     };
 
@@ -487,7 +422,7 @@ export default {
         await onInitOrder(
           {
             // eslint-disable-next-line camelcase
-            messageIds: messageIds,
+            messageIds: messageIds
           },
           localStorage.getItem('token')
         );
@@ -518,21 +453,21 @@ export default {
             const { id: providerId } = currentOnInitData.provider;
             if (cart.value.quoteItem[bppId]) {
               cart.value.quoteItem[bppId][providerId] = {
-                ...currentOnInitData.quote,
+                ...currentOnInitData.quote
               };
             } else {
               cart.value.quoteItem[bppId] = {
-                [providerId]: { ...currentOnInitData.quote },
+                [providerId]: { ...currentOnInitData.quote }
               };
             }
 
             if (initOrderPerBppPerProvider[bppId]) {
               initOrderPerBppPerProvider[bppId][providerId] = {
-                ...currentOnInitData,
+                ...currentOnInitData
               };
             } else {
               initOrderPerBppPerProvider[bppId] = {
-                [providerId]: { ...currentOnInitData },
+                [providerId]: { ...currentOnInitData }
               };
             }
           });
@@ -547,7 +482,7 @@ export default {
               transactionId: transactionId.value,
               status: 0,
               initOrder: initOrderPerBppPerProvider,
-              cart: cart.value,
+              cart: cart.value
             })
           );
 
@@ -563,8 +498,8 @@ export default {
       transactionId.value = localStorage.getItem('transactionId');
       getOrderPolicy({
         context: {
-          bpp_id: cart.value.items[0].bpp.id,
-        },
+          bpp_id: cart.value.items[0].bpp.id
+        }
       }).then((res) => {
         policy.value = res.message;
       });
@@ -591,27 +526,13 @@ export default {
       policy,
       paymentProceed,
       isShippingButtonEnabled,
-      isBillingButtonEnabled,
+      isBillingButtonEnabled
     };
-  },
+  }
 };
 </script>
 
 <style lang="scss" scoped>
-// .header-top{
-//     position: fixed;
-//     width: 100%;
-//     margin-top: 29px;
-//     z-index: 1;
-// }
-// .fixed-head {
-//     z-index: 1;
-// }
-// .header-push{
-//     top: 107px;
-//     position: relative;
-//     padding-bottom: 107px;
-// }
 .bold {
   font-weight: 600;
 }
