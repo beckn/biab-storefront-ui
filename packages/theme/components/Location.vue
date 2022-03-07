@@ -93,9 +93,14 @@
           <div class="user-content">
             <nuxt-link :to="localePath('/Login')">
               <div v-if="isAuthenticatedUser">
-                <SfButton class="button-pos sf-button--pure">
-                  <SfIcon icon="profile" />
-                </SfButton>
+                <div
+                  class="profile-tooltip"
+                  :data-tooltip="this.$fire.auth.currentUser.displayName"
+                >
+                  <SfButton class="button-pos sf-button--pure">
+                    <SfIcon icon="profile" />
+                  </SfButton>
+                </div>
               </div>
               <div class="sign-in-text" v-else>sign in</div>
             </nuxt-link>
@@ -224,7 +229,53 @@ export default {
 
 .user-cart-content {
   display: flex;
-  width: 100px;
   justify-content: space-between;
+  width: 7rem;
+}
+
+.profile-tooltip {
+  position: relative;
+}
+
+.profile-tooltip::before,
+.profile-tooltip::after {
+  --scale: 0;
+  --arrow-size: 10px;
+  --tooltip-color: #333;
+
+  position: absolute;
+  top: -0.25rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(var(--translate-y, 0))
+    scale(var(--scale));
+  transition: 150ms transform;
+  transform-origin: bottom center;
+}
+
+.profile-tooltip::before {
+  --translate-y: calc(-100% - var(--arrow-size));
+
+  content: attr(data-tooltip);
+  color: white;
+  padding: 0.5rem;
+  border-radius: 0.3rem;
+  text-align: center;
+  width: max-content;
+  margin-left: -2rem;
+  background: var(--tooltip-color);
+}
+
+.profile-tooltip:hover::before,
+.profile-tooltip:hover::after {
+  --scale: 1;
+}
+
+.profile-tooltip::after {
+  --translate-y: calc(-1 * var(--arrow-size));
+
+  content: '';
+  border: var(--arrow-size) solid transparent;
+  border-top-color: var(--tooltip-color);
+  transform-origin: top center;
 }
 </style>
