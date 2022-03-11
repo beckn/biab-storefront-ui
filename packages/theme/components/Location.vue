@@ -97,9 +97,31 @@
                   class="profile-tooltip"
                   :data-tooltip="this.$fire.auth.currentUser.displayName"
                 >
-                  <SfButton class="button-pos sf-button--pure">
-                    <SfIcon icon="profile" />
-                  </SfButton>
+                  <div class="dropdown">
+                    <div
+                      class="dropbtn"
+                      @click="openHamburger = !openHamburger"
+                    >
+                      <SfButton class="button-pos sf-button--pure">
+                        <SfIcon icon="profile" />
+                      </SfButton>
+                    </div>
+                    <div
+                      v-if="openHamburger"
+                      @click="openHamburger = !openHamburger"
+                      class="dropdown-content"
+                    >
+                      <nuxt-link :to="localePath('/orders')">
+                        My Orders
+                      </nuxt-link>
+                      <div><hr class="sf-divider" /></div>
+                      <nuxt-link :to="localePath('/support')">
+                        Support
+                      </nuxt-link>
+                      <div><hr class="sf-divider" /></div>
+                      <nuxt-link v-if="isUserAuthenticated()" :to="localePath('/Logout')">Logout</nuxt-link>
+                    </div>
+                  </div>
                 </div>
               </div>
               <div class="sign-in-text" v-else>sign in</div>
@@ -155,6 +177,15 @@ export default {
       isShow.value = !isShow.value;
     };
 
+    const openHamburger = false;
+
+    const isUserAuthenticated = () => {
+      if (root.$store.$fire.auth.currentUser === null) {
+        return false;
+      }
+      return true;
+    };
+
     const locationSelected = (latitude, longitude, address) => {
       location.value = address;
       toggleLocationDrop();
@@ -173,6 +204,8 @@ export default {
       location,
       locationSelected,
       currentUser,
+      openHamburger,
+      isUserAuthenticated,
     };
   },
   computed: {
@@ -277,5 +310,47 @@ export default {
   border: var(--arrow-size) solid transparent;
   border-top-color: var(--tooltip-color);
   transform-origin: top center;
+}
+
+/* Style the dropdown button to fit inside the topnav */
+.dropdown .dropbtn {
+  font-size: 17px;
+  border: none;
+  outline: none;
+  color: white;
+  background-color: inherit;
+  font-family: inherit;
+  margin: 0;
+  display: block;
+  width: 100%;
+  text-align: left;
+}
+
+/* Style the dropdown content (hidden by default) */
+.dropdown-content {
+  display: block;
+  position: absolute;
+  background-color: white;
+  right: 6px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  width: 8rem;
+  border-radius: 10px;
+  margin-top: 2.1rem;
+  margin-right: -0.4rem;
+}
+
+/* Style the links inside the dropdown */
+.dropdown-content a {
+  float: none;
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  text-align: left;
+}
+
+.dropdown-content a:hover {
+  background: #dbdbdb;
 }
 </style>

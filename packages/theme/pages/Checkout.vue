@@ -346,7 +346,7 @@ export default {
         shippingAddress.value.mobile !== '' &&
         shippingAddress.value.building !== '' &&
         shippingAddress.value.address !== '' &&
-        shippingAddress.value.pincode != '' &&
+        shippingAddress.value.pincode !== '' &&
         shippingAddress.value.landmark !== ''
       );
     });
@@ -356,7 +356,7 @@ export default {
         billingAddress.value.mobile !== '' &&
         billingAddress.value.building !== '' &&
         billingAddress.value.address !== '' &&
-        shippingAddress.value.pincode != '' &&
+        shippingAddress.value.pincode !== '' &&
         shippingAddress.value.landmark !== ''
       );
     });
@@ -583,6 +583,7 @@ export default {
 .address-text {
   align-self: center;
   margin-left: 6px;
+  cursor: pointer;
 }
 
 .sub-heading {
