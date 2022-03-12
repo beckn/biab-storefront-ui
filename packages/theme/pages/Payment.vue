@@ -126,30 +126,34 @@ export default {
 
     const { init, poll, pollResults } = useConfirmOrder('confirm-order');
     const isProductConfirmed = async () => {
-      await fetch('https://dev.studio.dhiway.com/api/v1/cord/order_confirm', {
-        method: 'POST',
-        cache: 'no-cache',
-        credentials: 'same-origin',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        redirect: 'follow',
-        referrerPolicy: 'no-referrer',
-        body: JSON.stringify({
-          identifier: order.value.bapId,
-          order_price: order.value.cart.totalPrice,
-          quantity: order.value.cart.totalItems,
-          listId: order.value.cart.items[0].tags.product_list_id,
+      if (order.value.cart.items[0].tags) {
+        await fetch('https://dev.studio.dhiway.com/api/v1/cord/order_confirm', {
+          method: 'POST',
+          cache: 'no-cache',
+          credentials: 'same-origin',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          redirect: 'follow',
+          referrerPolicy: 'no-referrer',
+          body: JSON.stringify({
+            identifier: order.value.bapId,
+            order_price: order.value.cart.totalPrice,
+            quantity: order.value.cart.totalItems,
+            listId: order.value.cart.items[0].tags.product_list_id,
 
-          blockHash: order.value.cart.items[0].tags.blockhash
+            blockHash: order.value.cart.items[0].tags.blockhash
+          })
         })
-      })
-        .then((res) => {
-          if (res.status === 200) {
-            isOrderVerified.value = true;
-          }
-        })
-        .catch((e) => console.error(e));
+          .then((res) => {
+            if (res.status === 200) {
+              isOrderVerified.value = true;
+            }
+          })
+          .catch((e) => console.error(e));
+      } else {
+        return;
+      }
     };
 
     const changePaymentMethod = (value) => {
