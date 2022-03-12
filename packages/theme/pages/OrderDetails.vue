@@ -1,11 +1,6 @@
 <template>
   <div>
     <div class="top-bar">
-      <div @clic="goBack" class="sf-chevron--left sf-chevron icon_back">
-        <span class="sf-search-bar__icon">
-          <SfIcon color="var(--c-primary)" size="20px" icon="chevron_left" />
-        </span>
-      </div>
       <div class="header-push">Order Details</div>
       <SfButton
         v-if="isTrackingAvailable"
@@ -170,13 +165,15 @@
               class="flex-space-bw"
             >
               <div class="address-text">{{ breakup.title }}</div>
-              <div class="address-text">₹{{ breakup.price.value }}</div>
+              <div class="address-text">
+                ₹{{ Math.trunc(breakup.price.value) }}
+              </div>
             </CardContent>
             <div><hr class="sf-divider divider" /></div>
             <CardContent class="flex-space-bw">
               <div class="address-text bold">Total</div>
               <div class="address-text bold">
-                ₹{{ order.cart.quote.price.value }}
+                ₹{{ Math.trunc(order.cart.quote.price.value) }}
               </div>
             </CardContent>
             <CardContent class="flex-space-bw">
