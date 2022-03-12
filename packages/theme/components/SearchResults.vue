@@ -75,7 +75,12 @@
                       keyVal +
                       'product'
                   "
-                  :pTags="false"
+                  :pTags="
+                    product.tags
+                      ? product.tags.blockhash.length !== 0 &&
+                        product.tags.product_list_id.length !== 0
+                      : false
+                  "
                   :pName="productGetters.getName(product)"
                   :pPrice="productGetters.getPrice(product).regular"
                   :pImage="productGetters.getGallery(product)[0].small[0]"
