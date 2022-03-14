@@ -104,6 +104,16 @@
                     >
                       <SfButton class="button-pos sf-button--pure">
                         <SfIcon icon="profile" />
+                        <SfIcon
+                        v-if="openHamburger"
+                          icon="chevron_up"
+                          size="xxs"
+                        />
+                        <SfIcon
+                        v-if="!openHamburger"
+                          icon="chevron_down"
+                          size="xxs"
+                        />
                       </SfButton>
                     </div>
                     <div
@@ -119,7 +129,11 @@
                         Support
                       </nuxt-link>
                       <div><hr class="sf-divider" /></div>
-                      <nuxt-link v-if="isUserAuthenticated()" :to="localePath('/Logout')">Logout</nuxt-link>
+                      <nuxt-link
+                        v-if="isUserAuthenticated()"
+                        :to="localePath('/Logout')"
+                        >Logout</nuxt-link
+                      >
                     </div>
                   </div>
                 </div>
@@ -351,6 +365,8 @@ export default {
 }
 
 .dropdown-content a:hover {
-  background: #dbdbdb;
+  background: #f37a20;
+  border-radius: 5px;
+  color: floralwhite;
 }
 </style>

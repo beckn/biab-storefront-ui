@@ -14,7 +14,9 @@
     <div v-if="enableLoader" key="loadingCircle" class="loader-circle">
       <LoadingCircle :enable="enableLoader" />
     </div>
+    <!-- order page with order List -->
     <div v-else class="details">
+      <div v-if="orders">
       <div :key="order.parentOrderId" v-for="order in orders">
         <CardContent>
           <div @click="goToOrder(order.parentOrderId)" class="order-details">
@@ -64,6 +66,16 @@
         </CardContent>
         <div><hr class="sf-divider divider" /></div>
       </div>
+      </div>
+       <!-- Empty order page -->
+    <div v-else>
+      <div class="emptyOrderListPage"><h5>No Orders to Display</h5></div>
+      <div class="sf-button--pure sf-quantity-selector__button sf-button">
+        <button class="orderNowButtonForEmptyOrderListPage">
+          <nuxt-link class="orderNowButtonForEmptyOrderListPageChild" :to="localePath('/')">Order Now</nuxt-link>
+        </button>
+      </div>
+    </div>
     </div>
   </div>
 </template>
@@ -91,7 +103,6 @@ export default {
 
     onBeforeMount(() => {
       orders.value = JSON.parse(localStorage.getItem('orderHistory'));
-
       enableLoader.value = false;
     });
 
@@ -105,11 +116,13 @@ export default {
     };
 
     const goBack = () => context.root.$router.back();
+    const isOrderreceive = false;
     return {
       orders,
       enableLoader,
       goToOrder,
       goBack,
+      isOrderreceive,
     };
   },
 };
@@ -206,5 +219,30 @@ export default {
   // top: 130px;
   left: 0;
   height: 95vh;
+}
+.emptyOrderListPage {
+  display: flex;
+  justify-content: center;
+  font-family: inherit;
+  font-style: normal;
+  font-weight: 800;
+  font-size: 22px;
+  line-height: 20px;
+  color: #c4c4c4;
+  margin-top: 4rem;
+}
+.orderNowButtonForEmptyOrderListPage {
+  background: #f37a20;
+  border-radius: 5px;
+  padding: 10px;
+  margin-top: 10px;
+  border-style: none;
+  width: 111px;
+  border-style: none;
+}
+.orderNowButtonForEmptyOrderListPageChild {
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: bold;
 }
 </style>
