@@ -26,6 +26,8 @@
       />
       <SfInput
         v-e2e="'full-address-input'"
+        :valid="!validateInput('address')"
+        :errorMessage="validateInput('address')"
         v-model="address.address"
         :type="'text'"
         :label="'Complete Address*'"
@@ -116,6 +118,7 @@ export default {
 
     const validateInput = (field) => {
       const re = /^[0-9\b]+$/;
+      const regforSpecialCharacters = /[!@#$%^&*()_+\=\[\]{};':"\\|.<>\/?]+/;
       switch (field) {
         case 'Name':
           if (address.value.name && address.value.name.length < 4) {
@@ -129,6 +132,14 @@ export default {
               address.value.mobile.length !== 10)
           ) {
             return 'Please enter a valid mobile';
+          }
+          break;
+        case 'address':
+          if (
+            address.value.address &&
+            regforSpecialCharacters.test(address.value.address)
+          ) {
+            return 'Please use valid characters';
           }
           break;
         case 'Pincode':
