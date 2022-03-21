@@ -97,10 +97,15 @@
                   class="profile-tooltip"
                   :data-tooltip="this.$fire.auth.currentUser.displayName"
                 >
-
+                        <div @click="openHamburger=!openHamburger">
                     <Dropdown>
                       <SfButton class="button-pos sf-button--pure">
                         <SfIcon icon="profile" />
+                        <SfIcon
+                          v-if="openHamburger"
+                          icon="chevron_up"
+                          size="xxs"
+                        />
                         <SfIcon
                           v-if="!openHamburger"
                           icon="chevron_down"
@@ -109,7 +114,7 @@
                       </SfButton>
                       <DropdownContent />
                     </Dropdown>
-
+                        </div>
                 </div>
               </div>
               <div class="sign-in-text" v-else>sign in</div>
