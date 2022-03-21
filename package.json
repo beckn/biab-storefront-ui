@@ -64,5 +64,7 @@
   "lint-staged": {
     "*.{js,ts,vue}": "eslint --fix"
   },
-  "dependencies": {}
+  "dependencies": {
+    "vue-clickaway": "^2.2.2"
+  }
 }

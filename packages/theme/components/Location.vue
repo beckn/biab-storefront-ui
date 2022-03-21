@@ -97,45 +97,19 @@
                   class="profile-tooltip"
                   :data-tooltip="this.$fire.auth.currentUser.displayName"
                 >
-                  <div class="dropdown">
-                    <div
-                      class="dropbtn"
-                      @click="openHamburger = !openHamburger"
-                    >
+
+                    <Dropdown>
                       <SfButton class="button-pos sf-button--pure">
                         <SfIcon icon="profile" />
                         <SfIcon
-                        v-if="openHamburger"
-                          icon="chevron_up"
-                          size="xxs"
-                        />
-                        <SfIcon
-                        v-if="!openHamburger"
+                          v-if="!openHamburger"
                           icon="chevron_down"
                           size="xxs"
                         />
                       </SfButton>
-                    </div>
-                    <div
-                      v-if="openHamburger"
-                      @click="openHamburger = !openHamburger"
-                      class="dropdown-content"
-                    >
-                      <nuxt-link :to="localePath('/orders')">
-                        My Orders
-                      </nuxt-link>
-                      <div><hr class="sf-divider" /></div>
-                      <nuxt-link :to="localePath('/support')">
-                        Support
-                      </nuxt-link>
-                      <div><hr class="sf-divider" /></div>
-                      <nuxt-link
-                        v-if="isUserAuthenticated()"
-                        :to="localePath('/Logout')"
-                        >Logout</nuxt-link
-                      >
-                    </div>
-                  </div>
+                      <DropdownContent />
+                    </Dropdown>
+
                 </div>
               </div>
               <div class="sign-in-text" v-else>sign in</div>
@@ -152,6 +126,8 @@ import { ref } from '@vue/composition-api';
 import LocationSearchBar from './LocationSearchBar.vue';
 import ModalComponent from './ModalComponent.vue';
 import { useUiState } from '~/composables';
+import Dropdown from '../components/Dropdown.vue';
+import DropdownContent from '../components/DropdownContent.vue';
 
 export default {
   name: 'Location',
@@ -162,6 +138,8 @@ export default {
     SfIcon,
     LocationSearchBar,
     ModalComponent,
+    Dropdown,
+    DropdownContent,
   },
 
   props: {
@@ -193,13 +171,6 @@ export default {
 
     const openHamburger = false;
 
-    const isUserAuthenticated = () => {
-      if (root.$store.$fire.auth.currentUser === null) {
-        return false;
-      }
-      return true;
-    };
-
     const locationSelected = (latitude, longitude, address) => {
       location.value = address;
       toggleLocationDrop();
@@ -219,7 +190,6 @@ export default {
       locationSelected,
       currentUser,
       openHamburger,
-      isUserAuthenticated,
     };
   },
   computed: {
@@ -324,49 +294,5 @@ export default {
   border: var(--arrow-size) solid transparent;
   border-top-color: var(--tooltip-color);
   transform-origin: top center;
-}
-
-/* Style the dropdown button to fit inside the topnav */
-.dropdown .dropbtn {
-  font-size: 17px;
-  border: none;
-  outline: none;
-  color: white;
-  background-color: inherit;
-  font-family: inherit;
-  margin: 0;
-  display: block;
-  width: 100%;
-  text-align: left;
-}
-
-/* Style the dropdown content (hidden by default) */
-.dropdown-content {
-  display: block;
-  position: absolute;
-  background-color: white;
-  right: 6px;
-  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-  z-index: 1;
-  width: 8rem;
-  border-radius: 10px;
-  margin-top: 2.1rem;
-  margin-right: -0.4rem;
-}
-
-/* Style the links inside the dropdown */
-.dropdown-content a {
-  float: none;
-  color: black;
-  padding: 12px 16px;
-  text-decoration: none;
-  display: block;
-  text-align: left;
-}
-
-.dropdown-content a:hover {
-  background: #f37a20;
-  border-radius: 5px;
-  color: floralwhite;
 }
 </style>
