@@ -1,14 +1,7 @@
 <template>
   <div id="payment">
     <div v-if="enableLoader" key="loadingCircle" class="loader-circle">
-      <LoadingCircle
-        :enable="enableLoader"
-        :custmText="
-          !isOrderVerified
-            ? 'Checking authenticity of items'
-            : 'Items Successfully Verified for Authenticity. Confirming Order'
-        "
-      />
+      <LoadingCircle :enable="enableLoader" :customText="'confirming order'" />
     </div>
     <div class="top-bar header-top">
       <div @click="goBack" class="sf-chevron--left sf-chevron icon_back">
@@ -125,36 +118,6 @@ export default {
     const enableLoader = ref(false);
 
     const { init, poll, pollResults } = useConfirmOrder('confirm-order');
-    const isProductConfirmed = async () => {
-      if (order.value.cart.items[0].tags) {
-        await fetch('https://dev.studio.dhiway.com/api/v1/cord/order_confirm', {
-          method: 'POST',
-          cache: 'no-cache',
-          credentials: 'same-origin',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          redirect: 'follow',
-          referrerPolicy: 'no-referrer',
-          body: JSON.stringify({
-            identifier: order.value.bapId,
-            order_price: order.value.cart.totalPrice,
-            quantity: order.value.cart.totalItems,
-            listId: order.value.cart.items[0].tags.product_list_id,
-
-            blockHash: order.value.cart.items[0].tags.blockhash
-          })
-        })
-          .then((res) => {
-            if (res.status === 200) {
-              isOrderVerified.value = true;
-            }
-          })
-          .catch((e) => console.error(e));
-      } else {
-        return;
-      }
-    };
 
     const changePaymentMethod = (value) => {
       paymentMethod.value = value;
@@ -166,7 +129,6 @@ export default {
 
     const proceedToConfirm = async () => {
       enableLoader.value = true;
-      await isProductConfirmed();
       order.value.paymentMethod = paymentMethod.value;
       const params = createConfirmOrderRequest(
         order.value.transactionId,
@@ -223,7 +185,6 @@ export default {
       isPayConfirmActive,
       proceedToConfirm,
       enableLoader,
-      isProductConfirmed,
       isOrderVerified
     };
   }

@@ -3,7 +3,7 @@
     <transition name="sf-fade" mode="out-in">
       <div class="sf-loader__overlay">
         <div class="custom-text">
-          <span>{{ custmText }}</span>
+          <span>{{ customText }}</span>
         </div>
         <div>
           <svg
@@ -44,7 +44,7 @@ export default {
       type: Boolean,
       default: false
     },
-    custmText: {
+    customText: {
       type: String,
       default: ''
     }

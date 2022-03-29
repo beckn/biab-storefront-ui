@@ -25,24 +25,6 @@
           <div class="s-p-price" v-if="_updatedCount !== 0">
             ₹ {{ _updatedPrice ? _updatedPrice : _pPrice }}
           </div>
-          <div class="verify-button" v-if="false">
-            <SfImage
-              @click="showModal(_pName)"
-              alt="verified-icon"
-              src="/icons/verified icon badge.png"
-              :width="19"
-              :height="19"
-            />
-            <div :id="_pName" class="tooltiptext">
-              Agmark Certified
-              <SfImage
-                alt="verified-icon"
-                src="/icons/agmark-verified-logo.png"
-                :width="10"
-                :height="10"
-              />
-            </div>
-          </div>
         </div>
         <span class="out-stock" v-if="_updatedCount === 0">Out of Stock</span>
       </div>
@@ -118,8 +100,7 @@ export default {
     updatedCount: { type: Number, default: null },
     horizontalView: { type: Boolean, default: true },
     deleteCard: { type: Boolean, default: false },
-    dropdownCouner: { type: Boolean, default: false },
-    pTags: { type: Boolean, default: false }
+    dropdownCouner: { type: Boolean, default: false }
   },
 
   setup(props, { emit }) {
@@ -132,7 +113,6 @@ export default {
     const _updatedCount = computed(() => props.updatedCount);
     const dpList = [1, 2, 3, 4, 'More'];
     const openDropdown = ref(false);
-    const _pTags = computed(() => props.pTags);
     const dropdownClick = (data) => {
       console.log(data);
       if (data === 'More') {
@@ -155,8 +135,7 @@ export default {
       openDropdown,
       _updatedPrice,
       _updatedCount,
-      dropdownClick,
-      _pTags
+      dropdownClick
     };
   },
   methods: {
@@ -211,53 +190,5 @@ export default {
       cursor: pointer;
     }
   }
-}
-.price-verified {
-  display: flex;
-}
-
-.verify-inline-container {
-  display: flex;
-  justify-content: space-between;
-}
-
-.s-p-details {
-  display: flex;
-  flex-direction: column;
-}
-
-.verified {
-  margin-top: 4px;
-  padding: 1px;
-  background-color: #f37a20;
-  color: white;
-  font-size: 6px;
-  width: 44px;
-  height: 30px;
-  cursor: pointer;
-}
-
-.verified-text {
-  font-size: 14px;
-}
-
-.verify-button {
-  padding-left: 40px;
-  position: relative;
-}
-
-.tooltiptext {
-  display: none;
-  width: 90px;
-  background-color: #fff;
-  text-align: center;
-  border-radius: 6px;
-  padding: 2px 6px;
-  margin-top: -16px;
-  font-size: 10px;
-  font-weight: bold;
-  border: 1px solid #888;
-  position: absolute;
-  z-index: 1;
 }
 </style>

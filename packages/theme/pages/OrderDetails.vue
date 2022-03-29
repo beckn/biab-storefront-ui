@@ -70,29 +70,7 @@
           />
         </div>
         <div class="s-p-details">
-          <div class="verify-container">
-            <div class="s-p-name">{{ cartGetters.getItemName(product) }}</div>
-            <div
-              class="verified-image"
-              v-if="
-                product.tags
-                  ? product.tags.blockhash.length !== 0 &&
-                    product.tags.product_list_id.length !== 0
-                  : false
-              "
-            >
-              <SfImage
-                alt="verified-icon"
-                src="/icons/verified icon badge.png"
-                :width="19"
-                :height="19"
-              />
-            </div>
-          </div>
-          <div>
-            <span class="s-p-name">SKU:</span>
-            <span class="s-p-name">{{ product.id }}</span>
-          </div>
+          <div class="s-p-name">{{ cartGetters.getItemName(product) }}</div>
           <div class="s-p-weight">x {{ cartGetters.getItemQty(product) }}</div>
           <div class="s-p-price">
             ₹ {{ cartGetters.getItemPrice(product).regular }}
