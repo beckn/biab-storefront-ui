@@ -334,13 +334,13 @@
         <div class="f-btn-text">Contact Support</div>
         <img class="btn-img" src="/icons/support.svg" />
       </button>
-      <button
+      <!-- <button
         v-if="false"
         class="color-light sf-button cancel-order-btn"
         @click="onCancel"
       >
         <div class="btn-text">Cancel Order</div>
-      </button>
+      </button> -->
       <ModalSlide :visible="openSupportModal" @close="openSupportModal = false">
         <div class="modal-heading">Contact Support</div>
         <div><hr class="sf-divider" /></div>
@@ -538,8 +538,7 @@ export default {
     const openSupportModal = ref(false);
     const openTrackModal = ref(false);
     const goHome = () => context.root.$router.push('/');
-    const goBack = () => context.root.$router.push('/orders');
-    const onCancel = () => context.root.$router.push('/cancelorder');
+    // const onCancel = () => context.root.$router.push('/cancelorder');
 
     const callSupport = async () => {
       const params = {
@@ -628,7 +627,6 @@ export default {
     };
     return {
       goHome,
-      goBack,
       order,
       cartGetters,
       isTrackingAvailable,
@@ -636,7 +634,7 @@ export default {
       fulfillmentStep,
       fulfillmentSteps,
       openSupportModal,
-      onCancel,
+      // onCancel,
       enableLoader,
       openTrackModal,
       callTrack,
@@ -698,10 +696,10 @@ export default {
   padding-left: 10px;
 }
 
-.cancel-order-btn {
-  width: 100%;
-  border-radius: 3px;
-}
+// .cancel-order-btn {
+//   width: 100%;
+//   border-radius: 3px;
+// }
 
 .bold {
   font-weight: 600;
