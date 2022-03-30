@@ -70,29 +70,7 @@
           />
         </div>
         <div class="s-p-details">
-          <div class="verify-container">
-            <div class="s-p-name">{{ cartGetters.getItemName(product) }}</div>
-            <div
-              class="verified-image"
-              v-if="
-                product.tags
-                  ? product.tags.blockhash.length !== 0 &&
-                    product.tags.product_list_id.length !== 0
-                  : false
-              "
-            >
-              <SfImage
-                alt="verified-icon"
-                src="/icons/verified icon badge.png"
-                :width="19"
-                :height="19"
-              />
-            </div>
-          </div>
-          <div>
-            <span class="s-p-name">SKU:</span>
-            <span class="s-p-name">{{ product.id }}</span>
-          </div>
+          <div class="s-p-name">{{ cartGetters.getItemName(product) }}</div>
           <div class="s-p-weight">x {{ cartGetters.getItemQty(product) }}</div>
           <div class="s-p-price">
             ₹ {{ cartGetters.getItemPrice(product).regular }}
@@ -356,13 +334,13 @@
         <div class="f-btn-text">Contact Support</div>
         <img class="btn-img" src="/icons/support.svg" />
       </button>
-      <button
+      <!-- <button
         v-if="false"
         class="color-light sf-button cancel-order-btn"
         @click="onCancel"
       >
         <div class="btn-text">Cancel Order</div>
-      </button>
+      </button> -->
       <ModalSlide :visible="openSupportModal" @close="openSupportModal = false">
         <div class="modal-heading">Contact Support</div>
         <div><hr class="sf-divider" /></div>
@@ -560,8 +538,7 @@ export default {
     const openSupportModal = ref(false);
     const openTrackModal = ref(false);
     const goHome = () => context.root.$router.push('/');
-    const goBack = () => context.root.$router.push('/orders');
-    const onCancel = () => context.root.$router.push('/cancelorder');
+    // const onCancel = () => context.root.$router.push('/cancelorder');
 
     const callSupport = async () => {
       const params = {
@@ -650,7 +627,6 @@ export default {
     };
     return {
       goHome,
-      goBack,
       order,
       cartGetters,
       isTrackingAvailable,
@@ -658,7 +634,7 @@ export default {
       fulfillmentStep,
       fulfillmentSteps,
       openSupportModal,
-      onCancel,
+      // onCancel,
       enableLoader,
       openTrackModal,
       callTrack,
@@ -720,10 +696,10 @@ export default {
   padding-left: 10px;
 }
 
-.cancel-order-btn {
-  width: 100%;
-  border-radius: 3px;
-}
+// .cancel-order-btn {
+//   width: 100%;
+//   border-radius: 3px;
+// }
 
 .bold {
   font-weight: 600;
