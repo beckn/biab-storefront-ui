@@ -106,9 +106,11 @@
                   :pImage="productGetters.getGallery(product)[0].small[0]"
                   :pWieght="productGetters.getProductWeight(product) + ' kg'"
                   :pCount="cartGetters.getItemQty(isInCart({ product }))"
-                  :pTags=" product.tags ?
-                    product.tags.blockhash.length !== 0 &&
-                      product.tags.product_list_id.length !== 0 : false
+                  :pTags="
+                    product.tags
+                      ? product.tags.blockhash.length !== 0 &&
+                        product.tags.product_list_id.length !== 0
+                      : false
                   "
                   @updateItemCount="
                     (item) => updateItemCount(item, provider, bpp, pIndex)
@@ -307,8 +309,10 @@ export default {
       if (newValue) {
         let reusltNum = 0;
         for (const bpp of newValue) {
-          for (const provider of bpp.bpp_providers) {
-            reusltNum += provider.items.length;
+          if (bpp.bpp_providers) {
+            for (const provider of bpp.bpp_providers) {
+              reusltNum += provider.items.length;
+            }
           }
         }
         return reusltNum;
