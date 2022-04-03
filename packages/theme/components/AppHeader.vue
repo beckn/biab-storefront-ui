@@ -15,28 +15,6 @@
             alt="Vue Storefront Next"
           />
         </nuxt-link>
-        <div class="dropdown">
-          <button class="dropbtn" @click="openHamburger = !openHamburger">
-            <SfIcon icon="more" color="green-primary" />
-          </button>
-          <div
-            v-if="openHamburger"
-            @click="openHamburger = !openHamburger"
-            class="dropdown-content"
-          >
-            <nuxt-link :to="localePath('/orders')"> My Orders </nuxt-link>
-            <div><hr class="sf-divider" /></div>
-            <!-- TO DO -->
-            <nuxt-link v-if="isUserAuthenticated()" :to="localePath('/Logout')"
-              >Logout</nuxt-link
-            >
-          </div>
-        </div>
-        <!-- <div>
-          <transition name="sf-dropdown">
-            <Card class>lolz</Card>
-          </transition>
-        </div> -->
       </div>
       <LoadingBar
         :enable="
@@ -100,15 +78,6 @@ export default {
       isAuthenticated.value ? 'profile_fill' : 'profile'
     );
 
-    const openHamburger = false;
-
-    const isUserAuthenticated = () => {
-      if (root.$store.$fire.auth.currentUser === null) {
-        return false;
-      }
-      return true;
-    };
-
     const goBack = () => {
       stopPolling();
       root.$router.back();
@@ -137,9 +106,7 @@ export default {
       setTermForUrl,
       LoadingBar,
       enableLoadindBar,
-      goBack,
-      openHamburger,
-      isUserAuthenticated
+      goBack
     };
   }
 };
@@ -215,43 +182,5 @@ export default {
   position: absolute;
   bottom: 40%;
   left: 40%;
-}
-
-/* Style the dropdown button to fit inside the topnav */
-.dropdown .dropbtn {
-  font-size: 17px;
-  border: none;
-  outline: none;
-  color: white;
-  background-color: inherit;
-  font-family: inherit;
-  margin: 0;
-  display: block;
-  width: 100%;
-  text-align: left;
-}
-
-/* Style the dropdown content (hidden by default) */
-.dropdown-content {
-  display: block;
-  position: absolute;
-  background-color: white;
-  right: 6px;
-  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-  z-index: 1;
-}
-
-/* Style the links inside the dropdown */
-.dropdown-content a {
-  float: none;
-  color: black;
-  padding: 12px 16px;
-  text-decoration: none;
-  display: block;
-  text-align: left;
-}
-
-.dropdown-content a:hover {
-  background: #dbdbdb;
 }
 </style>

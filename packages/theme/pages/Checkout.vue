@@ -590,6 +590,7 @@ export default {
 .address-text {
   align-self: center;
   margin-left: 6px;
+  cursor: pointer;
 }
 
 .sub-heading {
