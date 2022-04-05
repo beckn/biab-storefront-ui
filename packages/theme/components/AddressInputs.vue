@@ -26,6 +26,8 @@
       />
       <SfInput
         v-e2e="'full-address-input'"
+        :valid="!validateInput('address')"
+        :errorMessage="validateInput('address')"
         v-model="address.address"
         :type="'text'"
         :label="'Complete Address*'"
@@ -37,19 +39,6 @@
         :type="'text'"
         :label="'Building Name Floor*'"
         :name="'building'"
-      />
-      <SfInput
-        v-e2e="'pin-input'"
-        v-model="address.pincode"
-        :type="'number'"
-        :maxlength="6"
-        :max="999999"
-        min="0"
-        pattern="[0-9]{6}"
-        :label="'Pincode*'"
-        :name="'Pincode'"
-        :valid="!validateInput('Pincode')"
-        :errorMessage="validateInput('Pincode')"
       />
       <SfInput
         v-e2e="'landmark-input'"
@@ -114,6 +103,7 @@ export default {
 
     const validateInput = (field) => {
       const re = /^[0-9\b]+$/;
+      const regforSpecialCharacters = /[!@#$%^&*()_+\=\[\]{};':"\\|.<>\/?]+/;
       switch (field) {
         case 'Name':
           if (address.value.name && address.value.name.length < 4) {
@@ -127,6 +117,14 @@ export default {
               address.value.mobile.length !== 10)
           ) {
             return 'Please enter a valid mobile';
+          }
+          break;
+        case 'address':
+          if (
+            address.value.address &&
+            regforSpecialCharacters.test(address.value.address)
+          ) {
+            return 'Please use valid characters';
           }
           break;
         case 'Pincode':
@@ -171,14 +169,15 @@ export default {
                       return v.types[0] === 'locality';
                     });
 
-                    console.log(state, city);
-
-                    // eslint-disable-next-line camelcase
-                    address.value.city = city.long_name;
-                    // eslint-disable-next-line camelcase
-                    address.value.state = state.long_name;
-
-                    console.log('Addres setState', address.value);
+                    let addressString = '';
+                    for (let i = 1; i < adds.length - 1; i++) {
+                      addressString += adds[i].long_name + ', ';
+                    }
+                    let subAddressString = addressString.substring(
+                      0,
+                      addressString.length - 2
+                    );
+                    address.value.address = subAddressString;
                   })
                   // eslint-disable-next-line no-alert
                   .catch((err) => alert(err));

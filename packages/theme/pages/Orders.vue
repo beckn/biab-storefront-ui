@@ -15,45 +15,58 @@
       <LoadingCircle :enable="enableLoader" />
     </div>
     <div v-else class="details">
-      <div :key="order.transactionId" v-for="order in orders">
-        <CardContent>
-          <div @click="goToOrder(order.transactionId)" class="order-details">
-            <div class="order-icon">
-              <div class="address-bar-icon">
-                <svg
-                  width="22"
-                  height="19"
-                  viewBox="0 0 22 19"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    clip-rule="evenodd"
-                    d="M21 6.98H16.21L11.83 0.42C11.64 0.14 11.32 0 11 0C10.68 0 10.36 0.14 10.17 0.43L5.79 6.98H1C0.45 6.98 0 7.43 0 7.98C0 8.07 0.01 8.16 0.04 8.25L2.58 17.52C2.81 18.36 3.58 18.98 4.5 18.98H17.5C18.42 18.98 19.19 18.36 19.43 17.52L21.97 8.25L22 7.98C22 7.43 21.55 6.98 21 6.98ZM11 2.78L13.8 6.98H8.2L11 2.78ZM4.51 16.99L17.5 16.98L19.7 8.98H2.31L4.51 16.99Z"
-                    fill="#F37A20"
-                  />
-                </svg>
+      <div v-if="orders">
+        <div :key="order.transactionId" v-for="order in orders">
+          <CardContent>
+            <div @click="goToOrder(order.transactionId)" class="order-details">
+              <div class="order-icon">
+                <div class="address-bar-icon">
+                  <svg
+                    width="22"
+                    height="19"
+                    viewBox="0 0 22 19"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      clip-rule="evenodd"
+                      d="M21 6.98H16.21L11.83 0.42C11.64 0.14 11.32 0 11 0C10.68 0 10.36 0.14 10.17 0.43L5.79 6.98H1C0.45 6.98 0 7.43 0 7.98C0 8.07 0.01 8.16 0.04 8.25L2.58 17.52C2.81 18.36 3.58 18.98 4.5 18.98H17.5C18.42 18.98 19.19 18.36 19.43 17.52L21.97 8.25L22 7.98C22 7.43 21.55 6.98 21 6.98ZM11 2.78L13.8 6.98H8.2L11 2.78ZM4.51 16.99L17.5 16.98L19.7 8.98H2.31L4.51 16.99Z"
+                      fill="#F37A20"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <div class="order color-def">
+                <div class="order-id">Order ID {{ order.order.id }}</div>
+                <div class="order-status">{{ order.order.state }}</div>
+                <div class="order-date">
+                  {{
+                    new Date(Date.parse(order.order.created_at)).toDateString()
+                  }}
+                </div>
+              </div>
+              <div class="order-price">
+                ₹
+                {{ order.initOrder.payment.params.amount }}
               </div>
             </div>
-            <div class="order color-def">
-              <div class="order-id">Order ID {{ order.order.id }}</div>
-              <div class="order-status">{{ order.order.state }}</div>
-              <div class="order-date">
-                {{
-                  new Date(Date.parse(order.order.created_at)).toDateString()
-                }}
-              </div>
-            </div>
-            <div class="order-price">
-              ₹
-              {{
-                order.initOrder.payment.params.amount
-              }}
-            </div>
-          </div>
-        </CardContent>
-        <div><hr class="sf-divider divider" /></div>
+          </CardContent>
+          <div><hr class="sf-divider divider" /></div>
+        </div>
+      </div>
+      <!-- Empty order page -->
+      <div v-else>
+        <div class="emptyOrderListPage"><h5>No Orders to Display</h5></div>
+        <div class="sf-button--pure sf-quantity-selector__button sf-button">
+          <button class="orderNowButtonForEmptyOrderListPage">
+            <nuxt-link
+              class="orderNowButtonForEmptyOrderListPageChild"
+              :to="localePath('/')"
+              >Order Now</nuxt-link
+            >
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -95,11 +108,13 @@ export default {
     };
 
     const goBack = () => context.root.$router.back();
+    const isOrderreceive = false;
     return {
       orders,
       enableLoader,
       goToOrder,
-      goBack
+      goBack,
+      isOrderreceive
     };
   }
 };
@@ -196,5 +211,31 @@ export default {
   // top: 130px;
   left: 0;
   height: 95vh;
+}
+
+.emptyOrderListPage {
+  display: flex;
+  justify-content: center;
+  font-family: inherit;
+  font-style: normal;
+  font-weight: 800;
+  font-size: 22px;
+  line-height: 20px;
+  color: #c4c4c4;
+  margin-top: 4rem;
+}
+.orderNowButtonForEmptyOrderListPage {
+  background: #f37a20;
+  border-radius: 5px;
+  padding: 10px;
+  margin-top: 10px;
+  border-style: none;
+  width: 111px;
+  border-style: none;
+}
+.orderNowButtonForEmptyOrderListPageChild {
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: bold;
 }
 </style>
