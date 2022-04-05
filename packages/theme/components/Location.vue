@@ -97,34 +97,23 @@
                   class="profile-tooltip"
                   :data-tooltip="this.$fire.auth.currentUser.displayName"
                 >
-                  <div class="dropdown">
-                    <div
-                      class="dropbtn"
-                      @click="openHamburger = !openHamburger"
-                    >
+                  <div @click="openHamburger = !openHamburger">
+                    <Dropdown>
                       <SfButton class="button-pos sf-button--pure">
                         <SfIcon icon="profile" />
+                        <SfIcon
+                          v-if="openHamburger"
+                          icon="chevron_up"
+                          size="xxs"
+                        />
+                        <SfIcon
+                          v-if="!openHamburger"
+                          icon="chevron_down"
+                          size="xxs"
+                        />
                       </SfButton>
-                    </div>
-                    <div
-                      v-if="openHamburger"
-                      @click="openHamburger = !openHamburger"
-                      class="dropdown-content"
-                    >
-                      <nuxt-link :to="localePath('/orders')">
-                        My Orders
-                      </nuxt-link>
-                      <div><hr class="sf-divider" /></div>
-                      <nuxt-link :to="localePath('/support')">
-                        Support
-                      </nuxt-link>
-                      <div><hr class="sf-divider" /></div>
-                      <nuxt-link
-                        v-if="isUserAuthenticated()"
-                        :to="localePath('/Logout')"
-                        >Logout</nuxt-link
-                      >
-                    </div>
+                      <DropdownContent />
+                    </Dropdown>
                   </div>
                 </div>
               </div>
@@ -142,7 +131,8 @@ import { ref } from '@vue/composition-api';
 import LocationSearchBar from './LocationSearchBar.vue';
 import ModalComponent from './ModalComponent.vue';
 import { useUiState } from '~/composables';
-
+import Dropdown from '../components/Dropdown.vue';
+import DropdownContent from '../components/DropdownContent.vue';
 export default {
   name: 'Location',
   components: {
@@ -151,16 +141,16 @@ export default {
     SfSidebar,
     SfIcon,
     LocationSearchBar,
-    ModalComponent
+    ModalComponent,
+    Dropdown,
+    DropdownContent
   },
-
   props: {
     isDisabled: {
       type: Boolean,
       default: false
     }
   },
-
   data() {
     return {
       isActive: false
@@ -172,23 +162,13 @@ export default {
     const isShow = ref(false);
     const location = ref(selectedLocation?.value?.address);
     const currentUser = root.$store.$fire.auth.currentUser;
-
     const toggleLocationDrop = () => {
       isLocationdropOpen.value = !isLocationdropOpen.value;
     };
-
     const toggleIsShow = () => {
       isShow.value = !isShow.value;
     };
-
     const openHamburger = false;
-    const isUserAuthenticated = () => {
-      if (root.$store.$fire.auth.currentUser === null) {
-        return false;
-      }
-      return true;
-    };
-
     const locationSelected = (latitude, longitude, address) => {
       location.value = address;
       toggleLocationDrop();
@@ -198,7 +178,6 @@ export default {
         address: address
       });
     };
-
     return {
       isLocationdropOpen,
       toggleLocationDrop,
@@ -207,8 +186,7 @@ export default {
       location,
       locationSelected,
       currentUser,
-      openHamburger,
-      isUserAuthenticated
+      openHamburger
     };
   },
   computed: {
@@ -224,7 +202,6 @@ export default {
   }
 };
 </script>
-
 <style lang="scss" scoped>
 .sf-circle-icon {
   --icon-color: #f37a20;
@@ -234,7 +211,6 @@ export default {
   justify-content: space-between;
   width: 100%;
 }
-
 .notShown {
   visibility: hidden !important;
   position: absolute;
@@ -245,7 +221,6 @@ export default {
   height: 5px;
   padding-left: 5px;
 }
-
 .location-icon {
   display: flex;
   width: 125px;
@@ -262,10 +237,8 @@ export default {
 .userIcon {
   background-color: #f37a20;
 }
-
 .user-cart-content {
   display: flex;
-  width: 100px;
   justify-content: space-between;
   width: 7rem;
 }
@@ -306,43 +279,5 @@ export default {
   border: var(--arrow-size) solid transparent;
   border-top-color: var(--tooltip-color);
   transform-origin: top center;
-}
-/* Style the dropdown button to fit inside the topnav */
-.dropdown .dropbtn {
-  font-size: 17px;
-  border: none;
-  outline: none;
-  color: white;
-  background-color: inherit;
-  font-family: inherit;
-  margin: 0;
-  display: block;
-  width: 100%;
-  text-align: left;
-}
-/* Style the dropdown content (hidden by default) */
-.dropdown-content {
-  display: block;
-  position: absolute;
-  background-color: white;
-  right: 6px;
-  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-  z-index: 1;
-  width: 8rem;
-  border-radius: 10px;
-  margin-top: 2.1rem;
-  margin-right: -0.4rem;
-}
-/* Style the links inside the dropdown */
-.dropdown-content a {
-  float: none;
-  color: black;
-  padding: 12px 16px;
-  text-decoration: none;
-  display: block;
-  text-align: left;
-}
-.dropdown-content a:hover {
-  background: #dbdbdb;
 }
 </style>
