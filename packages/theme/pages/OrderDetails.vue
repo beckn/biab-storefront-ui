@@ -595,7 +595,7 @@ export default {
         },
         message: {
           // eslint-disable-next-line camelcase
-          order_id: order.value.order.id
+          orderId: order.value.order.id
         }
       };
 
