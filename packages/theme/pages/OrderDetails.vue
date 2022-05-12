@@ -595,13 +595,13 @@ export default {
         },
         message: {
           // eslint-disable-next-line camelcase
-          orderId: order.value.order.id
+          order_id: order.value.order.id
         }
       };
 
       try {
         const response = await status(params);
-        await onStatus({ messageId: order.value.order.id });
+        await onStatus({ orderId: order.value.order.id });
       } catch (error) {
         console.log('Error calling status apis - ', error);
       }
