@@ -108,12 +108,12 @@ export default {
       '@nuxtjs/firebase',
       {
         config: {
-          apiKey: 'AIzaSyAQRzHvbBiH7gutkES0ouMH5l1PDUbnqSM',
-          authDomain: 'becknauth.firebaseapp.com',
-          projectId: 'becknauth',
-          storageBucket: 'becknauth.appspot.com',
-          messagingSenderId: '267664481117',
-          appId: '1:267664481117:web:dfe76d5f9d3129386926b4>'
+          apiKey: 'AIzaSyD3167CzM1Nyv-zf52QShv0PDWq8Dze8gk',
+          authDomain: 'reference-apps-authentication.firebaseapp.com',
+          projectId: 'reference-apps-authentication',
+          storageBucket: 'reference-apps-authentication.appspot.com',
+          messagingSenderId: '153318683305',
+          appId: '1:153318683305:web:868f8277dc93a05b52afb8'
         },
         services: {
           auth: {
